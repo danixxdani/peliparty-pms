@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PeliParty CMS</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#f0f2f5;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13px;color:#1f1f1f;min-height:700px}
+.app{display:flex;height:100vh;min-height:700px}
+.sidebar{width:220px;background:#1e2535;display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto}
+.l1{padding:14px 20px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0}
+.l1-name{color:#fff;font-weight:700;font-size:14px}
+.l1-arrow{color:rgba(255,255,255,.35);font-size:11px}
+.l2{padding:14px 20px 4px;display:flex;align-items:center;justify-content:space-between;cursor:pointer}
+.l2-name{font-size:10px;font-weight:600;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.08em}
+.l2-arrow{color:rgba(255,255,255,.25);font-size:10px}
+.ni{display:flex;align-items:center;padding:8px 20px 8px 32px;cursor:pointer;color:rgba(255,255,255,.5);font-size:13px;transition:all .12s;border-right:2px solid transparent}
+.ni:hover{color:#fff;background:rgba(255,255,255,.05)}
+.ni.on{color:#fff;background:rgba(64,150,255,.13);border-right-color:#4096ff}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{height:44px;background:#fff;border-bottom:1px solid #f0f0f0;display:flex;align-items:center;padding:0 18px;flex-shrink:0}
+.content{flex:1;overflow:hidden;display:flex;flex-direction:column}
+.btn{display:inline-flex;align-items:center;gap:4px;padding:5px 14px;border-radius:4px;font-size:12px;cursor:pointer;border:1px solid transparent;background:#fff;color:#1f1f1f;font-family:inherit;line-height:1.5;font-weight:500}
+.btn-del{background:#ff4d4f;color:#fff;border-color:#ff4d4f}.btn-del:hover{background:#cf1322}
+.btn-add{background:#4096ff;color:#fff;border-color:#4096ff}.btn-add:hover{background:#1677ff}
+.btn-dis{background:#fff;color:#ff4d4f;border-color:#ff4d4f}.btn-dis:hover{background:#fff1f0}
+.btn-ena{background:#52c41a;color:#fff;border-color:#52c41a}.btn-ena:hover{background:#389e0d}
+.btn-edit{background:#4096ff;color:#fff;border-color:#4096ff}.btn-edit:hover{background:#1677ff}
+.btn-org{background:#fff;color:#595959;border-color:#d9d9d9}.btn-org:hover{border-color:#4096ff;color:#4096ff}
+.btn-plain{border-color:#d9d9d9;color:#595959}.btn-plain:hover{border-color:#4096ff;color:#4096ff}
+.btn-sm{padding:3px 10px;font-size:11px}
+.btn:disabled{opacity:.35;cursor:not-allowed;pointer-events:none}
+.pg{display:none;flex:1;flex-direction:column;overflow:hidden}.pg.on{display:flex}
+.pg3{display:none;overflow-y:auto;padding:20px}.pg3.on{display:block}
+.tb{padding:10px 18px;display:flex;align-items:center;gap:7px;background:#fff;border-bottom:1px solid #f0f0f0;flex-shrink:0;flex-wrap:wrap}
+.tb-r{margin-left:auto;display:flex;gap:7px}
+.si{padding:4px 10px;border:1px solid #d9d9d9;border-radius:4px;font-size:12px;font-family:inherit;outline:none;width:180px}
+.si:focus{border-color:#4096ff}
+.fi2{padding:4px 8px;border:1px solid #d9d9d9;border-radius:4px;font-size:12px;font-family:inherit;background:#fff;cursor:pointer;outline:none}
+.tw{overflow-y:auto;flex:1}
+table{width:100%;border-collapse:collapse}
+thead th{background:#fafafa;padding:10px 14px;text-align:left;font-size:12px;font-weight:500;color:#595959;border-bottom:1px solid #f0f0f0;white-space:nowrap;position:sticky;top:0;z-index:1}
+thead th.sortable{cursor:pointer;user-select:none}
+thead th.sortable:hover{color:#1f1f1f}
+.sort-icon{display:inline-block;margin-left:4px;opacity:.35;font-size:10px}
+thead th.sort-asc .sort-icon,thead th.sort-desc .sort-icon{opacity:1;color:#4096ff}
+tbody td{padding:10px 14px;border-bottom:1px solid #f7f7f7;font-size:12px;vertical-align:middle}
+tbody tr:hover td{background:#fafeff}
+tbody tr.sel td{background:#e6f4ff}
+.cb{accent-color:#4096ff;cursor:pointer;width:14px;height:14px}
+.status-en{color:#52c41a;font-weight:500}
+.status-dis{color:#8c8c8c;font-weight:500}
+.status-av{color:#52c41a;font-weight:500}
+.status-un{color:#8c8c8c;font-weight:500}
+.pag{padding:10px 18px;display:flex;align-items:center;gap:6px;border-top:1px solid #f0f0f0;font-size:12px;color:#595959;flex-shrink:0;background:#fff}
+.pb2{min-width:28px;height:28px;border-radius:4px;border:1px solid #d9d9d9;background:#fff;cursor:pointer;font-size:12px;display:inline-flex;align-items:center;justify-content:center;padding:0 6px}
+.pb2:hover{border-color:#4096ff;color:#4096ff}.pb2.on{background:#4096ff;border-color:#4096ff;color:#fff}
+/* view toggle */
+.view-toggle{display:flex;border:1px solid #d9d9d9;border-radius:4px;overflow:hidden}
+.vt-btn{padding:4px 12px;font-size:12px;cursor:pointer;border:none;background:#fff;color:#595959;font-family:inherit;display:flex;align-items:center;gap:5px}
+.vt-btn:first-child{border-right:1px solid #d9d9d9}
+.vt-btn.on{background:#e6f4ff;color:#0958d9;font-weight:500}
+/* calendar */
+.cal-outer{flex:1;overflow-y:auto;padding:16px 18px}
+.cal-header{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.cal-jump select{padding:4px 8px;border:1px solid #d9d9d9;border-radius:4px;font-size:12px;font-family:inherit;background:#fff;cursor:pointer;outline:none}
+.cal-filter{display:flex;align-items:center;gap:6px;margin-left:auto}
+.cal-filter-label{font-size:12px;color:#595959;display:flex;align-items:center;gap:5px;cursor:pointer;padding:3px 10px;border:1px solid #d9d9d9;border-radius:4px;background:#fff;user-select:none;transition:all .12s}
+.cal-filter-label.on{background:#e6f4ff;border-color:#91caff;color:#0958d9}
+.cal-filter-label input[type=checkbox]{accent-color:#4096ff;width:13px;height:13px;pointer-events:none}
+.cal-grid-wrap{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:#e8e8e8;border:1px solid #e8e8e8;border-radius:6px;overflow:hidden}
+.cal-dow{background:#fafafa;text-align:center;padding:7px;font-size:11px;font-weight:500;color:#8c8c8c}
+.cal-cell{background:#fff;min-height:88px;padding:6px 8px;cursor:pointer}
+.cal-cell:hover{background:#f8fbff}
+.cal-cell.other-month{background:#fafafa}
+.cal-cell.today{background:#e6f4ff}
+.cal-day-num{font-size:11px;font-weight:500;color:#595959;margin-bottom:4px}
+.cal-day-circle{width:20px;height:20px;border-radius:50%;background:#4096ff;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:600}
+.cal-pill{display:block;font-size:9px;padding:2px 5px;border-radius:3px;margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.4}
+.cal-pill-release{background:#e6f4ff;color:#0958d9}
+.cal-pill-end{background:#fff1f0;color:#a8071a}
+.cal-more{font-size:9px;color:#8c8c8c;margin-top:1px}
+.badge{display:inline-block;padding:1px 7px;border-radius:99px;font-size:10px;white-space:nowrap}
+.badge-release{background:#e6f4ff;color:#0958d9;border:1px solid #91caff}
+.badge-end{background:#fff1f0;color:#a8071a;border:1px solid #ffa39e}
+/* modal */
+.mov{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .18s}
+.mov.open{opacity:1;pointer-events:all}
+.md{background:#fff;border-radius:8px;width:620px;max-width:96vw;max-height:88vh;display:flex;flex-direction:column;box-shadow:0 8px 32px rgba(0,0,0,.15)}
+.md-wide{width:760px}
+.md-org{width:520px}
+.md-h{padding:16px 20px;border-bottom:1px solid #f0f0f0;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.md-t{font-size:15px;font-weight:600}
+.md-x{border:none;background:none;cursor:pointer;color:#8c8c8c;font-size:20px;line-height:1;padding:2px}
+.md-x:hover{color:#1f1f1f}
+.md-b{flex:1;overflow-y:auto;padding:20px}
+.md-f{padding:12px 20px;border-top:1px solid #f0f0f0;display:flex;justify-content:flex-end;gap:8px;flex-shrink:0}
+.fs-t{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:#8c8c8c;margin-bottom:12px;padding-bottom:7px;border-bottom:1px solid #f0f0f0}
+.fs{margin-bottom:22px}
+.fl{font-size:12px;color:#595959;margin-bottom:5px}
+.fi{width:100%;padding:5px 10px;border:1px solid #d9d9d9;border-radius:4px;font-size:12px;font-family:inherit;outline:none;color:#1f1f1f;background:#fff}
+.fi:focus{border-color:#4096ff;box-shadow:0 0 0 2px rgba(64,150,255,.1)}
+.fi.ro{background:#fafafa;color:#8c8c8c;cursor:not-allowed}
+.fsel{width:100%;padding:5px 10px;border:1px solid #d9d9d9;border-radius:4px;font-size:12px;font-family:inherit;color:#1f1f1f;background:#fff;cursor:pointer;outline:none}
+.fsel:focus{border-color:#4096ff}
+.frow{display:flex;gap:10px;margin-bottom:12px}
+.fcol{flex:1;min-width:0}
+.fhint{font-size:11px;color:#8c8c8c;margin-top:3px}
+.cbg{display:flex;flex-wrap:wrap;gap:6px}
+.ci{display:inline-flex;align-items:center;font-size:12px;cursor:pointer;padding:3px 10px;border:1px solid #d9d9d9;border-radius:4px;background:#fff;transition:all .12s;user-select:none}
+.ci:hover{border-color:#4096ff;color:#4096ff}.ci.on{background:#e6f4ff;border-color:#91caff;color:#0958d9}
+.img-upload{border:1px dashed #d9d9d9;border-radius:6px;height:80px;display:flex;align-items:center;justify-content:center;cursor:pointer;gap:8px;color:#8c8c8c;font-size:12px;background:#fff;transition:all .15s}
+.img-upload:hover{border-color:#4096ff;color:#4096ff;background:#f0f7ff}
+.divider{height:1px;background:#f0f0f0;margin:4px 0 12px}
+.cats-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px}
+.cats-row-label{font-size:12px;color:#595959;flex-shrink:0;width:80px;padding-top:5px}
+.sort-qty-row{display:flex;align-items:center;gap:8px;margin-top:12px}
+.sort-qty-label{font-size:12px;color:#595959;flex-shrink:0;white-space:nowrap}
+.td-inline{display:none;align-items:center;gap:4px;flex-shrink:0;white-space:nowrap}
+.td-inline.show{display:flex}
+.td-inline input{width:44px;padding:5px 6px;border:1px solid #d9d9d9;border-radius:4px;font-size:12px;font-family:inherit;outline:none;text-align:center}
+.td-inline span{font-size:12px;color:#595959}
+.validity-row{display:flex;align-items:center;gap:8px}
+.validity-sep{font-size:12px;color:#8c8c8c;flex-shrink:0}
+.rule-headers{display:grid;grid-template-columns:16px 100px 60px 1fr auto;gap:8px;align-items:center;padding:0 12px;margin-bottom:4px}
+.rule-headers span{font-size:10px;font-weight:600;color:#8c8c8c;text-transform:uppercase;letter-spacing:.04em}
+.rules-list{display:flex;flex-direction:column;gap:6px;margin-bottom:8px}
+.rule-card{border:1px solid #e8e8e8;border-radius:8px;background:#fafafa;overflow:hidden}
+.rule-card:hover{border-color:#d9d9d9}
+.rule-card.dragging{opacity:.35;border-style:dashed;border-color:#4096ff}
+.rule-card.drag-over{border-color:#4096ff;background:#f0f7ff}
+.rule-main{display:grid;grid-template-columns:16px 100px 60px 1fr auto;gap:8px;align-items:center;padding:9px 12px}
+.drag-handle{color:#bfbfbf;font-size:15px;cursor:grab;user-select:none;text-align:center}
+.rule-del-sm{width:22px;height:22px;border-radius:50%;background:#ff4d4f;border:none;cursor:pointer;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+.rule-del-sm:hover{background:#cf1322}
+.sort-wrap{display:flex;align-items:center;gap:6px}
+.td-wrap{display:none;align-items:center;gap:4px;flex-shrink:0;white-space:nowrap}
+.td-wrap.show{display:flex}
+.td-wrap input{width:44px;padding:5px 6px;border:1px solid #d9d9d9;border-radius:4px;font-size:12px;font-family:inherit;outline:none;text-align:center}
+.td-wrap span{font-size:12px;color:#595959}
+.rule-extra{padding:0 12px 9px 40px}
+.rule-extra label{font-size:12px;color:#595959;cursor:pointer;display:flex;align-items:center;gap:6px}
+.rule-extra input[type=checkbox]{accent-color:#4096ff;width:13px;height:13px;cursor:pointer}
+.rule-extra .xhint{font-size:11px;color:#8c8c8c}
+.add-rule-btn{width:100%;padding:7px;border:1px dashed #d9d9d9;border-radius:6px;background:#fff;color:#595959;font-size:12px;cursor:pointer;font-family:inherit}
+.add-rule-btn:hover{border-color:#4096ff;color:#4096ff;background:#f0f7ff}
+.setting-row{display:flex;align-items:center;gap:10px;padding:9px 12px;border:1px solid #e8e8e8;border-radius:8px;background:#fafafa;margin-bottom:8px}
+.fallback-row{display:flex;align-items:center;gap:8px;padding:9px 12px;border:1px solid #ffe58f;border-radius:8px;background:#fffbe6;margin-top:8px}
+.preview-box{background:#f6f8ff;border:1px solid #adc6ff;border-radius:8px;padding:12px 14px;margin-top:12px}
+.preview-title{font-size:10px;font-weight:600;color:#2f54eb;margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em}
+.preview-slot{display:flex;align-items:center;gap:8px;padding:3px 0;font-size:12px}
+.preview-div{height:1px;background:#d6e4ff;margin:5px 0}
+.pbadge{display:inline-block;padding:1px 7px;border-radius:99px;font-size:10px;white-space:nowrap;flex-shrink:0}
+.pb-live{background:#fff2e8;color:#d4380d;border:1px solid #ffbb96}
+.pb-replay{background:#e6f7ff;color:#096dd9;border:1px solid #91d5ff}
+.pb-ugc{background:#f6ffed;color:#389e0d;border:1px solid #b7eb8f}
+.pb-fallback{background:#fff7e6;color:#874d00;border:1px solid #ffd591}
+.pb-upcoming{background:#f0f5ff;color:#2f54eb;border:1px solid #adc6ff}
+.film-combo{position:relative}
+.film-dropdown{position:absolute;top:100%;left:0;right:0;background:#fff;border:1px solid #d9d9d9;border-top:none;border-radius:0 0 6px 6px;z-index:10;display:none;box-shadow:0 4px 12px rgba(0,0,0,.08);max-height:180px;overflow-y:auto}
+.film-dropdown.open{display:block}
+.film-opt{padding:8px 12px;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:1px solid #f5f5f5}
+.film-opt:last-child{border-bottom:none}
+.film-opt:hover{background:#f0f7ff}
+.film-id{color:#8c8c8c;font-size:11px;flex-shrink:0}
+.film-chip{display:inline-flex;align-items:center;gap:8px;padding:5px 10px;background:#e6f4ff;border:1px solid #91caff;border-radius:6px;font-size:12px;margin-top:6px}
+.film-chip-id{font-size:11px;color:#8c8c8c}
+.film-chip-title{font-weight:500;color:#0958d9}
+.film-chip-x{border:none;background:none;cursor:pointer;color:#8c8c8c;font-size:14px;line-height:1;padding:0}
+.title-row{display:flex;gap:8px;margin-top:8px;align-items:flex-end}
+.title-row .fl{font-size:11px;color:#8c8c8c;margin-bottom:3px}
+.org-item{display:flex;align-items:center;gap:12px;padding:10px 14px;border:1px solid #e8e8e8;border-radius:8px;background:#fff;margin-bottom:8px;cursor:grab;user-select:none}
+.org-item:hover{border-color:#d9d9d9}
+.org-item.dragging{opacity:.4;border-style:dashed}
+.org-item.drag-over{border-color:#4096ff;background:#f0f7ff}
+.org-handle{color:#bfbfbf;font-size:18px;flex-shrink:0}
+.org-num{width:24px;height:24px;border-radius:4px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#595959;flex-shrink:0}
+.org-name{flex:1;font-size:13px;font-weight:500}
+.org-sub{font-size:11px;color:#8c8c8c}
+.movie-list{display:flex;flex-direction:column;gap:6px;margin-top:8px;margin-bottom:8px}
+.movie-item{display:flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid #e8e8e8;border-radius:8px;background:#fafafa}
+.movie-item-drag{color:#bfbfbf;font-size:15px;cursor:grab;flex-shrink:0}
+.movie-item-id{font-size:11px;color:#8c8c8c;flex-shrink:0}
+.movie-item-title{flex:1;font-size:12px;font-weight:500}
+.movie-item-del{width:20px;height:20px;border-radius:50%;background:#ff4d4f;border:none;cursor:pointer;color:#fff;font-size:11px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.movie-item-del:hover{background:#cf1322}
+.add-movie-area{border:1px dashed #d9d9d9;border-radius:6px;padding:10px 12px;background:#fff}
+.tg{width:30px;height:17px;border-radius:99px;border:none;cursor:pointer;position:relative;display:inline-block;transition:background .15s;flex-shrink:0}
+.tg.on{background:#4096ff}.tg.off{background:#d9d9d9}
+.tg::after{content:'';position:absolute;width:11px;height:11px;border-radius:50%;background:#fff;top:3px;left:3px;transition:transform .15s}
+.tg.on::after{transform:translateX(13px)}
+.chips-check-row{display:flex;gap:16px;margin-top:10px}
+.chips-check-row label{font-size:12px;color:#595959;cursor:pointer;display:flex;align-items:center;gap:6px}
+.chips-check-row input[type=checkbox]{accent-color:#4096ff;width:13px;height:13px;cursor:pointer}
+/* csv */
+.csv-drop{border:2px dashed #d9d9d9;border-radius:8px;padding:28px;text-align:center;cursor:pointer;color:#8c8c8c;font-size:13px;background:#fafafa;transition:all .15s}
+.csv-drop:hover,.csv-drop.drag-over{border-color:#4096ff;background:#f0f7ff;color:#4096ff}
+.csv-fmt{margin-top:12px;padding:10px 14px;background:#fafafa;border:1px solid #f0f0f0;border-radius:6px;font-size:11px}
+.csv-fmt-title{font-weight:600;color:#595959;margin-bottom:6px}
+.csv-fmt-code{font-family:monospace;color:#595959;line-height:1.7;font-size:11px;background:#f0f0f0;padding:8px 10px;border-radius:4px;white-space:pre;overflow-x:auto;display:block}
+.csv-fmt-hint{color:#8c8c8c;margin-top:5px}
+.csv-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:12px}
+.csv-table th{background:#fafafa;padding:7px 10px;text-align:left;border-bottom:1px solid #f0f0f0;font-weight:500;color:#595959;font-size:11px}
+.csv-table td{padding:7px 10px;border-bottom:1px solid #f7f7f7;vertical-align:top}
+.csv-ok{color:#52c41a}
+.csv-err{color:#ff4d4f}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="sidebar">
+  <div class="l1" onclick="toggleL1()"><span class="l1-name">PeliParty</span><span class="l1-arrow" id="l1-arrow">∧</span></div>
+  <div id="l1-body">
+    <div class="l2" onclick="toggleL2('master')"><span class="l2-name">Master Data</span><span class="l2-arrow" id="l2-arrow-master">∧</span></div>
+    <div id="l2-master"><div class="ni" onclick="navTo('categories',this,'Categories')">Categories</div></div>
+    <div class="l2" onclick="toggleL2('home')"><span class="l2-name">Home Screen</span><span class="l2-arrow" id="l2-arrow-home">∧</span></div>
+    <div id="l2-home">
+      <div class="ni" onclick="navTo('banners',this,'Banners')">Banners</div>
+      <div class="ni on" onclick="navTo('slots',this,'Slots')">Slots</div>
+      <div class="ni" onclick="navTo('schedule',this,'Schedule')">Schedule</div>
+    </div>
+    <div class="l2" onclick="toggleL2('settings')"><span class="l2-name">Settings</span><span class="l2-arrow" id="l2-arrow-settings">∧</span></div>
+    <div id="l2-settings"></div>
+  </div>
+</div>
+<div class="main">
+  <div class="topbar"><div style="font-size:12px"><b id="bc">Slots</b></div></div>
+  <div class="content">
+
+    <!-- CATEGORIES -->
+    <div id="pg-categories" class="pg">
+      <div class="tb">
+        <input class="si" placeholder="Search categories..." oninput="filterCats(this.value)">
+        <select class="fi2" onchange="filterCatStatus(this.value)"><option value="">All status</option><option value="1">Enabled</option><option value="0">Disabled</option></select>
+        <div class="tb-r">
+          <button class="btn btn-add" onclick="openModal('cat-add')">+ Add</button>
+          <button class="btn btn-edit" id="cat-edit-btn" disabled onclick="catEditSelected()">✏ Edit</button>
+          <button class="btn btn-dis" id="cat-dis-btn" disabled onclick="catBulkDisable()">Disable</button>
+          <button class="btn btn-ena" id="cat-ena-btn" disabled onclick="catBulkEnable()">Enable</button>
+          <button class="btn btn-del" id="cat-del-btn" disabled onclick="catBulkDel()">🗑 Delete</button>
+        </div>
+      </div>
+      <div class="tw"><table>
+        <thead><tr><th style="width:32px"><input type="checkbox" class="cb" id="cat-cb-all" onclick="catToggleAll(this)"></th><th style="width:40px">NO.</th><th>Category ID</th><th>Category Name</th><th>Media Type(s)</th><th>Status</th><th>Creator</th><th>Create Date</th><th>Modify Date</th></tr></thead>
+        <tbody id="cat-tbody"></tbody>
+      </table></div>
+      <div class="pag"><span>Total <b id="cat-total">0</b></span></div>
+    </div>
+
+    <!-- BANNERS -->
+    <div id="pg-banners" class="pg">
+      <div class="tb">
+        <input class="si" placeholder="Search banners..." oninput="filterBanners(this.value)">
+        <select class="fi2" onchange="filterBannerType(this.value)"><option value="">All types</option><option value="live">Live stream</option><option value="upcoming">Upcoming live stream</option><option value="image">Image</option></select>
+        <select class="fi2" onchange="filterBannerStatus(this.value)"><option value="">All status</option><option value="1">Enabled</option><option value="0">Disabled</option></select>
+        <div class="tb-r">
+          <button class="btn btn-add" onclick="openModal('ban-add')">+ Add</button>
+          <button class="btn btn-edit" id="ban-edit-btn" disabled onclick="banEditSelected()">✏ Edit</button>
+          <button class="btn btn-org" onclick="openModal('ban-organize')">⇅ Organize</button>
+          <button class="btn btn-dis" id="ban-dis-btn" disabled onclick="banBulkDisable()">Disable</button>
+          <button class="btn btn-ena" id="ban-ena-btn" disabled onclick="banBulkEnable()">Enable</button>
+          <button class="btn btn-del" id="ban-del-btn" disabled onclick="banBulkDel()">🗑 Delete</button>
+        </div>
+      </div>
+      <div class="tw"><table>
+        <thead><tr><th style="width:32px"><input type="checkbox" class="cb" id="ban-cb-all" onclick="banToggleAll(this)"></th><th style="width:40px">NO.</th><th>Banner ID</th><th>Banner Name</th><th>Banner Type</th><th>Timezone</th><th>Start Time</th><th>End Time</th><th>Status</th><th>Creator</th><th>Create Date</th><th>Modify Date</th></tr></thead>
+        <tbody id="ban-tbody"></tbody>
+      </table></div>
+      <div class="pag"><span>Total <b id="ban-total">0</b></span><div style="margin-left:auto;display:flex;gap:4px"><button class="pb2">‹</button><button class="pb2 on">1</button><button class="pb2">›</button></div></div>
+    </div>
+
+    <!-- SLOTS -->
+    <div id="pg-slots" class="pg on">
+      <div class="tb">
+        <input class="si" placeholder="Search slot name..." oninput="filterSlots(this.value)">
+        <select class="fi2" onchange="filterSlotType(this.value)"><option value="">All types</option><option>Featured Cinema</option><option>Live</option><option>Replay</option><option>UGC</option><option>Hosts</option><option>Mixed</option><option>Movies</option></select>
+        <select class="fi2" onchange="filterSlotStatus(this.value)"><option value="">All status</option><option value="1">Enabled</option><option value="0">Disabled</option></select>
+        <div class="tb-r">
+          <button class="btn btn-add" onclick="openModal('slot-add')">+ Add</button>
+          <button class="btn btn-edit" id="slot-edit-btn" disabled onclick="slotEditSelected()">✏ Edit</button>
+          <button class="btn btn-org" onclick="openModal('slot-organize')">⇅ Organize</button>
+          <button class="btn btn-dis" id="slot-dis-btn" disabled onclick="slotBulkDisable()">Disable</button>
+          <button class="btn btn-ena" id="slot-ena-btn" disabled onclick="slotBulkEnable()">Enable</button>
+          <button class="btn btn-del" id="slot-del-btn" disabled onclick="slotBulkDel()">🗑 Delete</button>
+        </div>
+      </div>
+      <div class="tw"><table>
+        <thead><tr><th style="width:32px"><input type="checkbox" class="cb" id="slot-cb-all" onclick="slotToggleAll(this)"></th><th style="width:40px">NO.</th><th>Slot ID</th><th>Slot Name</th><th>Slot Type</th><th>Categories</th><th>Status</th><th>Creator</th><th>Create Date</th><th>Modify Date</th></tr></thead>
+        <tbody id="slot-tbody"></tbody>
+      </table></div>
+      <div class="pag"><span>Total <b id="slot-total">0</b></span><div style="margin-left:auto;display:flex;gap:4px"><button class="pb2">‹</button><button class="pb2 on">1</button><button class="pb2">›</button></div></div>
+    </div>
+
+    <!-- SCHEDULE -->
+    <div id="pg-schedule" class="pg">
+      <div class="tb">
+        <div class="view-toggle">
+          <button class="vt-btn on" id="vt-cal" onclick="setSchView('cal')">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="12" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M5 1v4M11 1v4M1 7h14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Calendar
+          </button>
+          <button class="vt-btn" id="vt-tbl" onclick="setSchView('tbl')">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="14" height="14" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M1 5.5h14M1 10h14M5.5 5.5v9.5" stroke="currentColor" stroke-width="1.3"/></svg>Table
+          </button>
+        </div>
+        <div class="tb-r">
+          <button class="btn btn-plain btn-sm" onclick="openCSV()">⬆ Import CSV</button>
+          <button class="btn btn-add btn-sm" onclick="openSchAdd()">+ Add</button>
+          <button class="btn btn-edit btn-sm" id="sch-edit-btn" disabled onclick="openSchEdit()">✏ Edit</button>
+          <button class="btn btn-del btn-sm" id="sch-del-btn" disabled onclick="schDel()">🗑 Delete</button>
+        </div>
+      </div>
+      <!-- calendar -->
+      <div id="view-cal" class="cal-outer">
+        <div class="cal-header">
+          <button class="btn btn-plain btn-sm" onclick="chMonth(-1)">‹</button>
+          <div class="cal-jump" style="display:flex;gap:6px">
+            <select id="cal-jump-month" onchange="calJump()" style="min-width:100px"></select>
+            <select id="cal-jump-year" onchange="calJump()" style="width:72px"></select>
+          </div>
+          <button class="btn btn-plain btn-sm" onclick="chMonth(1)">›</button>
+          <div class="cal-filter">
+            <label class="cal-filter-label on" id="lbl-release" onclick="toggleCalFilter('release',this)"><input type="checkbox" id="chk-release" checked><span class="badge badge-release">Release</span></label>
+            <label class="cal-filter-label" id="lbl-end" onclick="toggleCalFilter('end',this)"><input type="checkbox" id="chk-end"><span class="badge badge-end">Expiry</span></label>
+          </div>
+        </div>
+        <div class="cal-grid-wrap" id="cal-grid"></div>
+      </div>
+      <!-- table -->
+      <div id="view-tbl" style="display:none;flex:1;flex-direction:column;overflow:hidden">
+        <div style="padding:10px 18px;background:#fff;border-bottom:1px solid #f0f0f0;display:flex;gap:7px;flex-shrink:0;flex-wrap:wrap">
+          <input class="si" id="sch-search" placeholder="Search title or PP ID..." oninput="filterSch(this.value)">
+          <select class="fi2" id="sch-year-filter" onchange="filterSchYear(this.value)"></select>
+          <select class="fi2" id="sch-month-filter" onchange="filterSchMonth(this.value)"></select>
+          <select class="fi2" id="sch-status-filter" onchange="filterSchStatus(this.value)"><option value="">All status</option><option value="1">Available</option><option value="0">Unavailable</option></select>
+        </div>
+        <div class="tw"><table>
+          <thead><tr>
+            <th style="width:32px"><input type="checkbox" class="cb" id="sch-cb-all" onclick="schToggleAll(this)"></th>
+            <th style="width:40px">NO.</th><th>PP ID</th>
+            <th class="sortable" onclick="sortSch('originalTitle')" id="th-originalTitle">Original Title<span class="sort-icon">↕</span></th>
+            <th class="sortable" onclick="sortSch('displayTitle')" id="th-displayTitle">Display Title<span class="sort-icon">↕</span></th>
+            <th>Timezone</th>
+            <th class="sortable" onclick="sortSch('release')" id="th-release">Release Date<span class="sort-icon">↕</span></th>
+            <th class="sortable" onclick="sortSch('until')" id="th-until">Expiry Date<span class="sort-icon">↕</span></th>
+            <th>Status</th><th>Creator</th>
+            <th class="sortable" onclick="sortSch('created')" id="th-created">Create Date<span class="sort-icon">↕</span></th>
+            <th class="sortable" onclick="sortSch('mod')" id="th-mod">Modify Date<span class="sort-icon">↕</span></th>
+          </tr></thead>
+          <tbody id="sch-tbody"></tbody>
+        </table></div>
+        <div class="pag"><span>Total <b id="sch-total">0</b></span><div style="margin-left:auto;display:flex;gap:4px"><button class="pb2">‹</button><button class="pb2 on">1</button><button class="pb2">›</button></div></div>
+      </div>
+    </div>
+
+        </div>
+  </div>
+</div>
+</div>
+
+<!-- MAIN MODAL -->
+<div class="mov" id="mov" onclick="if(event.target===this)closeModal()">
+  <div class="md" id="main-md">
+    <div class="md-h"><span class="md-t" id="md-title">Add</span><button class="md-x" onclick="closeModal()">×</button></div>
+    <div class="md-b" id="md-body"></div>
+    <div class="md-f"><button class="btn btn-plain" onclick="closeModal()">Cancel</button><button class="btn btn-add">Save</button></div>
+  </div>
+</div>
+
+<!-- BAN ORGANIZE -->
+<div class="mov" id="ban-org-mov" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="md md-org">
+    <div class="md-h"><span class="md-t">Organize Banners</span><button class="md-x" onclick="document.getElementById('ban-org-mov').classList.remove('open')">×</button></div>
+    <div class="md-b"><div style="font-size:12px;color:#8c8c8c;margin-bottom:14px">Drag to reorder. Only enabled banners are shown.</div><div id="ban-org-list"></div></div>
+    <div class="md-f"><button class="btn btn-plain" onclick="document.getElementById('ban-org-mov').classList.remove('open')">Cancel</button><button class="btn btn-add" onclick="saveBanOrg()">Save order</button></div>
+  </div>
+</div>
+
+<!-- SLOT ORGANIZE -->
+<div class="mov" id="slot-org-mov" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="md md-org">
+    <div class="md-h"><span class="md-t">Organize Slots</span><button class="md-x" onclick="document.getElementById('slot-org-mov').classList.remove('open')">×</button></div>
+    <div class="md-b"><div style="font-size:12px;color:#8c8c8c;margin-bottom:14px">Drag to reorder. This sets the display order on the home screen.</div><div id="slot-org-list"></div></div>
+    <div class="md-f"><button class="btn btn-plain" onclick="document.getElementById('slot-org-mov').classList.remove('open')">Cancel</button><button class="btn btn-add" onclick="saveSlotOrg()">Save order</button></div>
+  </div>
+</div>
+
+<!-- SCHEDULE MODAL -->
+<div class="mov" id="sch-mov" onclick="if(event.target===this)closeSchModal()">
+  <div class="md">
+    <div class="md-h"><span class="md-t" id="sch-md-title">Add Schedule</span><button class="md-x" onclick="closeSchModal()">×</button></div>
+    <div class="md-b" id="sch-md-body"></div>
+    <div class="md-f"><button class="btn btn-plain" onclick="closeSchModal()">Cancel</button><button class="btn btn-add" onclick="saveSchModal()">Save</button></div>
+  </div>
+</div>
+
+<!-- CSV MODAL -->
+<div class="mov" id="csv-mov" onclick="if(event.target===this)closeCSV()">
+  <div class="md md-wide">
+    <div class="md-h"><span class="md-t">Import CSV</span><button class="md-x" onclick="closeCSV()">×</button></div>
+    <div class="md-b" id="csv-body"></div>
+    <div class="md-f"><button class="btn btn-plain" onclick="closeCSV()">Cancel</button><button class="btn btn-add" id="csv-import-btn" disabled onclick="importCSV()">Import</button></div>
+  </div>
+</div>
+
+<script>
+// ── CONSTANTS ────────────────────────────────────────────────────────────────
+var TZ_HTML='<option>UTC+8</option><option>UTC-7/8</option><option>UTC-3</option>';
+var TZ_OPTS=['UTC+8','UTC-7/8','UTC-3'];
+var LIVE_CATS=['Watch Party','Just Chatting','Reviews','Breakdowns'];
+var MONTHS_LONG=['January','February','March','April','May','June','July','August','September','October','November','December'];
+var MONTHS_SHORT=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var MOCK_FILMS=[{id:'pp00000123',title:'Parasite'},{id:'pp00000456',title:'Past Lives'},{id:'pp00000789',title:'Poor Things'},{id:'pp00001234',title:'Oppenheimer'},{id:'pp00005678',title:'The Zone of Interest'},{id:'pp00006789',title:'Dune: Part Two'},{id:'pp00007890',title:'A Quiet Place: Day One'}];
+var SORT_OPTS={
+  live:[{val:'most_popular',lbl:'Most popular'},{val:'most_recent',lbl:'Most recent'},{val:'followed_first',lbl:'Followed hosts first, then most popular'},{val:'random',lbl:'Random'}],
+  replay:[{val:'most_popular',lbl:'Most popular'},{val:'trending',lbl:'Trending'},{val:'most_recent',lbl:'Most recent'},{val:'random',lbl:'Random'}],
+  ugc:[{val:'most_popular',lbl:'Most popular'},{val:'trending',lbl:'Trending'},{val:'most_recent',lbl:'Most recent'},{val:'random',lbl:'Random'}]
+};
+var MOVIES_SORT=[{val:'coming_soon',lbl:'Coming soon'},{val:'recently_released',lbl:'Recently released'},{val:'manual',lbl:'Manual'}];
+var TYPE_LABEL={live:'Live',replay:'Replay',ugc:'UGC'};
+var BADGE_CLS={live:'pb-live',replay:'pb-replay',ugc:'pb-ugc'};
+var AVAILABLE_MOCK={live:1,replay:5,ugc:8};
+var CHIPS_TYPES=['Featured Cinema','Live','Replay','UGC','Mixed'];
+var PICK_OPTS={
+  live:[{val:'random',lbl:'Random',hint:'Random from available pool.'},{val:'viewers',lbl:'Most viewers',hint:'Highest current viewer count.'},{val:'recent',lbl:'Most recent',hint:'Most recently started stream.'},{val:'pinned',lbl:'Pinned',hint:'A specific host stream is always shown.'}],
+  upcoming:[{val:'random',lbl:'Random',hint:'Random from available pool.'},{val:'earliest',lbl:'Earliest start time',hint:'Stream starting soonest.'},{val:'followers',lbl:'Most followers',hint:'Host with the most followers.'},{val:'pinned',lbl:'Pinned',hint:'A specific host upcoming stream is always shown.'}]
+};
+var BTL={live:'Live stream',upcoming:'Upcoming live stream',image:'Image'};
+
+// ── DATA ─────────────────────────────────────────────────────────────────────
+var CATS=[
+  {id:1,name:'Watch Party',    media:['Live','Replay'],      enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-21 16:00'},
+  {id:2,name:'Just Chatting',  media:['Live','Replay'],      enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-21 16:00'},
+  {id:3,name:'Reviews',        media:['Live','Replay','UGC'],enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-19 12:00'},
+  {id:4,name:'Breakdowns',     media:['Live','Replay','UGC'],enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-19 12:00'},
+  {id:5,name:'Recommendations',media:['UGC'],                enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-19 12:00'},
+  {id:6,name:'Recaps',         media:['UGC'],                enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-19 12:00'},
+  {id:7,name:'Reactions',      media:['UGC'],                enabled:false,creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-19 12:00'}
+];
+var BANNERS=[
+  {id:201,name:'Watch Party Spotlight',type:'live',   tz:'UTC+8',    start:'2026-04-22 08:00',end:'2026-06-01 07:59',enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-22 10:00'},
+  {id:202,name:'May Event Feature',    type:'upcoming',tz:'UTC+8',    start:'2026-05-01 00:00',end:'2026-05-31 23:59',enabled:true, creator:'Admin',created:'2026-04-20 14:00',mod:'2026-04-21 09:00'},
+  {id:203,name:'Summer Promo',         type:'image',  tz:'UTC-7/8',start:'2026-06-01 00:00',end:'2026-08-31 23:59',enabled:true, creator:'Admin',created:'2026-04-21 10:00',mod:'2026-04-21 11:00'},
+  {id:204,name:'Film Festival Banner', type:'image',  tz:'UTC-3',start:'2026-05-10 00:00',end:'2026-05-20 23:59',enabled:false,creator:'Admin',created:'2026-04-23 15:00',mod:'2026-04-24 09:00'}
+];
+var SLOTS=[
+  {id:102,name:"Today's Cinema",  type:'Featured Cinema',cats_str:'',enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-22 10:00'},
+  {id:103,name:'LIVE',            type:'Live',  cats_str:'Watch Party, Just Chatting, Reviews, Breakdowns',enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-21 09:12'},
+  {id:104,name:'Crowd Favorites', type:'Replay',cats_str:'Watch Party, Just Chatting, Reviews, Breakdowns',enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-20 14:30'},
+  {id:105,name:'Hosted By',       type:'Hosts', cats_str:'',enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-18 11:22'},
+  {id:106,name:'Watch Party',     type:'Live',  cats_str:'Watch Party',enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-21 16:00'},
+  {id:107,name:'Just Chatting',   type:'Live',  cats_str:'Just Chatting',enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-21 16:00'},
+  {id:108,name:'In Theater',      type:'Movies',cats_str:'',enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-10 00:38'},
+  {id:109,name:'Trending Clips',  type:'UGC',   cats_str:'Watch Party',enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-15 08:00'},
+  {id:110,name:'Coming Soon',     type:'Movies',cats_str:'',enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-10 00:38'},
+  {id:111,name:'Trending Videos', type:'UGC',   cats_str:'Reviews, Recaps, Reactions, Recommendations, Breakdowns',enabled:true,creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-15 08:00'},
+  {id:112,name:'Reviews',         type:'Mixed', cats_str:'Reviews',enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-19 12:00'},
+  {id:113,name:'Recommendations', type:'UGC',   cats_str:'Recommendations',enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-19 12:00'},
+  {id:114,name:'Recaps',          type:'UGC',   cats_str:'Recaps',enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-19 12:00'},
+  {id:115,name:'Reactions',       type:'UGC',   cats_str:'Reactions',enabled:false,creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-19 12:00'},
+  {id:116,name:'Breakdowns',      type:'Mixed', cats_str:'Breakdowns',enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-19 12:00'}
+];
+var SLOT_ORDER=SLOTS.map(function(s){return s.id;});
+var SCH=[
+  {id:1,ppId:'pp00000123',originalTitle:'Parasite',          displayTitle:'Parasite',          tz:'UTC+8',    release:'2026-05-01 00:00',until:'2026-05-31 23:59',available:true, creator:'Admin',created:'2026-04-20 09:00',mod:'2026-04-22 10:00'},
+  {id:2,ppId:'pp00000456',originalTitle:'Past Lives',         displayTitle:'Past Lives',         tz:'UTC+8',    release:'2026-05-01 00:00',until:'2026-06-30 23:59',available:true, creator:'Admin',created:'2026-04-20 09:00',mod:'2026-04-21 15:00'},
+  {id:3,ppId:'pp00000789',originalTitle:'Poor Things',        displayTitle:'Poor Things',        tz:'UTC+8',    release:'2026-05-08 00:00',until:'2026-06-07 23:59',available:true, creator:'Admin',created:'2026-04-21 11:00',mod:'2026-04-21 11:00'},
+  {id:4,ppId:'pp00001234',originalTitle:'Oppenheimer',        displayTitle:'Oppenheimer',        tz:'UTC-7/8',release:'2026-05-15 00:00',until:'2026-06-14 23:59',available:true, creator:'Admin',created:'2026-04-22 09:00',mod:'2026-04-22 09:00'},
+  {id:5,ppId:'pp00005678',originalTitle:'The Zone of Interest',displayTitle:'The Zone of Interest',tz:'UTC+8', release:'2026-05-20 00:00',until:'2026-06-19 23:59',available:false,creator:'Admin',created:'2026-04-22 10:00',mod:'2026-04-22 10:30'},
+  {id:6,ppId:'pp00006789',originalTitle:'Dune: Part Two',     displayTitle:'Dune: Part Two',     tz:'UTC+8',    release:'2026-05-28 00:00',until:'2026-06-27 23:59',available:true, creator:'Admin',created:'2026-04-23 08:00',mod:'2026-04-23 08:00'},
+  {id:7,ppId:'pp00007890',originalTitle:'A Quiet Place: Day One',displayTitle:'A Quiet Place: Day One',tz:'UTC-3',release:'2026-05-31 00:00',until:'2026-06-30 23:59',available:true,creator:'Admin',created:'2026-04-24 09:00',mod:'2026-04-24 09:00'},
+  {id:8,ppId:'pp00000789',originalTitle:'Poor Things',displayTitle:'Poor Things',tz:'UTC+8',release:'2026-04-10 00:00',until:'2026-05-08 23:59',available:true,creator:'Admin',created:'2026-04-01 09:00',mod:'2026-04-01 09:00'},
+  {id:9,ppId:'pp00000456',originalTitle:'Past Lives',displayTitle:'Past Lives',tz:'UTC+8',release:'2026-04-15 00:00',until:'2026-05-15 23:59',available:true,creator:'Admin',created:'2026-04-01 10:00',mod:'2026-04-01 10:00'},
+  {id:10,ppId:'pp00000123',originalTitle:'Parasite',displayTitle:'Parasite',tz:'UTC+8',release:'2026-04-20 00:00',until:'2026-05-20 23:59',available:true,creator:'Admin',created:'2026-04-02 09:00',mod:'2026-04-02 09:00'},
+  {id:11,ppId:'pp00001234',originalTitle:'Oppenheimer',displayTitle:'Oppenheimer',tz:'UTC-7/8',release:'2026-04-25 00:00',until:'2026-05-25 23:59',available:true,creator:'Admin',created:'2026-04-02 10:00',mod:'2026-04-02 10:00'},
+  {id:12,ppId:'pp00005678',originalTitle:'The Zone of Interest',displayTitle:'The Zone of Interest',tz:'UTC+8',release:'2026-04-28 00:00',until:'2026-05-28 23:59',available:true,creator:'Admin',created:'2026-04-03 09:00',mod:'2026-04-03 09:00'}
+];
+var schIdSeq=13;
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+var calM=new Date(2026,4,1);
+var schView='cal';
+var banSel=new Set(),slotSel=new Set(),schSel=new Set();
+var banQ='',banTypeF='',banStatusF='';
+var slotQ='',slotTypeF='',slotStatusF='';
+var schQ='',schYearF='',schMonthF='',schStatusF='';
+var schSortKey='mod',schSortDir='desc';
+var editingId=null,schAddFilm=null;
+var banOrgOrder=[],banOrgDragSrc=null;
+var slotOrgOrder=[],slotOrgDragSrc=null;
+var fcRules=[{type:'live',qty:3,sort:'most_popular',trendingDays:7,upcomingFallback:true},{type:'replay',qty:2,sort:'most_popular',trendingDays:7,upcomingFallback:false}];
+var mxRules=[{type:'live',qty:2,sort:'most_popular',trendingDays:7,upcomingFallback:true},{type:'replay',qty:2,sort:'most_popular',trendingDays:7,upcomingFallback:false},{type:'ugc',qty:2,sort:'most_popular',trendingDays:7,upcomingFallback:false}];
+var fcDragSrc=null,mxDragSrc=null;
+var movieManualList=[];
+var csvRows=[];
+var l1Open=true,l2State={master:true,home:true,settings:true};
+
+function pad(n){return n<10?'0'+n:''+n;}
+function byModDesc(a,b){return b.mod.localeCompare(a.mod);}
+function now(){return new Date().toISOString().replace('T',' ').substring(0,16);}
+
+// ── NAVIGATION ────────────────────────────────────────────────────────────────
+function toggleL1(){l1Open=!l1Open;document.getElementById('l1-body').style.display=l1Open?'':'none';document.getElementById('l1-arrow').textContent=l1Open?'∧':'∨';}
+function toggleL2(k){l2State[k]=!l2State[k];document.getElementById('l2-'+k).style.display=l2State[k]?'':'none';document.getElementById('l2-arrow-'+k).textContent=l2State[k]?'∧':'∨';}
+function navTo(id,el,label){
+  document.querySelectorAll('.ni').forEach(function(n){n.classList.remove('on');});el.classList.add('on');
+  document.getElementById('bc').textContent=label;
+  ['categories','banners','slots','schedule'].forEach(function(p){var pg=document.getElementById('pg-'+p);if(pg)pg.classList.remove('on');});
+  var d=document.getElementById('pg-display');if(d)d.classList.remove('on');
+  var tgt=document.getElementById('pg-'+id);if(tgt)tgt.classList.add('on');
+  
+  if(id==='categories')renderCats();
+  if(id==='banners')renderBanners();
+  if(id==='slots')renderSlots();
+  if(id==='schedule'){if(schView==='cal'){buildJumpSelectors();renderCal();}else{buildSchDateFilters();renderSchTable();}}
+}
+
+// ── CATEGORIES ────────────────────────────────────────────────────────────────
+var catSel=new Set(),catQ='',catStatusF='',catIdSeq=8;
+function getCats(){
+  return CATS.filter(function(c){
+    if(catQ&&c.name.toLowerCase().indexOf(catQ.toLowerCase())===-1)return false;
+    if(catStatusF==='1'&&!c.enabled)return false;
+    if(catStatusF==='0'&&c.enabled)return false;
+    return true;
+  }).sort(byModDesc);
+}
+function renderCats(){
+  var rows=getCats();
+  document.getElementById('cat-total').textContent=rows.length;
+  var h='';
+  rows.forEach(function(c,i){
+    var sel=catSel.has(c.id);
+    h+='<tr class="'+(sel?'sel':'')+'"><td><input type="checkbox" class="cb"'+(sel?' checked':'')+' onchange="catToggleSel('+c.id+',this)"></td>';
+    h+='<td style="color:#8c8c8c">'+(i+1)+'</td>';
+    h+='<td style="font-size:12px;color:#595959">'+c.id+'</td>';
+    h+='<td><strong style="font-weight:500">'+c.name+'</strong></td>';
+    h+='<td style="font-size:12px;color:#595959">'+c.media.join(', ')+'</td>';
+    h+='<td><span class="'+(c.enabled?'status-en':'status-dis')+'">'+(c.enabled?'Enabled':'Disabled')+'</span></td>';
+    h+='<td style="color:#595959">'+c.creator+'</td>';
+    h+='<td style="font-size:11px;color:#8c8c8c">'+c.created+'</td>';
+    h+='<td style="font-size:11px;color:#8c8c8c">'+c.mod+'</td></tr>';
+  });
+  document.getElementById('cat-tbody').innerHTML=h;
+  updateCatBtns();
+}
+function updateCatBtns(){
+  var n=catSel.size;
+  document.getElementById('cat-del-btn').disabled=n===0;
+  document.getElementById('cat-dis-btn').disabled=n===0;
+  document.getElementById('cat-ena-btn').disabled=n===0;
+  document.getElementById('cat-edit-btn').disabled=n!==1;
+}
+function filterCats(q){catQ=q;renderCats();}
+function filterCatStatus(v){catStatusF=v;renderCats();}
+function catToggleAll(cb){getCats().forEach(function(c){cb.checked?catSel.add(c.id):catSel.delete(c.id);});renderCats();}
+function catToggleSel(id,cb){cb.checked?catSel.add(id):catSel.delete(id);updateCatBtns();renderCats();}
+function catBulkDel(){
+  var affected=[];
+  catSel.forEach(function(id){
+    var c=CATS.find(function(x){return x.id===id;});
+    if(c){var used=SLOTS.filter(function(s){return s.cats_str&&s.cats_str.indexOf(c.name)!==-1;});if(used.length)affected.push(c.name+' (used in: '+used.map(function(s){return s.name;}).join(', ')+')');}
+  });
+  var msg=affected.length
+    ?'The following categories are used by active slots:\n'+affected.join('\n')+'\n\nDelete anyway?'
+    :'Delete '+catSel.size+' category/categories?';
+  if(!confirm(msg))return;
+  for(var i=CATS.length-1;i>=0;i--){if(catSel.has(CATS[i].id))CATS.splice(i,1);}
+  catSel.clear();renderCats();
+}
+function catBulkDisable(){CATS.forEach(function(c){if(catSel.has(c.id))c.enabled=false;});renderCats();}
+function catBulkEnable(){CATS.forEach(function(c){if(catSel.has(c.id))c.enabled=true;});renderCats();}
+function catEditSelected(){var id=Array.from(catSel)[0];if(id!=null)openModal('cat-edit',id);}
+function buildCatForm(c){
+  var mediaOpts=['Live','Replay','UGC'].map(function(m){
+    var on=c&&c.media.indexOf(m)!==-1;
+    return '<label class="ci'+(on?' on':'')+'" onclick="this.classList.toggle(\'on\')">'+m+'</label>';
+  }).join('');
+  return '<div class="fs"><div class="fs-t">Basic Info</div>'
+    +'<div class="frow"><div class="fcol"><div class="fl">Category Name <span style="color:#ff4d4f">*</span></div>'
+    +'<input class="fi" id="cat-name-input" value="'+(c?c.name:'')+'" placeholder="e.g. Watch Party"></div></div>'
+    +'<div class="fl">Media Type(s) <span style="color:#ff4d4f">*</span></div>'
+    +'<div class="cbg" id="cat-media-chips">'+mediaOpts+'</div>'
+    +'<div class="fhint" style="margin-top:6px">Select at least one media type.</div></div>';
+}
+function saveCatModal(editingCatId){
+  var nameEl=document.getElementById('cat-name-input');
+  var chips=document.querySelectorAll('#cat-media-chips .ci.on');
+  if(!nameEl||!nameEl.value.trim()){alert('Category name is required.');return;}
+  if(!chips.length){alert('Select at least one media type.');return;}
+  var name=nameEl.value.trim();
+  var duplicate=CATS.find(function(c){return c.name.toLowerCase()===name.toLowerCase()&&c.id!==editingCatId;});
+  if(duplicate){alert('A category with this name already exists.');return;}
+  var media=Array.from(chips).map(function(el){return el.textContent;});
+  var n=now();
+  if(editingCatId!=null){
+    var c=CATS.find(function(x){return x.id===editingCatId;});
+    if(c){c.name=name;c.media=media;c.mod=n;}
+  } else {
+    CATS.push({id:catIdSeq++,name:name,media:media,enabled:true,creator:'Admin',created:n,mod:n});
+  }
+  closeModal();renderCats();
+}
+
+// ── BANNERS ───────────────────────────────────────────────────────────────────
+function getBanners(){return BANNERS.filter(function(b){if(banQ&&b.name.toLowerCase().indexOf(banQ.toLowerCase())===-1)return false;if(banTypeF&&b.type!==banTypeF)return false;if(banStatusF==='1'&&!b.enabled)return false;if(banStatusF==='0'&&b.enabled)return false;return true;}).sort(byModDesc);}
+function renderBanners(){
+  var rows=getBanners();document.getElementById('ban-total').textContent=rows.length;var h='';
+  rows.forEach(function(b,i){var sel=banSel.has(b.id);
+    h+='<tr class="'+(sel?'sel':'')+'"><td><input type="checkbox" class="cb"'+(sel?' checked':'')+' onchange="banToggleSel('+b.id+',this)"></td>';
+    h+='<td style="color:#8c8c8c">'+(i+1)+'</td><td style="color:#595959">'+b.id+'</td>';
+    h+='<td><strong style="font-weight:500">'+b.name+'</strong></td>';
+    h+='<td style="font-size:12px;color:#595959">'+BTL[b.type]+'</td>';
+    h+='<td style="font-size:11px;color:#595959;white-space:nowrap">'+b.tz+'</td>';
+    h+='<td style="font-size:11px;color:#595959;white-space:nowrap">'+b.start+'</td>';
+    h+='<td style="font-size:11px;color:#595959;white-space:nowrap">'+(b.end||'')+'</td>';
+    h+='<td><span class="'+(b.enabled?'status-en':'status-dis')+'">'+(b.enabled?'Enabled':'Disabled')+'</span></td>';
+    h+='<td style="color:#595959">'+b.creator+'</td>';
+    h+='<td style="font-size:11px;color:#8c8c8c;white-space:nowrap">'+b.created+'</td>';
+    h+='<td style="font-size:11px;color:#8c8c8c;white-space:nowrap">'+b.mod+'</td></tr>';
+  });
+  document.getElementById('ban-tbody').innerHTML=h;
+  var n=banSel.size;
+  document.getElementById('ban-del-btn').disabled=n===0;document.getElementById('ban-dis-btn').disabled=n===0;
+  document.getElementById('ban-ena-btn').disabled=n===0;document.getElementById('ban-edit-btn').disabled=n!==1;
+}
+function filterBanners(q){banQ=q;renderBanners();}
+function filterBannerType(t){banTypeF=t;renderBanners();}
+function filterBannerStatus(s){banStatusF=s;renderBanners();}
+function banToggleAll(cb){getBanners().forEach(function(b){cb.checked?banSel.add(b.id):banSel.delete(b.id);});renderBanners();}
+function banToggleSel(id,cb){cb.checked?banSel.add(id):banSel.delete(id);renderBanners();}
+function banBulkDel(){for(var i=BANNERS.length-1;i>=0;i--){if(banSel.has(BANNERS[i].id))BANNERS.splice(i,1);}banSel.clear();renderBanners();}
+function banBulkDisable(){BANNERS.forEach(function(b){if(banSel.has(b.id))b.enabled=false;});renderBanners();}
+function banBulkEnable(){BANNERS.forEach(function(b){if(banSel.has(b.id))b.enabled=true;});renderBanners();}
+function banEditSelected(){var id=Array.from(banSel)[0];if(id!=null)openModal('ban-edit',id);}
+
+// ── SLOTS ─────────────────────────────────────────────────────────────────────
+function getSlots(){return SLOTS.filter(function(s){if(slotQ&&s.name.toLowerCase().indexOf(slotQ.toLowerCase())===-1)return false;if(slotTypeF&&s.type!==slotTypeF)return false;if(slotStatusF==='1'&&!s.enabled)return false;if(slotStatusF==='0'&&s.enabled)return false;return true;}).sort(byModDesc);}
+function renderSlots(){
+  var rows=getSlots();document.getElementById('slot-total').textContent=rows.length;var h='';
+  rows.forEach(function(s,i){var sel=slotSel.has(s.id);
+    h+='<tr class="'+(sel?'sel':'')+'"><td><input type="checkbox" class="cb"'+(sel?' checked':'')+' onchange="slotToggleSel('+s.id+',this)"></td>';
+    h+='<td style="color:#8c8c8c">'+(i+1)+'</td><td style="color:#595959">'+s.id+'</td>';
+    h+='<td><strong style="font-weight:500">'+s.name+'</strong></td>';
+    h+='<td style="font-size:12px;color:#595959">'+s.type+'</td>';
+    h+='<td style="font-size:11px;color:#595959;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(s.cats_str||'')+'</td>';
+    h+='<td><span class="'+(s.enabled?'status-en':'status-dis')+'">'+(s.enabled?'Enabled':'Disabled')+'</span></td>';
+    h+='<td style="color:#595959">'+s.creator+'</td>';
+    h+='<td style="font-size:11px;color:#8c8c8c;white-space:nowrap">'+s.created+'</td>';
+    h+='<td style="font-size:11px;color:#8c8c8c;white-space:nowrap">'+s.mod+'</td></tr>';
+  });
+  document.getElementById('slot-tbody').innerHTML=h;
+  var n=slotSel.size;
+  document.getElementById('slot-del-btn').disabled=n===0;document.getElementById('slot-dis-btn').disabled=n===0;
+  document.getElementById('slot-ena-btn').disabled=n===0;document.getElementById('slot-edit-btn').disabled=n!==1;
+}
+function filterSlots(q){slotQ=q;renderSlots();}
+function filterSlotType(t){slotTypeF=t;renderSlots();}
+function filterSlotStatus(v){slotStatusF=v;renderSlots();}
+function slotToggleAll(cb){getSlots().forEach(function(s){cb.checked?slotSel.add(s.id):slotSel.delete(s.id);});renderSlots();}
+function slotToggleSel(id,cb){cb.checked?slotSel.add(id):slotSel.delete(id);renderSlots();}
+function slotBulkDel(){for(var i=SLOTS.length-1;i>=0;i--){if(slotSel.has(SLOTS[i].id))SLOTS.splice(i,1);}slotSel.clear();renderSlots();}
+function slotBulkDisable(){SLOTS.forEach(function(s){if(slotSel.has(s.id))s.enabled=false;});renderSlots();}
+function slotBulkEnable(){SLOTS.forEach(function(s){if(slotSel.has(s.id))s.enabled=true;});renderSlots();}
+function slotEditSelected(){var id=Array.from(slotSel)[0];if(id!=null)openModal('slot-edit',id);}
+
+// ── SCHEDULE: CALENDAR ────────────────────────────────────────────────────────
+function buildJumpSelectors(){
+  var mSel=document.getElementById('cal-jump-month');
+  var ySel=document.getElementById('cal-jump-year');
+  if(!mSel||!ySel)return;
+  var curY=calM.getFullYear(),curM=calM.getMonth();
+  mSel.innerHTML=MONTHS_LONG.map(function(name,i){return '<option value="'+i+'"'+(i===curM?' selected':'')+'>'+name+'</option>';}).join('');
+  ySel.innerHTML='';
+  for(var y=2024;y<=2028;y++)ySel.innerHTML+='<option value="'+y+'"'+(y===curY?' selected':'')+'>'+y+'</option>';
+}
+function calJump(){var m=parseInt(document.getElementById('cal-jump-month').value);var y=parseInt(document.getElementById('cal-jump-year').value);calM=new Date(y,m,1);renderCal();}
+function chMonth(d){calM.setMonth(calM.getMonth()+d);buildJumpSelectors();renderCal();}
+function toggleCalFilter(type,lbl){var chk=document.getElementById('chk-'+type);chk.checked=!chk.checked;lbl.classList.toggle('on',chk.checked);renderCal();}
+function renderCal(){
+  var y=calM.getFullYear(),m=calM.getMonth(),today=new Date();
+  var showR=document.getElementById('chk-release').checked;
+  var showE=document.getElementById('chk-end').checked;
+  var grid=document.getElementById('cal-grid');var h='';
+  ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].forEach(function(d){h+='<div class="cal-dow">'+d+'</div>';});
+  var first=new Date(y,m,1).getDay(),days=new Date(y,m+1,0).getDate(),prev=new Date(y,m,0).getDate();
+  for(var i=0;i<first;i++)h+='<div class="cal-cell other-month"><div class="cal-day-num"><span style="color:#bfbfbf;font-size:11px">'+(prev-first+i+1)+'</span></div></div>';
+  for(var d=1;d<=days;d++){
+    var ds=y+'-'+pad(m+1)+'-'+pad(d);
+    var isT=y===today.getFullYear()&&m===today.getMonth()&&d===today.getDate();
+    var items=[];
+    if(showR)SCH.filter(function(s){return s.release.startsWith(ds);}).forEach(function(s){items.push({type:'release',label:s.displayTitle||s.originalTitle});});
+    if(showE)SCH.filter(function(s){return s.until&&s.until.startsWith(ds);}).forEach(function(s){items.push({type:'end',label:s.displayTitle||s.originalTitle});});
+    h+='<div class="cal-cell'+(isT?' today':'')+'" onclick="openSchAdd(\''+ds+'\')">';
+    h+='<div class="cal-day-num">'+(isT?'<span class="cal-day-circle">'+d+'</span>':'<span style="font-size:11px;font-weight:500;color:#595959">'+d+'</span>')+'</div>';
+    items.slice(0,3).forEach(function(it){h+='<span class="cal-pill '+(it.type==='release'?'cal-pill-release':'cal-pill-end')+'">'+(it.type==='end'?'ends: ':'')+it.label+'</span>';});
+    if(items.length>3)h+='<div class="cal-more">+'+(items.length-3)+' more</div>';
+    h+='</div>';
+  }
+  var rem=(7-(first+days)%7)%7;
+  for(var i=1;i<=rem;i++)h+='<div class="cal-cell other-month"><div class="cal-day-num"><span style="color:#bfbfbf;font-size:11px">'+i+'</span></div></div>';
+  grid.innerHTML=h;
+}
+
+// ── SCHEDULE: TABLE ───────────────────────────────────────────────────────────
+function setSchView(v){
+  schView=v;
+  document.getElementById('vt-cal').classList.toggle('on',v==='cal');
+  document.getElementById('vt-tbl').classList.toggle('on',v==='tbl');
+  document.getElementById('view-cal').style.display=v==='cal'?'':'none';
+  document.getElementById('view-tbl').style.display=v==='tbl'?'flex':'none';
+  if(v==='cal'){buildJumpSelectors();renderCal();}
+  if(v==='tbl'){buildSchDateFilters();renderSchTable();}
+}
+function buildSchDateFilters(){
+  var years={},months={};
+  SCH.forEach(function(s){years[s.release.substring(0,4)]=true;months[s.release.substring(0,7)]=true;});
+  var ySel=document.getElementById('sch-year-filter');
+  var mSel=document.getElementById('sch-month-filter');
+  var curY=ySel.value,curM=mSel.value;
+  ySel.innerHTML='<option value="">All years</option>';
+  Object.keys(years).sort().forEach(function(y){ySel.innerHTML+='<option value="'+y+'"'+(y===curY?' selected':'')+'>'+y+'</option>';});
+  mSel.innerHTML='<option value="">All months</option>';
+  Object.keys(months).sort().forEach(function(k){var parts=k.split('-');mSel.innerHTML+='<option value="'+k+'"'+(k===curM?' selected':'')+'>'+MONTHS_SHORT[parseInt(parts[1])-1]+' '+parts[0]+'</option>';});
+}
+function getSch(){
+  return SCH.filter(function(s){
+    if(schQ&&s.originalTitle.toLowerCase().indexOf(schQ.toLowerCase())===-1&&s.ppId.indexOf(schQ)===-1&&(s.displayTitle||'').toLowerCase().indexOf(schQ.toLowerCase())===-1)return false;
+    if(schYearF&&!s.release.startsWith(schYearF))return false;
+    if(schMonthF&&!s.release.startsWith(schMonthF))return false;
+    if(schStatusF==='1'&&!s.available)return false;
+    if(schStatusF==='0'&&s.available)return false;
+    return true;
+  }).sort(function(a,b){
+    var av=a[schSortKey]||'',bv=b[schSortKey]||'';
+    if(schSortKey==='until'){if(!av&&bv)return 1;if(av&&!bv)return -1;}
+    var cmp=av<bv?-1:av>bv?1:0;
+    return schSortDir==='asc'?cmp:-cmp;
+  });
+}
+function renderSchTable(){
+  var rows=getSch();document.getElementById('sch-total').textContent=rows.length;var h='';
+  rows.forEach(function(s,i){var sel=schSel.has(s.id);
+    h+='<tr class="'+(sel?'sel':'')+'"><td><input type="checkbox" class="cb"'+(sel?' checked':'')+' onchange="schToggleSel('+s.id+',this)"></td>';
+    h+='<td style="color:#8c8c8c">'+(i+1)+'</td>';
+    h+='<td style="font-size:11px;color:#595959">'+s.ppId+'</td>';
+    h+='<td><strong style="font-weight:500">'+s.originalTitle+'</strong></td>';
+    h+='<td style="color:#595959">'+(s.displayTitle||'')+'</td>';
+    h+='<td style="font-size:11px;color:#595959;white-space:nowrap">'+s.tz+'</td>';
+    h+='<td style="font-size:12px;color:#595959;white-space:nowrap">'+s.release+'</td>';
+    h+='<td style="font-size:12px;color:#595959;white-space:nowrap">'+(s.until||'')+'</td>';
+    h+='<td><span class="'+(s.available?'status-av':'status-un')+'">'+(s.available?'Available':'Unavailable')+'</span></td>';
+    h+='<td style="color:#595959">'+s.creator+'</td>';
+    h+='<td style="font-size:11px;color:#8c8c8c;white-space:nowrap">'+s.created+'</td>';
+    h+='<td style="font-size:11px;color:#8c8c8c;white-space:nowrap">'+s.mod+'</td></tr>';
+  });
+  document.getElementById('sch-tbody').innerHTML=h;
+  updateSchBtns();
+  ['originalTitle','displayTitle','release','until','created','mod'].forEach(function(k){
+    var th=document.getElementById('th-'+k);if(!th)return;
+    th.classList.remove('sort-asc','sort-desc');
+    var icon=th.querySelector('.sort-icon');if(!icon)return;
+    if(k===schSortKey){th.classList.add(schSortDir==='asc'?'sort-asc':'sort-desc');icon.textContent=schSortDir==='asc'?'↑':'↓';}
+    else icon.textContent='↕';
+  });
+}
+function sortSch(k){if(schSortKey===k)schSortDir=schSortDir==='asc'?'desc':'asc';else{schSortKey=k;schSortDir=k==='release'||k==='until'?'asc':'desc';}renderSchTable();}
+function filterSch(q){schQ=q;renderSchTable();}
+function filterSchYear(v){schYearF=v;if(v)schMonthF='';document.getElementById('sch-month-filter').value='';renderSchTable();}
+function filterSchMonth(v){schMonthF=v;renderSchTable();}
+function filterSchStatus(v){schStatusF=v;renderSchTable();}
+function schToggleAll(cb){getSch().forEach(function(s){cb.checked?schSel.add(s.id):schSel.delete(s.id);});renderSchTable();}
+function schToggleSel(id,cb){cb.checked?schSel.add(id):schSel.delete(id);updateSchBtns();renderSchTable();}
+function updateSchBtns(){var n=schSel.size;document.getElementById('sch-del-btn').disabled=n===0;document.getElementById('sch-edit-btn').disabled=n!==1;}
+function schDel(){for(var i=SCH.length-1;i>=0;i--){if(schSel.has(SCH[i].id))SCH.splice(i,1);}schSel.clear();renderSchTable();renderCal();}
+
+// ── SCHEDULE MODAL ────────────────────────────────────────────────────────────
+function openSchAdd(prefillDate){
+  editingId=null;schAddFilm=null;
+  document.getElementById('sch-md-title').textContent='Add Schedule';
+  document.getElementById('sch-md-body').innerHTML=buildSchForm(null,prefillDate);
+  document.getElementById('sch-mov').classList.add('open');
+}
+function openSchEdit(){
+  var id=Array.from(schSel)[0];var s=SCH.find(function(x){return x.id===id;});
+  editingId=id;schAddFilm={id:s.ppId,originalTitle:s.originalTitle};
+  document.getElementById('sch-md-title').textContent='Edit Schedule';
+  document.getElementById('sch-md-body').innerHTML=buildSchForm(s);
+  document.getElementById('sch-mov').classList.add('open');
+}
+function closeSchModal(){document.getElementById('sch-mov').classList.remove('open');}
+function buildSchForm(s,prefillDate){
+  var releaseVal=s?s.release.replace(' ','T'):(prefillDate?prefillDate+'T00:00':'');
+  var untilVal=s&&s.until?s.until.replace(' ','T'):'';
+  var tzOpts=TZ_OPTS.map(function(t){return '<option'+(s?s.tz===t?' selected':'':t==='Beijing (UTC+8)'?' selected':'')+'>'+t+'</option>';}).join('');
+  var movieSection='';
+  if(s){
+    movieSection='<div class="film-chip" style="display:inline-flex"><span class="film-chip-id">'+s.ppId+'</span><span class="film-chip-title">'+s.originalTitle+'</span></div><input type="hidden" id="sch-ppid" value="'+s.ppId+'">';
+  } else {
+    movieSection='<div class="film-combo"><input class="fi" id="sch-film-search" placeholder="Search by pp_id or title..." autocomplete="off" oninput="schFilmSearch(this.value)" onfocus="schFilmSearch(this.value)"><div class="film-dropdown" id="sch-film-dd"></div></div>'
+      +'<div id="sch-film-chip" style="display:none;margin-top:6px" class="film-chip"><span class="film-chip-id" id="sch-chip-id"></span><span class="film-chip-title" id="sch-chip-title"></span><button class="film-chip-x" onclick="schFilmClear()">×</button></div>'
+      +'<input type="hidden" id="sch-ppid" value="">';
+  }
+  return '<div class="fs"><div class="fs-t">Movie</div>'
+    +'<div class="fl">Title <span style="color:#ff4d4f">*</span></div>'+movieSection
+    +'<div class="title-row">'
+    +'<div class="fcol"><div class="fl">Original Title</div><input class="fi ro" id="sch-orig-title" value="'+(s?s.originalTitle:'')+'" readonly placeholder="Auto-filled on selection"></div>'
+    +'<div class="fcol"><div class="fl">Display Title</div><input class="fi" id="sch-disp-title" value="'+(s?s.displayTitle:'')+'" placeholder="Defaults to original title"></div>'
+    +'</div></div>'
+    +'<div class="fs" style="margin-bottom:0"><div class="fs-t">Schedule</div>'
+    +'<div style="display:flex;gap:10px;margin-bottom:12px">'
+    +'<div style="flex:1"><div class="fl">Release Date <span style="color:#ff4d4f">*</span></div><input class="fi" type="datetime-local" id="sch-release" value="'+releaseVal+'"></div>'
+    +'<div style="flex:1"><div class="fl">Expiry Date</div><input class="fi" type="datetime-local" id="sch-until" value="'+untilVal+'"><div class="fhint">Leave empty for no expiry.</div></div>'
+    +'</div>'
+    +'<div class="fl">Timezone <span style="color:#ff4d4f">*</span></div>'
+    +'<select class="fsel" id="sch-tz">'+tzOpts+'</select>'
+    +'</div>';
+}
+function schFilmSearch(q){
+  var dd=document.getElementById('sch-film-dd');
+  if(!q||q.length<1){dd.classList.remove('open');return;}
+  var filtered=MOCK_FILMS.filter(function(f){return f.id.indexOf(q)!==-1||f.title.toLowerCase().indexOf(q.toLowerCase())!==-1;});
+  if(!filtered.length){dd.classList.remove('open');return;}
+  dd.innerHTML=filtered.map(function(f){return '<div class="film-opt" onclick="schFilmSelect(\''+f.id+'\',\''+f.title.replace(/'/g,"\\'")+'\')"><span class="film-id">'+f.id+'</span><span style="flex:1;font-weight:500">'+f.title+'</span></div>';}).join('');
+  dd.classList.add('open');
+}
+function schFilmSelect(id,title){
+  schAddFilm={id:id,originalTitle:title};
+  document.getElementById('sch-film-dd').classList.remove('open');
+  document.getElementById('sch-film-search').style.display='none';
+  document.getElementById('sch-chip-id').textContent=id;
+  document.getElementById('sch-chip-title').textContent=title;
+  document.getElementById('sch-film-chip').style.display='inline-flex';
+  document.getElementById('sch-ppid').value=id;
+  var ot=document.getElementById('sch-orig-title');if(ot)ot.value=title;
+  var dt=document.getElementById('sch-disp-title');if(dt&&!dt.value)dt.value=title;
+}
+function schFilmClear(){
+  schAddFilm=null;document.getElementById('sch-ppid').value='';
+  document.getElementById('sch-film-chip').style.display='none';
+  var search=document.getElementById('sch-film-search');search.style.display='';search.value='';
+  var ot=document.getElementById('sch-orig-title');if(ot)ot.value='';
+}
+function saveSchModal(){
+  var ppIdEl=document.getElementById('sch-ppid');
+  var releaseEl=document.getElementById('sch-release');
+  var untilEl=document.getElementById('sch-until');
+  var dispEl=document.getElementById('sch-disp-title');
+  var origEl=document.getElementById('sch-orig-title');
+  var tzEl=document.getElementById('sch-tz');
+  if(!ppIdEl||!ppIdEl.value||!releaseEl||!releaseEl.value)return;
+  var origTitle=origEl?origEl.value:(schAddFilm?schAddFilm.originalTitle:'');
+  var dispTitle=dispEl&&dispEl.value?dispEl.value:origTitle;
+  var tz=tzEl?tzEl.value:'Beijing (UTC+8)';
+  if(editingId!=null){
+    var s=SCH.find(function(x){return x.id===editingId;});
+    if(s){s.release=releaseEl.value.replace('T',' ');s.until=untilEl.value?untilEl.value.replace('T',' '):'';s.displayTitle=dispTitle;s.tz=tz;s.mod=now();}
+  } else {
+    SCH.push({id:schIdSeq++,ppId:ppIdEl.value,originalTitle:origTitle,displayTitle:dispTitle,tz:tz,release:releaseEl.value.replace('T',' '),until:untilEl.value?untilEl.value.replace('T',' '):'',available:true,creator:'Admin',created:now(),mod:now()});
+  }
+  closeSchModal();
+  if(schView==='cal')renderCal();else{buildSchDateFilters();renderSchTable();}
+}
+
+// ── CSV ───────────────────────────────────────────────────────────────────────
+function openCSV(){csvRows=[];document.getElementById('csv-body').innerHTML=buildCSVBody();document.getElementById('csv-import-btn').disabled=true;document.getElementById('csv-mov').classList.add('open');}
+function closeCSV(){document.getElementById('csv-mov').classList.remove('open');}
+function buildCSVBody(){
+  return '<div class="fs"><div class="fs-t">Upload CSV</div>'
+    +'<div class="csv-drop" id="csv-drop" onclick="document.getElementById(\'csv-file\').click()" ondragover="event.preventDefault();this.classList.add(\'drag-over\')" ondragleave="this.classList.remove(\'drag-over\')" ondrop="csvDrop(event)">'
+    +'<div style="font-size:28px;margin-bottom:8px">📄</div>'
+    +'<div style="font-weight:500;margin-bottom:4px">Click to upload or drag and drop</div>'
+    +'<div style="font-size:11px">CSV files only</div>'
+    +'</div>'
+    +'<input type="file" id="csv-file" accept=".csv" style="display:none" onchange="csvFileSelect(this)">'
+    +'<div class="csv-fmt">'
+    +'<div class="csv-fmt-title">Expected format</div>'
+    +'<code class="csv-fmt-code">pp_id,timezone,release_date,expiry_date\npp00000123,UTC+8,2026-06-01 00:00,2026-06-30 23:59\npp00000456,UTC-7/8,2026-06-05 00:00,</code>'
+    +'<div class="csv-fmt-hint" style="margin-top:6px">expiry_date is optional. Timezone options: UTC+8, UTC-7/8, UTC-3</div>'
+    +'</div></div><div id="csv-preview"></div>';
+}
+function csvDrop(e){e.preventDefault();document.getElementById('csv-drop').classList.remove('drag-over');var file=e.dataTransfer.files[0];if(file)parseCSV(file);}
+function csvFileSelect(inp){if(inp.files[0])parseCSV(inp.files[0]);}
+function parseCSV(file){
+  var reader=new FileReader();
+  reader.onload=function(e){
+    var lines=e.target.result.split(/\r?\n/).map(function(l){return l.trim();}).filter(function(l){return l.length>0;});
+    csvRows=[];
+    var start=lines[0]&&lines[0].toLowerCase().startsWith('pp_id')?1:0;
+    lines.slice(start).forEach(function(line,idx){
+      var parts=line.split(',');
+      var row={lineNum:start+idx+1,ppId:parts[0]?parts[0].trim():'',tz:parts[1]?parts[1].trim():'',release:parts[2]?parts[2].trim():'',expiry:parts[3]?parts[3].trim():'',ok:true,errors:[]};
+      if(!row.ppId)row.errors.push('Missing pp_id');
+      if(!row.tz)row.errors.push('Missing timezone');
+      if(!row.release)row.errors.push('Missing release_date');
+      if(row.release&&!/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/.test(row.release))row.errors.push('Invalid release_date format');
+      if(row.expiry&&!/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/.test(row.expiry))row.errors.push('Invalid expiry_date format');
+      if(row.tz&&TZ_OPTS.indexOf(row.tz)===-1)row.errors.push('Unknown timezone (use UTC+8, UTC-7/8, or UTC-3)');
+      if(row.errors.length)row.ok=false;
+      csvRows.push(row);
+    });
+    var valid=csvRows.filter(function(r){return r.ok;}).length;
+    var invalid=csvRows.length-valid;
+    var col=valid===csvRows.length?'#52c41a':invalid===csvRows.length?'#ff4d4f':'#faad14';
+    var msg=valid===csvRows.length?'All '+valid+' rows valid and ready to import.':invalid===csvRows.length?'All rows have errors. Please fix and re-upload.':valid+' rows valid, '+invalid+' with errors. Error rows will be skipped.';
+    var tableRows=csvRows.map(function(r){return '<tr><td style="text-align:center">'+(r.ok?'<span class="csv-ok">✓</span>':'<span class="csv-err">✗</span>')+'</td><td style="color:#8c8c8c;font-size:11px">'+r.lineNum+'</td><td style="font-size:11px">'+r.ppId+'</td><td style="font-size:11px;color:#595959">'+r.tz+'</td><td style="font-size:11px;white-space:nowrap">'+r.release+'</td><td style="font-size:11px;white-space:nowrap;color:#595959">'+(r.expiry||'')+'</td><td>'+(r.errors.length?'<span style="font-size:10px;color:#ff4d4f">'+r.errors.join(', ')+'</span>':'')+'</td></tr>';}).join('');
+    document.getElementById('csv-preview').innerHTML='<div style="font-size:12px;color:'+col+';margin:12px 0 8px">'+msg+'</div><table class="csv-table"><thead><tr><th></th><th>Line</th><th>PP ID</th><th>Release Date</th><th>Expiry Date</th><th>Timezone</th><th>Errors</th></tr></thead><tbody>'+tableRows+'</tbody></table>';
+    document.getElementById('csv-import-btn').disabled=valid===0;
+  };
+  reader.readAsText(file);
+}
+function importCSV(){
+  var n=now();
+  csvRows.filter(function(r){return r.ok;}).forEach(function(r){SCH.push({id:schIdSeq++,ppId:r.ppId,originalTitle:'',displayTitle:'',tz:r.tz,release:r.release,until:r.expiry||'',available:true,creator:'Admin',created:n,mod:n});});
+  closeCSV();
+  if(schView==='cal')renderCal();else{buildSchDateFilters();renderSchTable();}
+}
+
+// ── ORGANIZE ─────────────────────────────────────────────────────────────────
+function renderBanOrg(){
+  var h='';
+  banOrgOrder.forEach(function(b,i){
+    h+='<div class="org-item" draggable="true" ondragstart="banOrgDragSrc='+b.id+';this.classList.add(\'dragging\')" ondragend="this.classList.remove(\'dragging\')" ondragover="event.preventDefault();this.classList.add(\'drag-over\')" ondragleave="this.classList.remove(\'drag-over\')" ondrop="banOrgDrop('+b.id+',this)">'
+      +'<span class="org-handle">⠿</span><span class="org-num">'+(i+1)+'</span><span class="org-name">'+b.name+'</span><span class="org-sub">'+BTL[b.type]+'</span></div>';
+  });
+  document.getElementById('ban-org-list').innerHTML=h;
+}
+function banOrgDrop(tid,el){el.classList.remove('drag-over');if(banOrgDragSrc===null||banOrgDragSrc===tid)return;var fi=banOrgOrder.findIndex(function(b){return b.id===banOrgDragSrc;});var ti=banOrgOrder.findIndex(function(b){return b.id===tid;});var item=banOrgOrder.splice(fi,1)[0];banOrgOrder.splice(ti,0,item);renderBanOrg();}
+function saveBanOrg(){var dis=BANNERS.filter(function(b){return !b.enabled;});BANNERS.length=0;banOrgOrder.forEach(function(b){BANNERS.push(b);});dis.forEach(function(b){BANNERS.push(b);});document.getElementById('ban-org-mov').classList.remove('open');renderBanners();}
+
+function renderSlotOrg(){
+  var h='';
+  slotOrgOrder.forEach(function(s,i){
+    h+='<div class="org-item" draggable="true" ondragstart="slotOrgDragSrc='+s.id+';this.classList.add(\'dragging\')" ondragend="this.classList.remove(\'dragging\')" ondragover="event.preventDefault();this.classList.add(\'drag-over\')" ondragleave="this.classList.remove(\'drag-over\')" ondrop="slotOrgDrop('+s.id+',this)">'
+      +'<span class="org-handle">⠿</span><span class="org-num">'+(i+1)+'</span><span class="org-name">'+s.name+'</span><span class="org-sub">'+s.type+'</span></div>';
+  });
+  document.getElementById('slot-org-list').innerHTML=h;
+}
+function slotOrgDrop(tid,el){el.classList.remove('drag-over');if(slotOrgDragSrc===null||slotOrgDragSrc===tid)return;var fi=slotOrgOrder.findIndex(function(s){return s.id===slotOrgDragSrc;});var ti=slotOrgOrder.findIndex(function(s){return s.id===tid;});var item=slotOrgOrder.splice(fi,1)[0];slotOrgOrder.splice(ti,0,item);renderSlotOrg();}
+function saveSlotOrg(){SLOT_ORDER=slotOrgOrder.map(function(s){return s.id;});document.getElementById('slot-org-mov').classList.remove('open');}
+
+// ── MAIN MODAL ────────────────────────────────────────────────────────────────
+function openModal(kind,id){
+  if(kind==='ban-organize'){banOrgOrder=BANNERS.filter(function(b){return b.enabled;}).sort(byModDesc);renderBanOrg();document.getElementById('ban-org-mov').classList.add('open');return;}
+  if(kind==='slot-organize'){slotOrgOrder=SLOT_ORDER.map(function(sid){return SLOTS.find(function(s){return s.id===sid;});}).filter(Boolean);renderSlotOrg();document.getElementById('slot-org-mov').classList.add('open');return;}
+  var title='',body='',saveBtn=null;
+  if(kind==='cat-add'){
+    title='Add Category';body=buildCatForm(null);
+    saveBtn=function(){saveCatModal(null);};
+  } else if(kind==='cat-edit'){
+    var ce=CATS.find(function(x){return x.id===id;});
+    title='Edit Category — '+ce.name;body=buildCatForm(ce);
+    saveBtn=function(){saveCatModal(id);};
+  } else if(kind==='ban-add'){title='Add Banner Item';body=buildBannerForm(null);}
+  else if(kind==='ban-edit'){var b=BANNERS.find(function(x){return x.id===id;});title='Edit Banner';body=buildBannerForm(b);}
+  else if(kind==='slot-add'){movieManualList=[];title='Add Slot';body=buildSlotForm(null);}
+  else if(kind==='slot-edit'){var s=SLOTS.find(function(x){return x.id===id;});movieManualList=[];title='Edit Slot — '+s.name;body=buildSlotForm(s);}
+  // attach save handler if provided
+  var footerSave=document.querySelector('#mov .md-f .btn-add');
+  if(footerSave){footerSave.onclick=saveBtn||null;}
+  document.getElementById('md-title').textContent=title;
+  document.getElementById('md-body').innerHTML=body;
+  document.getElementById('mov').classList.add('open');
+  if(kind==='slot-edit'){var s2=SLOTS.find(function(x){return x.id===id;});if(s2&&s2.type==='Featured Cinema')fcRenderRules();if(s2&&s2.type==='Mixed')mxRenderRules();}
+}
+function closeModal(){document.getElementById('mov').classList.remove('open');}
+
+// ── BANNER FORM ───────────────────────────────────────────────────────────────
+function buildBannerForm(b){
+  var type=b?b.type:'live';
+  var typeOpts=['live','upcoming','image'].map(function(t){var lbl=t==='live'?'Live stream':t==='upcoming'?'Upcoming live stream':'Image';return '<option value="'+t+'"'+(t===type?' selected':'')+'>'+lbl+'</option>';}).join('');
+  return '<div class="fs"><div class="fs-t">Basic Info</div>'
+    +'<div class="frow"><div class="fcol"><div class="fl">Banner Name <span style="color:#ff4d4f">*</span></div><input class="fi" value="'+(b?b.name:'')+'" placeholder="e.g. Watch Party Spotlight"></div></div>'
+    +'<div class="frow" style="margin-bottom:0"><div class="fcol"><div class="fl">Banner Type <span style="color:#ff4d4f">*</span></div><select class="fsel" onchange="onBanTypeChange(this.value)">'+typeOpts+'</select></div></div></div>'
+    +'<div class="fs"><div class="fs-t">Content</div><div id="type-body">'+buildBanTypeBody(type)+'</div></div>'
+    +buildBanSettingsSection();
+}
+function buildBanTypeBody(type){
+  if(type==='live'){
+    return buildPickByHtml('live')+'<div class="divider"></div><div class="fl">Category filter <span style="color:#8c8c8c;font-weight:400">(optional)</span></div><div class="cbg">'+LIVE_CATS.map(function(c){return '<label class="ci" onclick="this.classList.toggle(\'on\')">'+c+'</label>';}).join('')+'</div><div class="fhint">Leave empty to include all categories.</div>';
+  }
+  if(type==='upcoming'){
+    return buildPickByHtml('upcoming')+'<div class="divider"></div><div class="fl">Category filter <span style="color:#8c8c8c;font-weight:400">(optional)</span></div><div class="cbg">'+LIVE_CATS.map(function(c){return '<label class="ci" onclick="this.classList.toggle(\'on\')">'+c+'</label>';}).join('')+'</div><div class="fhint">Leave empty to include all categories.</div>'
+      +'<div class="divider"></div><div class="fl">Thumbnail <span style="color:#ff4d4f">*</span></div><div class="img-upload"><span style="font-size:20px">🖼</span><span>Click to upload thumbnail</span></div>';
+  }
+  if(type==='image'){
+    return '<div class="fl">Image <span style="color:#ff4d4f">*</span></div><div class="img-upload" style="margin-bottom:10px"><span style="font-size:20px">🖼</span><span>Click to upload image</span></div>'
+      +'<div class="divider"></div><div class="fl">On tap (deep link)</div><input class="fi" placeholder="e.g. peliparty://film/12345"><div class="fhint">Leave empty if not tappable.</div>';
+  }
+  return '';
+}
+function buildPickByHtml(type){
+  var opts=PICK_OPTS[type]||PICK_OPTS['live'];var def=opts[0];
+  return '<div class="fl">Pick by</div>'
+    +'<select class="fsel" id="pick-sel" onchange="onBanPickChange(this.value,\''+type+'\')">'
+    +opts.map(function(o){return '<option value="'+o.val+'">'+o.lbl+'</option>';}).join('')+'</select>'
+    +'<div class="fhint" id="pick-hint">'+def.hint+'</div>'
+    +'<div id="pinned-extra" style="display:none"><div class="divider"></div><div class="fl">Host ID <span style="color:#ff4d4f">*</span></div><input class="fi" placeholder="e.g. host_7829"></div>';
+}
+function onBanPickChange(val,type){var opts=PICK_OPTS[type]||PICK_OPTS['live'];var o=opts.find(function(x){return x.val===val;});document.getElementById('pick-hint').textContent=o?o.hint:'';var ex=document.getElementById('pinned-extra');if(ex)ex.style.display=val==='pinned'?'block':'none';}
+function onBanTypeChange(val){document.getElementById('type-body').innerHTML=buildBanTypeBody(val);}
+function buildBanSettingsSection(){
+  return '<div class="fs" style="margin-bottom:0"><div class="fs-t">Settings</div>'
+    +'<div class="fl">Display Window</div>'
+    +'<div style="display:flex;align-items:center;gap:8px">'
+    +'<select class="fsel" style="flex:0 0 auto;width:150px">'+TZ_HTML+'</select>'
+    +'<input class="fi" type="datetime-local" style="flex:1">'
+    +'<span style="font-size:12px;color:#8c8c8c;flex-shrink:0">to</span>'
+    +'<input class="fi" type="datetime-local" style="flex:1">'
+    +'</div><div class="fhint">Leave empty for immediate start / permanent.</div></div>';
+}
+
+// ── SLOT FORM ─────────────────────────────────────────────────────────────────
+function buildSlotForm(s){
+  var type=s?s.type:'';
+  var typeOpts='<option value="" disabled'+(type===''?' selected':'')+'>Select type</option>'
+    +['Featured Cinema','Live','Replay','UGC','Hosts','Mixed','Movies'].map(function(t){return '<option'+(t===type?' selected':'')+'>'+t+'</option>';}).join('');
+  var contentBody=buildSlotContentForType(type,s);
+  return '<div class="fs"><div class="fs-t">Basic Info</div>'
+    +'<div style="display:flex;gap:10px;margin-bottom:0">'
+    +'<div style="flex:0 0 80px"><div class="fl">Slot ID</div><input class="fi ro" value="'+(s?s.id:'auto')+'" readonly></div>'
+    +'<div style="flex:1"><div class="fl">Slot Name <span style="color:#ff4d4f">*</span></div><input class="fi" value="'+(s?s.name:'')+'"></div>'
+    +'<div style="flex:0 0 160px"><div class="fl">Slot Type <span style="color:#ff4d4f">*</span></div><select class="fsel" onchange="onSlotTypeChange(this.value)">'+typeOpts+'</select></div>'
+    +'</div></div>'
+    +'<div id="slot-content-section">'+(contentBody?'<div class="fs"><div class="fs-t">Content</div>'+contentBody+'</div>':'')+'</div>'
+    +'<div id="slot-settings-section">'+(type?buildSlotSettingsSection(type):'')+'</div>';
+}
+function buildSlotContentForType(type,s){
+  if(!type)return '';
+  var availCats=CATS.filter(function(c){if(type==='Live')return c.media.indexOf('Live')!==-1;if(type==='Replay')return c.media.indexOf('Replay')!==-1;if(type==='UGC')return c.media.indexOf('UGC')!==-1;return true;});
+  if(type==='Featured Cinema'){
+    return '<div class="fl">Cover image</div><div class="img-upload" style="height:90px;margin-bottom:14px"><span style="font-size:24px">🎬</span><span>Click to upload cover image</span></div>'
+      +'<div class="fl">Featured title <span style="color:#ff4d4f">*</span></div>'
+      +'<div class="film-combo"><input class="fi" id="film-search" placeholder="e.g. pp00000123 or Parasite" autocomplete="off" oninput="fcSearchFilms(this.value)" onfocus="fcSearchFilms(this.value)"><div class="film-dropdown" id="film-dropdown"></div></div>'
+      +'<div id="film-chip" style="display:none" class="film-chip"><span class="film-chip-title" id="film-chip-text"></span><button class="film-chip-x" onclick="fcClearFilm()">×</button></div>'
+      +'<div style="margin-top:14px">'+buildRuleSection('fc','fc-total-max',5)+'</div>';
+  }
+  if(type==='Mixed'){return buildCatsRow(CATS,s?s.cats_str:'')+buildRuleSection('mx','mx-total-max',6);}
+  if(type==='Movies'){return buildMoviesContent();}
+  if(type==='Hosts'){return '<div class="sort-qty-row" style="margin-top:0"><span class="sort-qty-label">Max items</span><input class="fi" type="number" value="4" min="1" style="width:58px"></div>';}
+  var mediaKey=type==='Live'?'live':type==='Replay'?'replay':'ugc';
+  return buildCatsRow(availCats,s?s.cats_str:'')
+    +(type==='UGC'?'<div style="display:flex;gap:10px;margin-bottom:12px"><div style="flex:1"><div class="fl">UGC Type</div><select class="fsel"><option>Horizontal</option><option>Vertical (shorts)</option></select></div></div>':'')
+    +buildSortQtyInline(mediaKey,'sort-'+mediaKey,'td-'+mediaKey);
+}
+function buildSlotSettingsSection(type){
+  var sm='<div class="fl">See More</div><input class="fi" placeholder="e.g. https://peliparty.com/live  or  peliparty://videos" style="margin-bottom:4px"><div class="fhint" style="margin-bottom:14px">Accepts a URL or a deep link.</div>';
+  var chips=CHIPS_TYPES.indexOf(type)!==-1
+    ?'<div class="fl" style="margin-top:12px">Display chips</div><div class="chips-check-row"><label><input type="checkbox" checked> Display category chip(s)</label><label><input type="checkbox" checked> Display tag chip(s)</label></div>'
+    :'';
+  return '<div class="fs" style="margin-bottom:0"><div class="fs-t">Settings</div>'+sm
+    +'<div class="fl">Display Window</div>'
+    +'<div style="display:flex;align-items:center;gap:8px">'
+    +'<select class="fsel" style="flex:0 0 auto;width:150px">'+TZ_HTML+'</select>'
+    +'<input class="fi" type="datetime-local" style="flex:1">'
+    +'<span style="font-size:12px;color:#8c8c8c;flex-shrink:0">to</span>'
+    +'<input class="fi" type="datetime-local" style="flex:1">'
+    +'</div><div class="fhint">Leave empty for immediate start / permanent.</div>'+chips+'</div>';
+}
+function onSlotTypeChange(type){
+  movieManualList=[];
+  var body=buildSlotContentForType(type,null);
+  document.getElementById('slot-content-section').innerHTML=body?'<div class="fs"><div class="fs-t">Content</div>'+body+'</div>':'';
+  document.getElementById('slot-settings-section').innerHTML=type?buildSlotSettingsSection(type):'';
+  if(type==='Featured Cinema')fcRenderRules();
+  if(type==='Mixed')mxRenderRules();
+}
+
+// ── SHARED FORM HELPERS ───────────────────────────────────────────────────────
+function buildCatsRow(availCats,selectedStr){
+  var chips=availCats.map(function(c){var on=selectedStr&&selectedStr.indexOf(c.name)!==-1;return '<label class="ci'+(on?' on':'')+'" onclick="this.classList.toggle(\'on\')">'+c.name+'</label>';}).join('');
+  return '<div class="cats-row"><span class="cats-row-label">Categories</span><div class="cbg">'+chips+'</div></div>';
+}
+function sortOptsHtml(type,sel){return(SORT_OPTS[type]||[]).map(function(o){return '<option value="'+o.val+'"'+(o.val===sel?' selected':'')+'>'+o.lbl+'</option>';}).join('');}
+function onSortChange(tdId,val){var el=document.getElementById(tdId);if(el)el.classList.toggle('show',val==='trending');}
+function buildSortQtyInline(mediaType,sortId,tdId,maxVal){
+  maxVal=maxVal||4;
+  return '<div class="sort-qty-row"><span class="sort-qty-label">Sort by</span>'
+    +'<select class="fsel" id="'+sortId+'" onchange="onSortChange(\''+tdId+'\',this.value)" style="flex:1">'+sortOptsHtml(mediaType,'most_popular')+'</select>'
+    +'<div class="td-inline" id="'+tdId+'"><span>in</span><input type="number" value="7" min="1" max="90"><span>days</span></div>'
+    +'<span class="sort-qty-label" style="margin-left:4px">Max items</span>'
+    +'<input class="fi" type="number" value="'+maxVal+'" min="1" style="width:58px;flex-shrink:0"></div>';
+}
+function buildMoviesContent(){
+  var sortOpts=MOVIES_SORT.map(function(o){return '<option value="'+o.val+'">'+o.lbl+'</option>';}).join('');
+  return '<div class="sort-qty-row" style="margin-top:0"><span class="sort-qty-label">Sort by</span><select class="fsel" id="movies-sort" onchange="onMoviesSortChange(this.value)" style="flex:1">'+sortOpts+'</select><span class="sort-qty-label" style="margin-left:4px">Max items</span><input class="fi" type="number" value="10" min="1" style="width:58px;flex-shrink:0"></div>'
+    +'<div id="movies-manual-section" style="display:none;margin-top:14px"><div class="fl">Movies <span style="color:#ff4d4f">*</span></div><div class="movie-list" id="movie-manual-list"></div><div class="add-movie-area"><div class="film-combo"><input class="fi" id="movie-search" placeholder="Search by pp_id or title" autocomplete="off" oninput="movieSearch(this.value)" onfocus="movieSearch(this.value)"><div class="film-dropdown" id="movie-dropdown"></div></div></div></div>';
+}
+function onMoviesSortChange(val){var m=document.getElementById('movies-manual-section');if(m)m.style.display=val==='manual'?'block':'none';}
+function movieSearch(q){var dd=document.getElementById('movie-dropdown');if(!q||q.length<1){dd.classList.remove('open');return;}var ex=movieManualList.map(function(m){return m.id;});var filtered=MOCK_FILMS.filter(function(f){return ex.indexOf(f.id)===-1&&(f.id.indexOf(q)!==-1||f.title.toLowerCase().indexOf(q.toLowerCase())!==-1);});if(!filtered.length){dd.classList.remove('open');return;}dd.innerHTML=filtered.map(function(f){return '<div class="film-opt" onclick="movieAdd(\''+f.id+'\',\''+f.title+'\')">'+'<span class="film-id">'+f.id+'</span><span style="flex:1;font-weight:500">'+f.title+'</span></div>';}).join('');dd.classList.add('open');}
+function movieAdd(id,title){movieManualList.push({id:id,title:title});var dd=document.getElementById('movie-dropdown');if(dd)dd.classList.remove('open');var si=document.getElementById('movie-search');if(si)si.value='';renderMovieList();}
+function movieDel(id){movieManualList=movieManualList.filter(function(m){return m.id!==id;});renderMovieList();}
+function renderMovieList(){var el=document.getElementById('movie-manual-list');if(!el)return;if(!movieManualList.length){el.innerHTML='';return;}el.innerHTML=movieManualList.map(function(m){return '<div class="movie-item"><span class="movie-item-drag">⠿</span><span class="movie-item-id">'+m.id+'</span><span class="movie-item-title">'+m.title+'</span><button class="movie-item-del" onclick="movieDel(\''+m.id+'\')">−</button></div>';}).join('');}
+
+// ── RULE BUILDERS ─────────────────────────────────────────────────────────────
+function buildRuleSection(prefix,totalMaxId,totalMaxVal){
+  return '<div class="setting-row" style="margin-bottom:8px"><span style="font-size:12px;color:#595959;flex-shrink:0;min-width:120px">Total max items</span><input class="fi" id="'+totalMaxId+'" type="number" value="'+(totalMaxVal||5)+'" min="1" max="30" style="width:64px" oninput="'+prefix+'RenderPreview()"><span style="font-size:11px;color:#8c8c8c">items in this slot</span></div>'
+    +'<div class="rule-headers"><span></span><span>Media Type</span><span>Count</span><span>Sort by</span><span></span></div>'
+    +'<div class="rules-list" id="'+prefix+'-rules-list"></div>'
+    +'<button class="add-rule-btn" onclick="'+prefix+'AddRule()">+ Add rule</button>'
+    +'<div class="fallback-row"><span style="font-size:12px;color:#614700;flex-shrink:0;min-width:80px">Fallback</span>'
+    +'<select class="fsel" id="'+prefix+'-fb-type" onchange="'+prefix+'RenderPreview()"><option value="none">None (leave empty)</option><option value="replay" selected>Replay</option><option value="ugc">UGC</option></select>'
+    +'<select class="fsel" id="'+prefix+'-fb-sort" onchange="'+prefix+'UpdateFbTrending();'+prefix+'RenderPreview()"><option value="most_popular">Most popular</option><option value="trending">Trending</option><option value="most_recent">Most recent</option><option value="random">Random</option></select>'
+    +'<div class="td-wrap" id="'+prefix+'-fb-td"><span>in</span><input type="number" value="7" min="1" max="90" oninput="'+prefix+'RenderPreview()"><span>days</span></div></div>'
+    +'<div class="preview-box" id="'+prefix+'-preview"></div>';
+}
+function renderGenericRules(rules,prefix){
+  var el=document.getElementById(prefix+'-rules-list');if(!el)return;var h='';
+  rules.forEach(function(r,i){
+    var isTrending=r.sort==='trending';
+    h+='<div class="rule-card" id="'+prefix+'rc-'+i+'" draggable="true" ondragstart="'+prefix+'DragStart('+i+',this)" ondragend="'+prefix+'DragEnd(this)" ondragover="event.preventDefault();'+prefix+'DragOver('+i+',this)" ondragleave="this.classList.remove(\'drag-over\')" ondrop="'+prefix+'Drop('+i+',this)">'
+      +'<div class="rule-main"><span class="drag-handle">⠿</span>'
+      +'<select class="fsel" onchange="'+prefix+'TypeChange('+i+',this.value)">'+Object.keys(TYPE_LABEL).map(function(t){return '<option value="'+t+'"'+(t===r.type?' selected':'')+'>'+TYPE_LABEL[t]+'</option>';}).join('')+'</select>'
+      +'<input class="fi" type="number" value="'+r.qty+'" min="1" max="20" style="text-align:center;padding:5px 6px" oninput="'+prefix+'QtyChange('+i+',this.value)">'
+      +'<div class="sort-wrap"><select class="fsel" onchange="'+prefix+'SortChange('+i+',this.value)">'+sortOptsHtml(r.type,r.sort)+'</select>'
+      +'<div class="td-wrap'+(isTrending?' show':'')+'" id="'+prefix+'td-'+i+'"><span>in</span><input type="number" value="'+r.trendingDays+'" min="1" max="90" oninput="'+prefix+'TdChange('+i+',this.value)"><span>days</span></div></div>'
+      +'<button class="rule-del-sm" onclick="'+prefix+'DelRule('+i+')">−</button></div>'
+      +(r.type==='live'?'<div class="rule-extra"><label><input type="checkbox"'+(r.upcomingFallback?' checked':'')+' onchange="'+prefix+'UpcomingChange('+i+',this.checked)">Show upcoming live if no live stream available<span class="xhint"> (sorted by earliest start time)</span></label></div>':'')
+      +'</div>';
+  });
+  el.innerHTML=h;
+}
+function renderPreviewGeneric(rules,prefix,totalMaxId){
+  var el=document.getElementById(prefix+'-preview');if(!el)return;
+  var totalMax=parseInt((document.getElementById(totalMaxId)||{}).value)||5;
+  var fbType=(document.getElementById(prefix+'-fb-type')||{}).value||'none';
+  var fbSortEl=document.getElementById(prefix+'-fb-sort');var fbSort=fbSortEl?fbSortEl.value:'most_popular';
+  var fbTdEl=document.getElementById(prefix+'-fb-td');var fbDays=fbTdEl?(parseInt((fbTdEl.querySelector('input')||{}).value)||7):7;
+  var fbSortLbl=fbSort==='trending'?'Trending ('+fbDays+'d)':(fbSortEl?fbSortEl.options[fbSortEl.selectedIndex].text:'');
+  var slots=[];
+  rules.forEach(function(r){
+    var avail=AVAILABLE_MOCK[r.type]||0,filled=Math.min(r.qty,avail),gap=r.qty-filled;
+    var opts=SORT_OPTS[r.type]||[];var f=opts.find(function(o){return o.val===r.sort;});
+    var sortLbl=(f?f.lbl:r.sort)+(r.sort==='trending'?' ('+r.trendingDays+'d)':'');
+    for(var j=0;j<filled;j++)slots.push({type:r.type,label:TYPE_LABEL[r.type],sort:sortLbl,isFb:false,isUp:false});
+    if(gap>0){
+      if(r.type==='live'&&r.upcomingFallback){for(var k=0;k<gap&&slots.length<totalMax;k++){slots.push({type:'upcoming',label:'Upcoming live',sort:'Earliest start time',isFb:false,isUp:true});gap--;}}
+      if(gap>0&&fbType!=='none'){for(var m=0;m<gap&&slots.length<totalMax;m++)slots.push({type:fbType,label:TYPE_LABEL[fbType]+' (fallback)',sort:fbSortLbl,isFb:true,isUp:false});}
+    }
+  });
+  slots=slots.slice(0,totalMax);
+  if(!slots.length){el.innerHTML='<div class="preview-title">Preview</div><div style="font-size:12px;color:#8c8c8c">No rules defined.</div>';return;}
+  var h='<div class="preview-title">Preview — slot fill order</div>';var lastG=null;
+  slots.forEach(function(s,i){
+    var g=s.type+(s.isFb?'-fb':'')+(s.isUp?'-up':'');
+    if(lastG!==null&&lastG!==g)h+='<div class="preview-div"></div>';
+    var cls=s.isUp?'pb-upcoming':s.isFb?'pb-fallback':BADGE_CLS[s.type];
+    h+='<div class="preview-slot"><span style="color:#8c8c8c;font-size:11px;width:18px;flex-shrink:0">'+(i+1)+'</span><span class="pbadge '+cls+'">'+s.label+'</span><span style="font-size:11px;color:#8c8c8c;margin-left:2px">'+s.sort+'</span></div>';
+    lastG=g;
+  });
+  h+='<div style="margin-top:8px;padding-top:8px;border-top:1px solid #d6e4ff;font-size:11px;color:#8c8c8c">Mock: Live '+AVAILABLE_MOCK.live+', Replay '+AVAILABLE_MOCK.replay+', UGC '+AVAILABLE_MOCK.ugc+'</div>';
+  el.innerHTML=h;
+}
+// FC
+function fcRenderRules(){renderGenericRules(fcRules,'fc');fcRenderPreview();}
+function fcRenderPreview(){renderPreviewGeneric(fcRules,'fc','fc-total-max');}
+function fcDragStart(i,el){fcDragSrc=i;setTimeout(function(){el.classList.add('dragging');},0);}
+function fcDragEnd(el){el.classList.remove('dragging');document.querySelectorAll('#fc-rules-list .rule-card').forEach(function(c){c.classList.remove('drag-over');});}
+function fcDragOver(i,el){if(fcDragSrc===null||fcDragSrc===i)return;document.querySelectorAll('#fc-rules-list .rule-card').forEach(function(c){c.classList.remove('drag-over');});el.classList.add('drag-over');}
+function fcDrop(i,el){el.classList.remove('drag-over');if(fcDragSrc===null||fcDragSrc===i)return;var m=fcRules.splice(fcDragSrc,1)[0];fcRules.splice(i,0,m);fcDragSrc=null;fcRenderRules();}
+function fcTypeChange(i,val){fcRules[i].type=val;fcRules[i].sort=(SORT_OPTS[val]||SORT_OPTS['live'])[0].val;fcRules[i].upcomingFallback=val==='live'?fcRules[i].upcomingFallback:false;fcRenderRules();}
+function fcQtyChange(i,val){fcRules[i].qty=parseInt(val)||1;fcRenderPreview();}
+function fcSortChange(i,val){fcRules[i].sort=val;var td=document.getElementById('fctd-'+i);if(td)td.classList.toggle('show',val==='trending');fcRenderPreview();}
+function fcTdChange(i,val){fcRules[i].trendingDays=parseInt(val)||7;fcRenderPreview();}
+function fcUpcomingChange(i,c){fcRules[i].upcomingFallback=c;fcRenderPreview();}
+function fcAddRule(){fcRules.push({type:'ugc',qty:2,sort:'most_popular',trendingDays:7,upcomingFallback:false});fcRenderRules();}
+function fcDelRule(i){fcRules.splice(i,1);fcRenderRules();}
+function fcUpdateFbTrending(){var s=document.getElementById('fc-fb-sort');var d=document.getElementById('fc-fb-td');if(s&&d)d.classList.toggle('show',s.value==='trending');}
+function fcSearchFilms(q){var dd=document.getElementById('film-dropdown');if(!q||q.length<1){dd.classList.remove('open');return;}var filtered=MOCK_FILMS.filter(function(f){return f.id.indexOf(q)!==-1||f.title.toLowerCase().indexOf(q.toLowerCase())!==-1;});if(!filtered.length){dd.classList.remove('open');return;}dd.innerHTML=filtered.map(function(f){return '<div class="film-opt" onclick="fcSelectFilm(\''+f.id+'\',\''+f.title+'\')">'+'<span class="film-id">'+f.id+'</span><span style="font-weight:500;flex:1">'+f.title+'</span></div>';}).join('');dd.classList.add('open');}
+function fcSelectFilm(id,title){document.getElementById('film-dropdown').classList.remove('open');document.getElementById('film-search').value='';document.getElementById('film-chip-text').textContent=id+' / '+title;document.getElementById('film-chip').style.display='inline-flex';}
+function fcClearFilm(){document.getElementById('film-chip').style.display='none';document.getElementById('film-search').value='';}
+// MX
+function mxRenderRules(){renderGenericRules(mxRules,'mx');mxRenderPreview();}
+function mxRenderPreview(){renderPreviewGeneric(mxRules,'mx','mx-total-max');}
+function mxDragStart(i,el){mxDragSrc=i;setTimeout(function(){el.classList.add('dragging');},0);}
+function mxDragEnd(el){el.classList.remove('dragging');document.querySelectorAll('#mx-rules-list .rule-card').forEach(function(c){c.classList.remove('drag-over');});}
+function mxDragOver(i,el){if(mxDragSrc===null||mxDragSrc===i)return;document.querySelectorAll('#mx-rules-list .rule-card').forEach(function(c){c.classList.remove('drag-over');});el.classList.add('drag-over');}
+function mxDrop(i,el){el.classList.remove('drag-over');if(mxDragSrc===null||mxDragSrc===i)return;var m=mxRules.splice(mxDragSrc,1)[0];mxRules.splice(i,0,m);mxDragSrc=null;mxRenderRules();}
+function mxTypeChange(i,val){mxRules[i].type=val;mxRules[i].sort=(SORT_OPTS[val]||SORT_OPTS['live'])[0].val;mxRules[i].upcomingFallback=val==='live'?mxRules[i].upcomingFallback:false;mxRenderRules();}
+function mxQtyChange(i,val){mxRules[i].qty=parseInt(val)||1;mxRenderPreview();}
+function mxSortChange(i,val){mxRules[i].sort=val;var td=document.getElementById('mxtd-'+i);if(td)td.classList.toggle('show',val==='trending');mxRenderPreview();}
+function mxTdChange(i,val){mxRules[i].trendingDays=parseInt(val)||7;mxRenderPreview();}
+function mxUpcomingChange(i,c){mxRules[i].upcomingFallback=c;mxRenderPreview();}
+function mxAddRule(){mxRules.push({type:'ugc',qty:2,sort:'most_popular',trendingDays:7,upcomingFallback:false});mxRenderRules();}
+function mxDelRule(i){mxRules.splice(i,1);mxRenderRules();}
+function mxUpdateFbTrending(){var s=document.getElementById('mx-fb-sort');var d=document.getElementById('mx-fb-td');if(s&&d)d.classList.toggle('show',s.value==='trending');}
+
+window.addEventListener('load',function(){renderSlots();buildJumpSelectors();renderCal();});
+</script>
+</body>
+</html>
