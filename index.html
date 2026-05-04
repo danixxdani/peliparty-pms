@@ -279,7 +279,7 @@ tbody tr.sel td{background:#e6f4ff}
         <div class="filter-grid">
           <div class="filter-col filter-col-md"><input class="fi" id="cat-q" placeholder="Category Name" oninput="catLiveQ=this.value"></div>
           <div class="filter-col filter-col-sm"><select class="fsel2" id="cat-media-f"><option value="">Media Type</option><option value="Live">Live</option><option value="Replay">Replay</option><option value="UGC">UGC</option></select></div>
-          <div class="filter-col filter-col-sm"><select class="fsel2" id="cat-status-f"><option value="">Status</option><option value="1">Enabled</option><option value="0">Disabled</option></select></div>
+          <div class="filter-col filter-col-sm"><select class="fsel2" id="cat-lang-f"><option value="">Language</option><option value="PT">PT</option><option value="ES">ES</option></select></div><div class="filter-col filter-col-sm"><select class="fsel2" id="cat-status-f"><option value="">Status</option><option value="1">Enabled</option><option value="0">Disabled</option></select></div>
         </div>
       </div>
       <div class="action-bar">
@@ -290,7 +290,7 @@ tbody tr.sel td{background:#e6f4ff}
         <button class="btn btn-del" id="cat-del-btn" disabled onclick="catBulkDel()">🗑 Delete</button>
       </div>
       <div class="tw"><table>
-        <thead><tr><th style="width:32px"><input type="checkbox" class="cb" id="cat-cb-all" onclick="catToggleAll(this)"></th><th style="width:40px">NO.</th><th>Category ID</th><th>Category Name</th><th>Media Type(s)</th><th>Status</th><th>Creator</th><th>Create Date</th><th>Modify Date</th></tr></thead>
+        <thead><tr><th style="width:32px"><input type="checkbox" class="cb" id="cat-cb-all" onclick="catToggleAll(this)"></th><th style="width:40px">NO.</th><th>Category ID</th><th>Category Name</th><th>Media Type(s)</th><th>Languages</th><th>Status</th><th>Creator</th><th>Create Date</th><th>Modify Date</th></tr></thead>
         <tbody id="cat-tbody"></tbody>
       </table></div>
       <div class="pag"><span>Total <b id="cat-total">0</b></span></div>
@@ -336,7 +336,7 @@ tbody tr.sel td{background:#e6f4ff}
           </button></div></div>
         <div class="filter-grid">
           <div class="filter-col filter-col-md"><input class="fi" id="slot-q" placeholder="Slot Name" oninput="slotLiveQ=this.value"></div>
-          <div class="filter-col filter-col-md"><select class="fsel2" id="slot-type-f"><option value="">Slot Type</option><option>Featured Cinema</option><option>Live</option><option>Replay</option><option>UGC</option><option>Hosts</option><option>Mixed</option><option>Movies</option></select></div>
+          <div class="filter-col filter-col-md"><select class="fsel2" id="slot-type-f"><option value="">Slot Type</option><option>Today's Cinema</option><option>Live</option><option>Replay</option><option>UGC</option><option>Hosts</option><option>Mixed</option><option>Movies</option></select></div>
           <div class="filter-col filter-col-sm"><select class="fsel2" id="slot-lang-f"><option value="">Language</option><option value="PT">PT</option><option value="ES">ES</option></select></div><div class="filter-col filter-col-sm"><select class="fsel2" id="slot-status-f"><option value="">Status</option><option value="1">Enabled</option><option value="0">Disabled</option></select></div>
         </div>
       </div>
@@ -403,7 +403,7 @@ tbody tr.sel td{background:#e6f4ff}
           <div class="filter-grid" style="margin-bottom:10px">
             <div class="filter-col filter-col-sm"><select class="fsel2" id="sch-year-filter"></select></div>
             <div class="filter-col filter-col-md"><select class="fsel2" id="sch-month-filter"></select></div>
-            <div class="filter-col filter-col-sm"><select class="fsel2" id="sch-status-filter"><option value="">Status</option><option value="1">Available</option><option value="0">Unavailable</option></select></div>
+            <div class="filter-col filter-col-sm"><select class="fsel2" id="sch-lang-filter"><option value="">Language</option><option value="PT">PT</option><option value="ES">ES</option></select></div><div class="filter-col filter-col-sm"><select class="fsel2" id="sch-status-filter"><option value="">Status</option><option value="1">Available</option><option value="0">Unavailable</option></select></div>
           </div>
           <div class="filter-grid">
             <div class="filter-col filter-col-date"><div class="date-range"><input class="fi" type="date" id="sch-release-from"><span class="sep">–</span><input class="fi" type="date" id="sch-release-to"></div></div>
@@ -420,6 +420,7 @@ tbody tr.sel td{background:#e6f4ff}
           <thead><tr>
             <th style="width:32px"><input type="checkbox" class="cb" id="sch-cb-all" onclick="schToggleAll(this)"></th>
             <th style="width:40px">NO.</th><th>PP ID</th>
+            <th>Languages</th>
             <th class="sortable" onclick="sortSch('originalTitle')" id="th-originalTitle">Original Title<span class="sort-icon">↕</span></th>
             <th class="sortable" onclick="sortSch('displayTitle')" id="th-displayTitle">Display Title<span class="sort-icon">↕</span></th>
             <th>Timezone</th>
@@ -502,7 +503,7 @@ var MOVIES_SORT=[{val:'coming_soon',lbl:'Coming soon'},{val:'recently_released',
 var TYPE_LABEL={live:'Live',replay:'Replay',ugc:'UGC'};
 var BADGE_CLS={live:'pb-live',replay:'pb-replay',ugc:'pb-ugc'};
 var AVAILABLE_MOCK={live:1,replay:5,ugc:8};
-var CHIPS_TYPES=['Featured Cinema','Live','Replay','UGC','Mixed'];
+var CHIPS_TYPES=['Today\'s Cinema','Live','Replay','UGC','Mixed'];
 var PICK_OPTS={
   live:[{val:'random',lbl:'Random',hint:'Random from available pool.'},{val:'viewers',lbl:'Most viewers',hint:'Highest current viewer count.'},{val:'recent',lbl:'Most recent',hint:'Most recently started stream.'},{val:'pinned',lbl:'Pinned',hint:'A specific host stream is always shown.'}],
   upcoming:[{val:'random',lbl:'Random',hint:'Random from available pool.'},{val:'earliest',lbl:'Earliest start time',hint:'Stream starting soonest.'},{val:'followers',lbl:'Most followers',hint:'Host with the most followers.'},{val:'pinned',lbl:'Pinned',hint:'A specific host upcoming stream is always shown.'}]
@@ -511,13 +512,13 @@ var BTL={live:'Live stream',upcoming:'Upcoming live stream',image:'Image'};
 
 // ── DATA ─────────────────────────────────────────────────────────────────────
 var CATS=[
-  {id:1,name:'Watch Party',    media:['Live','Replay'],      enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-21 16:00'},
-  {id:2,name:'Just Chatting',  media:['Live','Replay'],      enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-21 16:00'},
-  {id:3,name:'Reviews',        media:['Live','Replay','UGC'],enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-19 12:00'},
-  {id:4,name:'Breakdowns',     media:['Live','Replay','UGC'],enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-19 12:00'},
-  {id:5,name:'Recommendations',media:['UGC'],                enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-19 12:00'},
-  {id:6,name:'Recaps',         media:['UGC'],                enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-19 12:00'},
-  {id:7,name:'Reactions',      media:['UGC'],                enabled:false,creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-19 12:00'}
+  {id:1,name:'Watch Party',langs:['PT','ES'],    media:['Live','Replay'],      enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-21 16:00'},
+  {id:2,name:'Just Chatting',langs:['PT','ES'],  media:['Live','Replay'],      enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-21 16:00'},
+  {id:3,name:'Reviews',langs:['PT','ES'],        media:['Live','Replay','UGC'],enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-19 12:00'},
+  {id:4,name:'Breakdowns',langs:['PT','ES'],     media:['Live','Replay','UGC'],enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-19 12:00'},
+  {id:5,name:'Recommendations',langs:['PT'],media:['UGC'],                enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-19 12:00'},
+  {id:6,name:'Recaps',langs:['ES'],         media:['UGC'],                enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-19 12:00'},
+  {id:7,name:'Reactions',langs:['PT','ES'],      media:['UGC'],                enabled:false,creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-19 12:00'}
 ];
 var BANNERS=[
   {id:201,name:'Watch Party Spotlight',type:'live',   tz:'UTC+8',    start:'2026-04-22 08:00',end:'2026-06-01 07:59',enabled:true, langs:['PT','ES'],creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-22 10:00'},
@@ -526,7 +527,7 @@ var BANNERS=[
   {id:204,name:'Film Festival Banner', type:'image',  tz:'UTC-3',start:'2026-05-10 00:00',end:'2026-05-20 23:59',enabled:false,langs:['PT','ES'],creator:'Admin',created:'2026-04-23 15:00',mod:'2026-04-24 09:00'}
 ];
 var SLOTS=[
-  {id:102,langs:['PT','ES'],name:"Today's Cinema",  type:'Featured Cinema',cats_str:'',enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-22 10:00'},
+  {id:102,langs:['PT','ES'],name:"Today's Cinema",  type:'Today\'s Cinema',cats_str:'',enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-22 10:00'},
   {id:103,langs:['PT','ES'],name:'LIVE',            type:'Live',  cats_str:'Watch Party, Just Chatting, Reviews, Breakdowns',enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-21 09:12'},
   {id:104,langs:['PT','ES'],name:'Crowd Favorites', type:'Replay',cats_str:'Watch Party, Just Chatting, Reviews, Breakdowns',enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-20 14:30'},
   {id:105,langs:['PT','ES'],name:'Hosted By',       type:'Hosts', cats_str:'',enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-18 11:22'},
@@ -544,18 +545,18 @@ var SLOTS=[
 ];
 var SLOT_ORDER=SLOTS.map(function(s){return s.id;});
 var SCH=[
-  {id:1,ppId:'pp00000123',originalTitle:'Parasite',          displayTitle:'Parasite',          tz:'UTC+8',    release:'2026-05-01 00:00',until:'2026-05-31 23:59',available:true, creator:'Admin',created:'2026-04-20 09:00',mod:'2026-04-22 10:00'},
-  {id:2,ppId:'pp00000456',originalTitle:'Past Lives',         displayTitle:'Past Lives',         tz:'UTC+8',    release:'2026-05-01 00:00',until:'2026-06-30 23:59',available:true, creator:'Admin',created:'2026-04-20 09:00',mod:'2026-04-21 15:00'},
-  {id:3,ppId:'pp00000789',originalTitle:'Poor Things',        displayTitle:'Poor Things',        tz:'UTC+8',    release:'2026-05-08 00:00',until:'2026-06-07 23:59',available:true, creator:'Admin',created:'2026-04-21 11:00',mod:'2026-04-21 11:00'},
-  {id:4,ppId:'pp00001234',originalTitle:'Oppenheimer',        displayTitle:'Oppenheimer',        tz:'UTC-7/8',release:'2026-05-15 00:00',until:'2026-06-14 23:59',available:true, creator:'Admin',created:'2026-04-22 09:00',mod:'2026-04-22 09:00'},
-  {id:5,ppId:'pp00005678',originalTitle:'The Zone of Interest',displayTitle:'The Zone of Interest',tz:'UTC+8', release:'2026-05-20 00:00',until:'2026-06-19 23:59',available:false,creator:'Admin',created:'2026-04-22 10:00',mod:'2026-04-22 10:30'},
-  {id:6,ppId:'pp00006789',originalTitle:'Dune: Part Two',     displayTitle:'Dune: Part Two',     tz:'UTC+8',    release:'2026-05-28 00:00',until:'2026-06-27 23:59',available:true, creator:'Admin',created:'2026-04-23 08:00',mod:'2026-04-23 08:00'},
-  {id:7,ppId:'pp00007890',originalTitle:'A Quiet Place: Day One',displayTitle:'A Quiet Place: Day One',tz:'UTC-3',release:'2026-05-31 00:00',until:'2026-06-30 23:59',available:true,creator:'Admin',created:'2026-04-24 09:00',mod:'2026-04-24 09:00'},
-  {id:8,ppId:'pp00000789',originalTitle:'Poor Things',displayTitle:'Poor Things',tz:'UTC+8',release:'2026-04-10 00:00',until:'2026-05-08 23:59',available:true,creator:'Admin',created:'2026-04-01 09:00',mod:'2026-04-01 09:00'},
-  {id:9,ppId:'pp00000456',originalTitle:'Past Lives',displayTitle:'Past Lives',tz:'UTC+8',release:'2026-04-15 00:00',until:'2026-05-15 23:59',available:true,creator:'Admin',created:'2026-04-01 10:00',mod:'2026-04-01 10:00'},
-  {id:10,ppId:'pp00000123',originalTitle:'Parasite',displayTitle:'Parasite',tz:'UTC+8',release:'2026-04-20 00:00',until:'2026-05-20 23:59',available:true,creator:'Admin',created:'2026-04-02 09:00',mod:'2026-04-02 09:00'},
-  {id:11,ppId:'pp00001234',originalTitle:'Oppenheimer',displayTitle:'Oppenheimer',tz:'UTC-7/8',release:'2026-04-25 00:00',until:'2026-05-25 23:59',available:true,creator:'Admin',created:'2026-04-02 10:00',mod:'2026-04-02 10:00'},
-  {id:12,ppId:'pp00005678',originalTitle:'The Zone of Interest',displayTitle:'The Zone of Interest',tz:'UTC+8',release:'2026-04-28 00:00',until:'2026-05-28 23:59',available:true,creator:'Admin',created:'2026-04-03 09:00',mod:'2026-04-03 09:00'}
+  {id:1,ppId:'pp00000123',originalTitle:'Parasite',          displayTitle:'Parasite',          tz:'UTC+8',    release:'2026-05-01 00:00',until:'2026-05-31 23:59',available:true, langs:['PT','ES'],creator:'Admin',created:'2026-04-20 09:00',mod:'2026-04-22 10:00'},
+  {id:2,ppId:'pp00000456',originalTitle:'Past Lives',         displayTitle:'Past Lives',         tz:'UTC+8',    release:'2026-05-01 00:00',until:'2026-06-30 23:59',available:true, langs:['PT'],   creator:'Admin',created:'2026-04-20 09:00',mod:'2026-04-21 15:00'},
+  {id:3,ppId:'pp00000789',originalTitle:'Poor Things',        displayTitle:'Poor Things',        tz:'UTC+8',    release:'2026-05-08 00:00',until:'2026-06-07 23:59',available:true, langs:['ES'],   creator:'Admin',created:'2026-04-21 11:00',mod:'2026-04-21 11:00'},
+  {id:4,ppId:'pp00001234',originalTitle:'Oppenheimer',        displayTitle:'Oppenheimer',        tz:'UTC-7/8',release:'2026-05-15 00:00',until:'2026-06-14 23:59',available:true, langs:['PT','ES'],creator:'Admin',created:'2026-04-22 09:00',mod:'2026-04-22 09:00'},
+  {id:5,ppId:'pp00005678',originalTitle:'The Zone of Interest',displayTitle:'The Zone of Interest',tz:'UTC+8', release:'2026-05-20 00:00',until:'2026-06-19 23:59',available:false,langs:['PT'],   creator:'Admin',created:'2026-04-22 10:00',mod:'2026-04-22 10:30'},
+  {id:6,ppId:'pp00006789',originalTitle:'Dune: Part Two',     displayTitle:'Dune: Part Two',     tz:'UTC+8',    release:'2026-05-28 00:00',until:'2026-06-27 23:59',available:true, langs:['ES'],   creator:'Admin',created:'2026-04-23 08:00',mod:'2026-04-23 08:00'},
+  {id:7,ppId:'pp00007890',originalTitle:'A Quiet Place: Day One',displayTitle:'A Quiet Place: Day One',tz:'UTC-3',release:'2026-05-31 00:00',until:'2026-06-30 23:59',available:true,langs:['PT','ES'],creator:'Admin',created:'2026-04-24 09:00',mod:'2026-04-24 09:00'},
+  {id:8,ppId:'pp00000789',originalTitle:'Poor Things',displayTitle:'Poor Things',tz:'UTC+8',release:'2026-04-10 00:00',until:'2026-05-08 23:59',available:true,langs:['PT'],creator:'Admin',created:'2026-04-01 09:00',mod:'2026-04-01 09:00'},
+  {id:9,ppId:'pp00000456',originalTitle:'Past Lives',displayTitle:'Past Lives',tz:'UTC+8',release:'2026-04-15 00:00',until:'2026-05-15 23:59',available:true,langs:['ES'],creator:'Admin',created:'2026-04-01 10:00',mod:'2026-04-01 10:00'},
+  {id:10,ppId:'pp00000123',originalTitle:'Parasite',displayTitle:'Parasite',tz:'UTC+8',release:'2026-04-20 00:00',until:'2026-05-20 23:59',available:true,langs:['PT','ES'],creator:'Admin',created:'2026-04-02 09:00',mod:'2026-04-02 09:00'},
+  {id:11,ppId:'pp00001234',originalTitle:'Oppenheimer',displayTitle:'Oppenheimer',tz:'UTC-7/8',release:'2026-04-25 00:00',until:'2026-05-25 23:59',available:true,langs:['PT'],creator:'Admin',created:'2026-04-02 10:00',mod:'2026-04-02 10:00'},
+  {id:12,ppId:'pp00005678',originalTitle:'The Zone of Interest',displayTitle:'The Zone of Interest',tz:'UTC+8',release:'2026-04-28 00:00',until:'2026-05-28 23:59',available:true,langs:['ES'],creator:'Admin',created:'2026-04-03 09:00',mod:'2026-04-03 09:00'}
 ];
 var schIdSeq=13;
 
@@ -563,13 +564,14 @@ var schIdSeq=13;
 var calM=new Date(2026,4,1);
 var schView='cal';
 var banSel=new Set(),slotSel=new Set(),schSel=new Set();
-var schQ='',schYearF='',schMonthF='',schStatusF='';
+var schQ='',schYearF='',schMonthF='',schStatusF='',schLangF='';
 var schReleaseFrom='',schReleaseTo='',schExpiryFrom='',schExpiryTo='';
 var schLivePpid='',schLiveOrig='',schLiveDisp='';
 function schApplyFilters(){
   schQ=schLivePpid;
   schYearF=document.getElementById('sch-year-filter').value;
   schMonthF=document.getElementById('sch-month-filter').value;
+  schLangF=document.getElementById('sch-lang-filter').value;
   schStatusF=document.getElementById('sch-status-filter').value;
   schReleaseFrom=document.getElementById('sch-release-from').value;
   schReleaseTo=document.getElementById('sch-release-to').value;
@@ -585,9 +587,11 @@ function schResetFilters(){
   schReleaseFrom='';schReleaseTo='';schExpiryFrom='';schExpiryTo='';
   schLivePpid='';schLiveOrig='';schLiveDisp='';
   schLiveOrigApplied='';schLiveDispApplied='';
+  schLangF='';
   ['sch-q-ppid','sch-q-orig','sch-q-disp','sch-release-from','sch-release-to','sch-expiry-from','sch-expiry-to'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
   document.getElementById('sch-year-filter').value='';
   document.getElementById('sch-month-filter').value='';
+  document.getElementById('sch-lang-filter').value='';
   document.getElementById('sch-status-filter').value='';
   schSel.clear();renderSchTable();
 }
@@ -626,18 +630,20 @@ function navTo(id,el,label){
 
 // ── CATEGORIES ────────────────────────────────────────────────────────────────
 var catSel=new Set(),catIdSeq=8;
-var catQ='',catStatusF='',catMediaF='';
+var catQ='',catStatusF='',catMediaF='',catLangF='';
 var catLiveQ='';
 function catApplyFilters(){
   catQ=catLiveQ;
   catMediaF=document.getElementById('cat-media-f').value;
+  catLangF=document.getElementById('cat-lang-f').value;
   catStatusF=document.getElementById('cat-status-f').value;
   catSel.clear();renderCats();
 }
 function catResetFilters(){
-  catLiveQ='';catQ='';catMediaF='';catStatusF='';
+  catLiveQ='';catQ='';catMediaF='';catLangF='';catStatusF='';
   document.getElementById('cat-q').value='';
   document.getElementById('cat-media-f').value='';
+  document.getElementById('cat-lang-f').value='';
   document.getElementById('cat-status-f').value='';
   catSel.clear();renderCats();
 }
@@ -645,6 +651,7 @@ function getCats(){
   return CATS.filter(function(c){
     if(catQ&&c.name.toLowerCase().indexOf(catQ.toLowerCase())===-1)return false;
     if(catMediaF&&c.media.indexOf(catMediaF)===-1)return false;
+    if(catLangF&&(!c.langs||c.langs.indexOf(catLangF)===-1))return false;
     if(catStatusF==='1'&&!c.enabled)return false;
     if(catStatusF==='0'&&c.enabled)return false;
     return true;
@@ -661,6 +668,7 @@ function renderCats(){
     h+='<td style="font-size:12px;color:#595959">'+c.id+'</td>';
     h+='<td><strong style="font-weight:500">'+c.name+'</strong></td>';
     h+='<td style="font-size:12px;color:#595959">'+c.media.join(', ')+'</td>';
+    h+='<td style="font-size:12px;color:#595959">'+(c.langs?c.langs.join(', '):'')+'</td>';
     h+='<td><span class="'+(c.enabled?'status-en':'status-dis')+'">'+(c.enabled?'Enabled':'Disabled')+'</span></td>';
     h+='<td style="color:#595959">'+c.creator+'</td>';
     h+='<td style="font-size:11px;color:#8c8c8c">'+c.created+'</td>';
@@ -697,17 +705,54 @@ function catBulkDisable(){CATS.forEach(function(c){if(catSel.has(c.id))c.enabled
 function catBulkEnable(){CATS.forEach(function(c){if(catSel.has(c.id))c.enabled=true;});renderCats();}
 function catEditSelected(){var id=Array.from(catSel)[0];if(id!=null)openModal('cat-edit',id);}
 function buildCatForm(c){
+  var langs=c&&c.langs?c.langs:[];
+  var ptOn=langs.indexOf('PT')!==-1;
+  var esOn=langs.indexOf('ES')!==-1;
   var mediaOpts=['Live','Replay','UGC'].map(function(m){
     var on=c&&c.media.indexOf(m)!==-1;
     return '<label class="ci'+(on?' on':'')+'" onclick="this.classList.toggle(\'on\')">'+m+'</label>';
   }).join('');
   return '<div class="fs"><div class="fs-t">Basic Info</div>'
     +'<div class="frow"><div class="fcol"><div class="fl">Category Name <span style="color:#ff4d4f">*</span></div>'
-    +'<input class="fi" id="cat-name-input" value="'+(c?c.name:'')+'" placeholder="e.g. Watch Party"></div></div>'
+    +'<input class="fi" id="cat-name-input" value="'+(c?c.name:'')+'" placeholder="Internal name for admin use"></div></div>'
     +'<div class="fl">Media Type(s) <span style="color:#ff4d4f">*</span></div>'
     +'<div class="cbg" id="cat-media-chips">'+mediaOpts+'</div>'
-    +'<div class="fhint" style="margin-top:6px">Select at least one media type.</div></div>';
+    +'<div class="fhint" style="margin-top:6px">Select at least one media type.</div>'
+
+
+
+
+
+
+
+
+    +'</div>'
+    +'<div class="fs" style="margin-bottom:0"><div class="fs-t">Language Settings</div>'
+    +'<div class="lang-toggle-row" style="margin-bottom:8px">'
+    +'<button type="button" class="lang-btn'+(ptOn?' pt-on':'')+'" onclick="catToggleLang(\'PT\',this)"><span class="lang-chk'+(ptOn?' on':'')+'"></span>PT &middot; Portuguese</button>'
+    +'<button type="button" class="lang-btn'+(esOn?' es-on':'')+'" onclick="catToggleLang(\'ES\',this)"><span class="lang-chk'+(esOn?' on':'')+'"></span>ES &middot; Spanish</button>'
+    +'</div>'
+    +'<div class="fhint" style="margin-bottom:12px">Select the markets where this category will be available.</div>'
+    +'<div id="cat-sec-pt" style="display:'+(ptOn?'block':'none')+';margin-bottom:10px" class="lang-section">'
+    +'<div class="lang-section-hd"><span class="lang-badge-pt">PT</span>'
+    +'<span style="font-size:12px;font-weight:500;margin-left:4px">Portuguese</span></div>'
+    +'<div class="lang-section-bd"><div class="fl">Display Name <span style="color:#ff4d4f">*</span></div>'
+    +'<input class="fi" placeholder="Category name shown to users (PT)"></div></div>'
+    +'<div id="cat-sec-es" style="display:'+(esOn?'block':'none')+'" class="lang-section">'
+    +'<div class="lang-section-hd"><span class="lang-badge-es">ES</span>'
+    +'<span style="font-size:12px;font-weight:500;margin-left:4px">Spanish</span></div>'
+    +'<div class="lang-section-bd"><div class="fl">Display Name <span style="color:#ff4d4f">*</span></div>'
+    +'<input class="fi" placeholder="Category name shown to users (ES)"></div></div></div>';
 }
+function catToggleLang(lang,btn){
+  var isOn=btn.classList.contains(lang==='PT'?'pt-on':'es-on');
+  var cls=lang==='PT'?'pt-on':'es-on';
+  if(isOn){btn.classList.remove(cls);btn.querySelector('.lang-chk').classList.remove('on');}
+  else{btn.classList.add(cls);btn.querySelector('.lang-chk').classList.add('on');}
+  var sec=document.getElementById('cat-sec-'+lang.toLowerCase());
+  if(sec){sec.style.display=isOn?'none':'block';}
+}
+
 function saveCatModal(editingCatId){
   var nameEl=document.getElementById('cat-name-input');
   var chips=document.querySelectorAll('#cat-media-chips .ci.on');
@@ -907,6 +952,7 @@ function getSch(){
     if(schLiveDispApplied&&(s.displayTitle||'').toLowerCase().indexOf(schLiveDispApplied.toLowerCase())===-1)return false;
     if(schYearF&&!s.release.startsWith(schYearF))return false;
     if(schMonthF&&!s.release.startsWith(schMonthF))return false;
+    if(schLangF&&(!s.langs||s.langs.indexOf(schLangF)===-1))return false;
     if(schStatusF==='1'&&!s.available)return false;
     if(schStatusF==='0'&&s.available)return false;
     if(schReleaseFrom&&s.release&&s.release.substring(0,10)<schReleaseFrom)return false;
@@ -927,6 +973,7 @@ function renderSchTable(){
     h+='<tr class="'+(sel?'sel':'')+'"><td><input type="checkbox" class="cb"'+(sel?' checked':'')+' onchange="schToggleSel('+s.id+',this)"></td>';
     h+='<td style="color:#8c8c8c">'+(i+1)+'</td>';
     h+='<td style="font-size:11px;color:#595959">'+s.ppId+'</td>';
+    h+='<td style="font-size:12px;color:#595959">'+(s.langs?s.langs.join(', '):'')+'</td>';
     h+='<td><strong style="font-weight:500">'+s.originalTitle+'</strong></td>';
     h+='<td style="color:#595959">'+(s.displayTitle||'')+'</td>';
     h+='<td style="font-size:11px;color:#595959;white-space:nowrap">'+s.tz+'</td>';
@@ -1141,7 +1188,8 @@ function openModal(kind,id){
   document.getElementById('md-title').textContent=title;
   document.getElementById('md-body').innerHTML=body;
   document.getElementById('mov').classList.add('open');
-  if(kind==='slot-edit'){var s2=SLOTS.find(function(x){return x.id===id;});if(s2&&s2.type==='Featured Cinema')fcRenderRules();if(s2&&s2.type==='Mixed')mxRenderRules();}
+  if(kind==='slot-edit'){var s2=SLOTS.find(function(x){return x.id===id;});if(s2&&s2.type==='Today\'s Cinema')fcRenderRules();if(s2&&s2.type==='Mixed')mxRenderRules();}
+  
 }
 function closeModal(){document.getElementById('mov').classList.remove('open');}
 
@@ -1155,43 +1203,60 @@ function buildBannerForm(b){
     var lbl=t==='live'?'Live stream':t==='upcoming'?'Upcoming live stream':'Image';
     return '<option value="'+t+'"'+(t===type?' selected':'')+'>'+lbl+'</option>';
   }).join('');
+  var langSettingsHtml=buildBanLangSettingsHtml(type,ptOn,esOn);
   return '<div class="fs"><div class="fs-t">Basic Info</div>'
     +'<div class="frow"><div class="fcol"><div class="fl">Banner Name <span style="color:#ff4d4f">*</span></div><input class="fi" value="'+(b?b.name:'')+'" placeholder="Internal name for admin use"></div></div>'
-    +'<div class="frow"><div class="fcol"><div class="fl">Banner Type <span style="color:#ff4d4f">*</span></div><select class="fsel" onchange="onBanTypeChange(this.value)">'+typeOpts+'</select></div></div>'
-    +'<div class="frow" style="margin-bottom:0"><div class="fcol">'
-    +'<div class="fl">Languages <span style="color:#ff4d4f">*</span></div>'
-    +'<div class="lang-toggle-row">'
-    +'<button type="button" class="lang-btn'+(ptOn?' pt-on':'')+'" id="ban-lang-pt" onclick="banToggleLang(\'PT\',this)">'
-    +'<span class="lang-chk'+(ptOn?' on':'')+'"></span>PT &middot; Portuguese</button>'
-    +'<button type="button" class="lang-btn'+(esOn?' es-on':'')+'" id="ban-lang-es" onclick="banToggleLang(\'ES\',this)">'
-    +'<span class="lang-chk'+(esOn?' on':'')+'"></span>ES &middot; Spanish</button>'
+    +'<div class="frow" style="margin-bottom:0"><div class="fcol"><div class="fl">Banner Type <span style="color:#ff4d4f">*</span></div><select class="fsel" onchange="onBanTypeChange(this.value)">'+typeOpts+'</select></div></div>'
     +'</div>'
-    +'<div class="fhint">Select the markets where this banner will be displayed.</div>'
-    +'</div></div></div>'
-    +'<div class="fs"><div class="fs-t">Content</div>'
-    +'<div id="ban-sec-pt" class="lang-section" style="display:'+(ptOn?'block':'none')+';margin-bottom:10px">'
-    +'<div class="lang-section-hd"><span class="lang-badge-pt">PT</span><span style="font-size:12px;font-weight:500;margin-left:4px">Portuguese</span></div>'
-    +'<div class="lang-section-bd">'
-    +'<div><div class="fl">Display Name <span style="color:#ff4d4f">*</span></div><input class="fi" placeholder="Banner name shown to users (PT)"></div>'
-    +'<div id="ban-pt-body">'+buildBanLangBody(type)+'</div>'
-    +'</div></div>'
-    +'<div id="ban-sec-es" class="lang-section" style="display:'+(esOn?'block':'none')+'">'
-    +'<div class="lang-section-hd"><span class="lang-badge-es">ES</span><span style="font-size:12px;font-weight:500;margin-left:4px">Spanish</span></div>'
-    +'<div class="lang-section-bd">'
-    +'<div><div class="fl">Display Name <span style="color:#ff4d4f">*</span></div><input class="fi" placeholder="Banner name shown to users (ES)"></div>'
-    +'<div id="ban-es-body">'+buildBanLangBody(type)+'</div>'
-    +'</div></div>'
-    +'<div id="ban-shared-body">'+buildBanSharedContent(type)+'</div>'
+    +'<div class="fs"><div class="fs-t">Language Settings</div>'
+    +'<div class="lang-toggle-row" style="margin-bottom:8px">'
+    +'<button type="button" class="lang-btn'+(ptOn?' pt-on':'')+'" id="ban-lang-pt" onclick="banToggleLang(\'PT\',this)"><span class="lang-chk'+(ptOn?' on':'')+'"></span>PT &middot; Portuguese</button>'
+    +'<button type="button" class="lang-btn'+(esOn?' es-on':'')+'" id="ban-lang-es" onclick="banToggleLang(\'ES\',this)"><span class="lang-chk'+(esOn?' on':'')+'"></span>ES &middot; Spanish</button>'
     +'</div>'
+    +'<div class="fhint" style="margin-bottom:12px">Select the markets where this banner will be displayed.</div>'
+    +'<div id="ban-lang-settings">'+langSettingsHtml+'</div>'
+    +'</div>'
+    +(buildBanSharedContent(type)?'<div class="fs"><div class="fs-t">Content</div><div id="ban-shared-body">'+buildBanSharedContent(type)+'</div></div>':'<div id="ban-shared-body" style="display:none"></div>')
     +buildBanSettingsSection();
 }
+function buildBanLangSettingsHtml(type,ptOn,esOn){
+  var h='';
+  if(ptOn){
+    h+='<div class="lang-section" style="margin-bottom:10px">'
+      +'<div class="lang-section-hd"><span class="lang-badge-pt">PT</span><span style="font-size:12px;font-weight:500;margin-left:4px">Portuguese</span></div>'
+      +'<div class="lang-section-bd">'
+      +'<div><div class="fl">Display Name <span style="color:#ff4d4f">*</span></div><input class="fi" placeholder="Banner name shown to users (PT)"></div>'
+      +'<div id="ban-pt-body" style="margin-top:10px">'+buildBanLangBody(type)+'</div>'
+      +'</div></div>';
+  }
+  if(esOn){
+    h+='<div class="lang-section" style="margin-bottom:10px">'
+      +'<div class="lang-section-hd"><span class="lang-badge-es">ES</span><span style="font-size:12px;font-weight:500;margin-left:4px">Spanish</span></div>'
+      +'<div class="lang-section-bd">'
+      +'<div><div class="fl">Display Name <span style="color:#ff4d4f">*</span></div><input class="fi" placeholder="Banner name shown to users (ES)"></div>'
+      +'<div id="ban-es-body" style="margin-top:10px">'+buildBanLangBody(type)+'</div>'
+      +'</div></div>';
+  }
+  return h;
+}
+
 function banToggleLang(lang,btn){
   var isOn=btn.classList.contains(lang==='PT'?'pt-on':'es-on');
   var cls=lang==='PT'?'pt-on':'es-on';
   if(isOn){btn.classList.remove(cls);btn.querySelector('.lang-chk').classList.remove('on');}
   else{btn.classList.add(cls);btn.querySelector('.lang-chk').classList.add('on');}
-  var sec=document.getElementById('ban-sec-'+lang.toLowerCase());
-  if(sec)sec.style.display=isOn?'none':'block';
+  updateBanLangSettings();
+}
+function updateBanLangSettings(){
+  var el=document.getElementById('ban-lang-settings');
+  if(!el)return;
+  var mdBody=document.getElementById('md-body');
+  var ptOn=!!(mdBody&&mdBody.querySelector('.lang-btn.pt-on'));
+  var esOn=!!(mdBody&&mdBody.querySelector('.lang-btn.es-on'));
+  var typeEl=document.querySelector('#md-body .fsel');
+  var typeMap={'Live stream':'live','Upcoming live stream':'upcoming','Image':'image'};
+  var type=typeEl?typeMap[typeEl.options[typeEl.selectedIndex].text]||'live':'live';
+  el.innerHTML=buildBanLangSettingsHtml(type,ptOn,esOn);
 }
 function buildBanLangBody(type){
   if(type==='image'){
@@ -1271,38 +1336,70 @@ function buildBanSettingsSection(){
 // ── SLOT FORM ─────────────────────────────────────────────────────────────────
 function buildSlotForm(s){
   var type=s?s.type:'';
-  var typeOpts='<option value="" disabled'+(type===''?' selected':'')+'>Select type</option>'
-    +['Featured Cinema','Live','Replay','UGC','Hosts','Mixed','Movies'].map(function(t){return '<option'+(t===type?' selected':'')+'>'+t+'</option>';}).join('');
-  var contentBody=buildSlotContentForType(type,s);
   var slangs=s&&s.langs?s.langs:[];
-  var sptOn=slangs.indexOf('PT')!==-1;var sesOn=slangs.indexOf('ES')!==-1;
+  var sptOn=slangs.indexOf('PT')!==-1;
+  var sesOn=slangs.indexOf('ES')!==-1;
+  var isTc=type==="Today's Cinema";
+  var typeOpts='<option value="" disabled'+(type===''?' selected':'')+'>Select type</option>'
+    +["Today's Cinema",'Live','Replay','UGC','Hosts','Mixed','Movies'].map(function(t){return '<option'+(t===type?' selected':'')+'>'+t+'</option>';}).join('');
+  var contentBody=buildSlotContentForType(type,s);
+  var langHint=isTc
+    ?'Select one market. Each Today\'s Cinema slot serves a single language.'
+    :'Select the markets where this slot will be displayed.';
+  var langBtns=isTc
+    ?'<button type="button" class="lang-btn'+(sptOn?' pt-on':'')+'" onclick="tcLangPick(\'PT\',this)"><span class="lang-chk'+(sptOn?' on':'')+'"></span>PT &middot; Portuguese</button>'
+     +'<button type="button" class="lang-btn'+(sesOn?' es-on':'')+'" onclick="tcLangPick(\'ES\',this)"><span class="lang-chk'+(sesOn?' on':'')+'"></span>ES &middot; Spanish</button>'
+    :'<button type="button" class="lang-btn'+(sptOn?' pt-on':'')+'" onclick="slotToggleLang(\'PT\',this)"><span class="lang-chk'+(sptOn?' on':'')+'"></span>PT &middot; Portuguese</button>'
+     +'<button type="button" class="lang-btn'+(sesOn?' es-on':'')+'" onclick="slotToggleLang(\'ES\',this)"><span class="lang-chk'+(sesOn?' on':'')+'"></span>ES &middot; Spanish</button>';
+  var langSettingsHtml='';
+  if(sptOn){
+    langSettingsHtml+='<div class="lang-section" style="margin-bottom:10px">'
+      +'<div class="lang-section-hd"><span class="lang-badge-pt">PT</span><span style="font-size:12px;font-weight:500;margin-left:4px">Portuguese</span></div>'
+      +'<div class="lang-section-bd">'
+      +'<div><div class="fl">Display Name <span style="color:#ff4d4f">*</span></div><input class="fi" placeholder="Slot section title shown to users (PT)"></div>'
+      +'<div style="margin-top:10px"><div class="fl">See More</div><input class="fi" placeholder="e.g. https://... or peliparty://..."><div class="fhint">Accepts a URL or a deep link.</div></div>'
+      +'</div></div>';
+  }
+  if(sesOn){
+    langSettingsHtml+='<div class="lang-section" style="margin-bottom:10px">'
+      +'<div class="lang-section-hd"><span class="lang-badge-es">ES</span><span style="font-size:12px;font-weight:500;margin-left:4px">Spanish</span></div>'
+      +'<div class="lang-section-bd">'
+      +'<div><div class="fl">Display Name <span style="color:#ff4d4f">*</span></div><input class="fi" placeholder="Slot section title shown to users (ES)"></div>'
+      +'<div style="margin-top:10px"><div class="fl">See More</div><input class="fi" placeholder="e.g. https://... or peliparty://..."><div class="fhint">Accepts a URL or a deep link.</div></div>'
+      +'</div></div>';
+  }
   return '<div class="fs"><div class="fs-t">Basic Info</div>'
-    +'<div style="display:flex;gap:10px;margin-bottom:10px">'
+    +'<div style="display:flex;gap:10px;margin-bottom:0">'
     +'<div style="flex:0 0 80px"><div class="fl">Slot ID</div><input class="fi ro" value="'+(s?s.id:'auto')+'" readonly></div>'
     +'<div style="flex:1"><div class="fl">Slot Name <span style="color:#ff4d4f">*</span></div><input class="fi" value="'+(s?s.name:'')+'"></div>'
     +'<div style="flex:0 0 160px"><div class="fl">Slot Type <span style="color:#ff4d4f">*</span></div><select class="fsel" onchange="onSlotTypeChange(this.value)">'+typeOpts+'</select></div>'
-    +'</div>'
-    +'<div><div class="fl">Languages <span style="color:#ff4d4f">*</span></div>'
-    +'<div class="lang-toggle-row">'
-    +'<button type="button" class="lang-btn'+(sptOn?' pt-on':'')+'" onclick="slotToggleLang(\"PT\",this)">'
-    +'<span class="lang-chk'+(sptOn?' on':'')+'"></span>PT · Portuguese</button>'
-    +'<button type="button" class="lang-btn'+(sesOn?' es-on':'')+'" onclick="slotToggleLang(\"ES\",this)">'
-    +'<span class="lang-chk'+(sesOn?' on':'')+'"></span>ES · Spanish</button>'
-    +'</div>'
-    +'<div class="fhint">Select the markets where this slot will be displayed.</div>'
     +'</div></div>'
+    +'<div class="fs"><div class="fs-t">Language Settings</div>'
+    +'<div class="lang-toggle-row" style="margin-bottom:8px">'+langBtns+'</div>'
+    +'<div class="fhint" style="margin-bottom:12px">'+langHint+'</div>'
+    +'<div id="slot-lang-settings">'+langSettingsHtml+'</div>'
+    +'</div>'
     +'<div id="slot-content-section">'+(contentBody?'<div class="fs"><div class="fs-t">Content</div>'+contentBody+'</div>':'')+'</div>'
     +'<div id="slot-settings-section">'+(type?buildSlotSettingsSection(type):'')+'</div>';
 }
+
+function tcLangPick(lang,btn){
+  var btns=btn.parentNode.querySelectorAll('.lang-btn');
+  btns.forEach(function(b){b.classList.remove('pt-on','es-on');b.querySelector('.lang-chk').classList.remove('on');});
+  var cls=lang==='PT'?'pt-on':'es-on';
+  btn.classList.add(cls);btn.querySelector('.lang-chk').classList.add('on');
+  updateSlotLangSettings();
+}
+
 function buildSlotContentForType(type,s){
   if(!type)return '';
   var availCats=CATS.filter(function(c){if(type==='Live')return c.media.indexOf('Live')!==-1;if(type==='Replay')return c.media.indexOf('Replay')!==-1;if(type==='UGC')return c.media.indexOf('UGC')!==-1;return true;});
-  if(type==='Featured Cinema'){
-    return '<div class="fl">Cover image</div><div class="img-upload" style="height:90px;margin-bottom:14px"><span style="font-size:24px">🎬</span><span>Click to upload cover image</span></div>'
-      +'<div class="fl">Featured title <span style="color:#ff4d4f">*</span></div>'
-      +'<div class="film-combo"><input class="fi" id="film-search" placeholder="e.g. pp00000123 or Parasite" autocomplete="off" oninput="fcSearchFilms(this.value)" onfocus="fcSearchFilms(this.value)"><div class="film-dropdown" id="film-dropdown"></div></div>'
-      +'<div id="film-chip" style="display:none" class="film-chip"><span class="film-chip-title" id="film-chip-text"></span><button class="film-chip-x" onclick="fcClearFilm()">×</button></div>'
-      +'<div style="margin-top:14px">'+buildRuleSection('fc','fc-total-max',5)+'</div>';
+  if(type==="Today's Cinema"){
+    return '<div style="padding:10px 12px;background:#f0f7ff;border:1px solid #bae0ff;border-radius:6px;margin-bottom:14px">'
+      +'<div style="font-size:12px;color:#0958d9;font-weight:500;margin-bottom:4px">Auto-sourced from Schedule</div>'
+      +'<div style="font-size:11px;color:#1677ff">Today\'s film is automatically pulled from the Schedule for the selected language market. Make sure a film is scheduled for today in that market.</div>'
+      +'</div>'
+      +buildRuleSection('fc','fc-total-max',5);
   }
   if(type==='Mixed'){return buildCatsRow(CATS,s?s.cats_str:'')+buildRuleSection('mx','mx-total-max',6);}
   if(type==='Movies'){return buildMoviesContent();}
@@ -1313,11 +1410,10 @@ function buildSlotContentForType(type,s){
     +buildSortQtyInline(mediaKey,'sort-'+mediaKey,'td-'+mediaKey);
 }
 function buildSlotSettingsSection(type){
-  var sm='<div class="fl">See More</div><input class="fi" placeholder="e.g. https://peliparty.com/live  or  peliparty://videos" style="margin-bottom:4px"><div class="fhint" style="margin-bottom:14px">Accepts a URL or a deep link.</div>';
   var chips=CHIPS_TYPES.indexOf(type)!==-1
     ?'<div class="fl" style="margin-top:12px">Display chips</div><div class="chips-check-row"><label><input type="checkbox" checked> Display category chip(s)</label><label><input type="checkbox" checked> Display tag chip(s)</label></div>'
     :'';
-  return '<div class="fs" style="margin-bottom:0"><div class="fs-t">Settings</div>'+sm
+  return '<div class="fs" style="margin-bottom:0"><div class="fs-t">Settings</div>'
     +'<div class="fl">Display Window</div>'
     +'<div style="display:flex;align-items:center;gap:8px">'
     +'<select class="fsel" style="flex:0 0 auto;width:150px">'+TZ_HTML+'</select>'
@@ -1326,18 +1422,70 @@ function buildSlotSettingsSection(type){
     +'<input class="fi" type="datetime-local" style="flex:1">'
     +'</div><div class="fhint">Leave empty for immediate start / permanent.</div>'+chips+'</div>';
 }
+function buildSlotLangSettings(ptOn,esOn){
+  var el=document.getElementById('slot-lang-settings');
+  if(!el)return;
+  var h='';
+  if(ptOn){
+    h+='<div class="lang-section" style="margin-bottom:10px">'
+      +'<div class="lang-section-hd"><span class="lang-badge-pt">PT</span><span style="font-size:12px;font-weight:500;margin-left:4px">Portuguese</span></div>'
+      +'<div class="lang-section-bd">'
+      +'<div><div class="fl">Display Name <span style="color:#ff4d4f">*</span></div><input class="fi" placeholder="Slot section title shown to users (PT)"></div>'
+      +'<div style="margin-top:10px"><div class="fl">See More</div><input class="fi" placeholder="e.g. https://... or peliparty://..."><div class="fhint">Accepts a URL or a deep link.</div></div>'
+      +'</div></div>';
+  }
+  if(esOn){
+    h+='<div class="lang-section" style="margin-bottom:10px">'
+      +'<div class="lang-section-hd"><span class="lang-badge-es">ES</span><span style="font-size:12px;font-weight:500;margin-left:4px">Spanish</span></div>'
+      +'<div class="lang-section-bd">'
+      +'<div><div class="fl">Display Name <span style="color:#ff4d4f">*</span></div><input class="fi" placeholder="Slot section title shown to users (ES)"></div>'
+      +'<div style="margin-top:10px"><div class="fl">See More</div><input class="fi" placeholder="e.g. https://... or peliparty://..."><div class="fhint">Accepts a URL or a deep link.</div></div>'
+      +'</div></div>';
+  }
+  el.innerHTML=h;
+}
 function slotToggleLang(lang,btn){
   var isOn=btn.classList.contains(lang==='PT'?'pt-on':'es-on');
   if(isOn){btn.classList.remove(lang==='PT'?'pt-on':'es-on');btn.querySelector('.lang-chk').classList.remove('on');}
   else{btn.classList.add(lang==='PT'?'pt-on':'es-on');btn.querySelector('.lang-chk').classList.add('on');}
+  updateSlotLangSettings();
 }
 function onSlotTypeChange(type){
   movieManualList=[];
   var body=buildSlotContentForType(type,null);
   document.getElementById('slot-content-section').innerHTML=body?'<div class="fs"><div class="fs-t">Content</div>'+body+'</div>':'';
   document.getElementById('slot-settings-section').innerHTML=type?buildSlotSettingsSection(type):'';
-  if(type==='Featured Cinema')fcRenderRules();
+  if(type==="Today's Cinema")fcRenderRules();
   if(type==='Mixed')mxRenderRules();
+  updateSlotLangSettings();
+}
+function refreshSlotLangSettings(){
+  updateSlotLangSettings();
+}
+function updateSlotLangSettings(){
+  var el=document.getElementById('slot-lang-settings');
+  if(!el)return;
+  var mdBody=document.getElementById('md-body');
+  var ptOn=!!(mdBody&&mdBody.querySelector('.lang-btn.pt-on'));
+  var esOn=!!(mdBody&&mdBody.querySelector('.lang-btn.es-on'));
+  var h='';
+  if(ptOn){
+    h+='<div class="lang-section" style="margin-bottom:10px">'
+      +'<div class="lang-section-hd"><span class="lang-badge-pt">PT</span><span style="font-size:12px;font-weight:500;margin-left:4px">Portuguese</span></div>'
+      +'<div class="lang-section-bd">'
+      +'<div><div class="fl">Display Name <span style="color:#ff4d4f">*</span></div><input class="fi" placeholder="Slot section title shown to users (PT)"></div>'
+      +'<div style="margin-top:10px"><div class="fl">See More</div><input class="fi" placeholder="e.g. https://... or peliparty://..."><div class="fhint">Accepts a URL or a deep link.</div></div>'
+      +'</div></div>';
+  }
+  if(esOn){
+    h+='<div class="lang-section" style="margin-bottom:10px">'
+      +'<div class="lang-section-hd"><span class="lang-badge-es">ES</span><span style="font-size:12px;font-weight:500;margin-left:4px">Spanish</span></div>'
+      +'<div class="lang-section-bd">'
+      +'<div><div class="fl">Display Name <span style="color:#ff4d4f">*</span></div><input class="fi" placeholder="Slot section title shown to users (ES)"></div>'
+      +'<div style="margin-top:10px"><div class="fl">See More</div><input class="fi" placeholder="e.g. https://... or peliparty://..."><div class="fhint">Accepts a URL or a deep link.</div></div>'
+      +'</div></div>';
+  }
+  el.innerHTML=h;
 }
 
 // ── SHARED FORM HELPERS ───────────────────────────────────────────────────────
