@@ -1130,11 +1130,11 @@ function buildBannerForm(b){
 }
 function buildBanTypeBody(type){
   if(type==='live'){
-    return buildPickByHtml('live')+'<div class="divider"></div><div class="fl">Category filter <span style="color:#8c8c8c;font-weight:400">(optional)</span></div><div class="cbg">'+LIVE_CATS.map(function(c){return '<label class="ci" onclick="this.classList.toggle(\'on\')">'+c+'</label>';}).join('')+'</div><div class="fhint">Leave empty to include all categories.</div>';
+    return buildPickByHtml('live')+'<div class="divider"></div><div class="fl">Category filter</div><div class="cbg">'+LIVE_CATS.map(function(c){return '<label class="ci" onclick="this.classList.toggle(\'on\')">'+c+'</label>';}).join('')+'</div><div class="fhint">Leave empty to include all categories.</div>';
   }
   if(type==='upcoming'){
-    return buildPickByHtml('upcoming')+'<div class="divider"></div><div class="fl">Category filter <span style="color:#8c8c8c;font-weight:400">(optional)</span></div><div class="cbg">'+LIVE_CATS.map(function(c){return '<label class="ci" onclick="this.classList.toggle(\'on\')">'+c+'</label>';}).join('')+'</div><div class="fhint">Leave empty to include all categories.</div>'
-      +'<div class="divider"></div><div class="fl">Thumbnail <span style="color:#ff4d4f">*</span></div><div class="img-upload"><span style="font-size:20px">🖼</span><span>Click to upload thumbnail</span></div>';
+    return buildPickByHtml('upcoming')+'<div class="divider"></div><div class="fl">Category filter</div><div class="cbg">'+LIVE_CATS.map(function(c){return '<label class="ci" onclick="this.classList.toggle(\'on\')">'+c+'</label>';}).join('')+'</div><div class="fhint">Leave empty to include all categories.</div>'
+      +'<div class="divider"></div><div class="fl">Thumbnail</div><div class="img-upload"><span style="font-size:20px">🖼</span><span>Click to upload thumbnail</span></div><div class="fhint">If uploaded, this image will be displayed instead of the thumbnail set by the host.</div>';
   }
   if(type==='image'){
     return '<div class="fl">Image <span style="color:#ff4d4f">*</span></div><div class="img-upload" style="margin-bottom:10px"><span style="font-size:20px">🖼</span><span>Click to upload image</span></div>'
@@ -1144,7 +1144,7 @@ function buildBanTypeBody(type){
 }
 function buildPickByHtml(type){
   var opts=PICK_OPTS[type]||PICK_OPTS['live'];var def=opts[0];
-  return '<div class="fl">Pick by</div>'
+  return '<div class="fl">Pick by <span style="color:#ff4d4f">*</span></div>'
     +'<select class="fsel" id="pick-sel" onchange="onBanPickChange(this.value,\''+type+'\')">'
     +opts.map(function(o){return '<option value="'+o.val+'">'+o.lbl+'</option>';}).join('')+'</select>'
     +'<div class="fhint" id="pick-hint">'+def.hint+'</div>'
@@ -1193,7 +1193,7 @@ function buildSlotContentForType(type,s){
   if(type==='Hosts'){return '<div class="sort-qty-row" style="margin-top:0"><span class="sort-qty-label">Max items</span><input class="fi" type="number" value="4" min="1" style="width:58px"></div>';}
   var mediaKey=type==='Live'?'live':type==='Replay'?'replay':'ugc';
   return buildCatsRow(availCats,s?s.cats_str:'')
-    +(type==='UGC'?'<div style="display:flex;gap:10px;margin-bottom:12px"><div style="flex:1"><div class="fl">UGC Type</div><select class="fsel"><option>Horizontal</option><option>Vertical (shorts)</option></select></div></div>':'')
+    +(type==='UGC'?'<div style="display:flex;gap:10px;margin-bottom:12px"><div style="flex:1"><div class="fl">UGC Type <span style="color:#ff4d4f">*</span></div><select class="fsel"><option>Horizontal</option><option>Vertical (shorts)</option></select></div></div>':'')
     +buildSortQtyInline(mediaKey,'sort-'+mediaKey,'td-'+mediaKey);
 }
 function buildSlotSettingsSection(type){
