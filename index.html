@@ -210,19 +210,20 @@ tbody tr.sel td{background:#e6f4ff}
 .csv-err{color:#ff4d4f}
 
 .filter-card{background:#fff;border:1px solid #f0f0f0;border-radius:6px;padding:14px 18px;margin-bottom:0;flex-shrink:0}
-.filter-title{font-size:12px;font-weight:600;color:#8c8c8c;margin-bottom:12px;text-transform:uppercase;letter-spacing:.05em}
+.filter-title{font-size:12px;font-weight:600;color:#8c8c8c;text-transform:uppercase;letter-spacing:.05em}
 .filter-grid{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:10px;align-items:flex-end}
 .filter-col-sm{flex:0 0 160px}
 .filter-col-md{flex:0 0 200px}
 .filter-col-lg{flex:0 0 260px}
 .filter-col-date{flex:0 0 240px}
-.filter-col label{display:block;font-size:11px;color:#8c8c8c;margin-bottom:4px}
+
 .filter-col .fi,.filter-col .fsel2{width:100%;padding:5px 9px;border:1px solid #d9d9d9;border-radius:4px;font-size:12px;font-family:inherit;outline:none;color:#1f1f1f;background:#fff}
 .filter-col .fi:focus,.filter-col .fsel2:focus{border-color:#4096ff}
 .date-range{display:flex;align-items:center;gap:5px}
 .date-range .fi{flex:1;min-width:0;padding:5px 6px}
 .date-range .sep{font-size:11px;color:#8c8c8c;flex-shrink:0}
-.filter-footer{display:flex;justify-content:flex-end;gap:8px;padding-top:12px;border-top:1px solid #f0f0f0;margin-top:4px}
+.filter-footer{display:flex;justify-content:flex-end;gap:8px}
+.filter-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
 .btn-search{display:inline-flex;align-items:center;gap:5px;padding:5px 16px;border-radius:4px;border:none;background:#4096ff;color:#fff;font-size:12px;cursor:pointer;font-weight:500;font-family:inherit}
 .btn-search:hover{background:#1677ff}
 .btn-reset{display:inline-flex;align-items:center;gap:4px;padding:5px 12px;border-radius:4px;border:1px solid #d9d9d9;background:#fff;color:#595959;font-size:12px;cursor:pointer;font-family:inherit}
@@ -257,18 +258,15 @@ tbody tr.sel td{background:#e6f4ff}
     <!-- CATEGORIES -->
     <div id="pg-categories" class="pg">
       <div class="filter-card">
-        <div class="filter-title">Data filtering</div>
-        <div class="filter-grid">
-          <div class="filter-col filter-col-md"><label>Category Name</label><input class="fi" id="cat-q" placeholder="Search name..." oninput="catLiveQ=this.value"></div>
-          <div class="filter-col filter-col-sm"><label>Media Type</label><select class="fsel2" id="cat-media-f"><option value="">All media types</option><option value="Live">Live</option><option value="Replay">Replay</option><option value="UGC">UGC</option></select></div>
-          <div class="filter-col filter-col-sm"><label>Status</label><select class="fsel2" id="cat-status-f"><option value="">All status</option><option value="1">Enabled</option><option value="0">Disabled</option></select></div>
-        </div>
-        <div class="filter-footer">
-          <button class="btn-reset" onclick="catResetFilters()">↺ Reset</button>
+        <div class="filter-header"><div class="filter-title">Data filtering</div><div class="filter-footer"><button class="btn-reset" onclick="catResetFilters()">↺ Reset</button>
           <button class="btn-search" onclick="catApplyFilters()">
             <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
             Search
-          </button>
+          </button></div></div>
+        <div class="filter-grid">
+          <div class="filter-col filter-col-md"><input class="fi" id="cat-q" placeholder="Category Name" oninput="catLiveQ=this.value"></div>
+          <div class="filter-col filter-col-sm"><select class="fsel2" id="cat-media-f"><option value="">Media Type</option><option value="Live">Live</option><option value="Replay">Replay</option><option value="UGC">UGC</option></select></div>
+          <div class="filter-col filter-col-sm"><select class="fsel2" id="cat-status-f"><option value="">Status</option><option value="1">Enabled</option><option value="0">Disabled</option></select></div>
         </div>
       </div>
       <div class="action-bar">
@@ -288,19 +286,16 @@ tbody tr.sel td{background:#e6f4ff}
     <!-- BANNERS -->
     <div id="pg-banners" class="pg">
       <div class="filter-card">
-        <div class="filter-title">Data filtering</div>
-        <div class="filter-grid">
-          <div class="filter-col filter-col-md"><label>Banner Name</label><input class="fi" id="ban-q" placeholder="Search name..." oninput="banLiveQ=this.value"></div>
-          <div class="filter-col filter-col-md"><label>Banner Type</label><select class="fsel2" id="ban-type-f"><option value="">All types</option><option value="live">Live stream</option><option value="upcoming">Upcoming live stream</option><option value="image">Image</option></select></div>
-          <div class="filter-col filter-col-sm"><label>Status</label><select class="fsel2" id="ban-status-f"><option value="">All status</option><option value="1">Enabled</option><option value="0">Disabled</option></select></div>
-          <div class="filter-col filter-col-date"><label>Display Window</label><div class="date-range"><input class="fi" type="date" id="ban-date-from"><span class="sep">–</span><input class="fi" type="date" id="ban-date-to"></div></div>
-        </div>
-        <div class="filter-footer">
-          <button class="btn-reset" onclick="banResetFilters()">↺ Reset</button>
+        <div class="filter-header"><div class="filter-title">Data filtering</div><div class="filter-footer"><button class="btn-reset" onclick="banResetFilters()">↺ Reset</button>
           <button class="btn-search" onclick="banApplyFilters()">
             <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
             Search
-          </button>
+          </button></div></div>
+        <div class="filter-grid">
+          <div class="filter-col filter-col-md"><input class="fi" id="ban-q" placeholder="Banner Name" oninput="banLiveQ=this.value"></div>
+          <div class="filter-col filter-col-md"><select class="fsel2" id="ban-type-f"><option value="">Banner Type</option><option value="live">Live stream</option><option value="upcoming">Upcoming live stream</option><option value="image">Image</option></select></div>
+          <div class="filter-col filter-col-sm"><select class="fsel2" id="ban-status-f"><option value="">Status</option><option value="1">Enabled</option><option value="0">Disabled</option></select></div>
+          <div class="filter-col filter-col-date"><div class="date-range"><input class="fi" type="date" id="ban-date-from"><span class="sep">–</span><input class="fi" type="date" id="ban-date-to"></div></div>
         </div>
       </div>
       <div class="action-bar">
@@ -321,18 +316,15 @@ tbody tr.sel td{background:#e6f4ff}
     <!-- SLOTS -->
     <div id="pg-slots" class="pg on">
       <div class="filter-card">
-        <div class="filter-title">Data filtering</div>
-        <div class="filter-grid">
-          <div class="filter-col filter-col-md"><label>Slot Name</label><input class="fi" id="slot-q" placeholder="Search name..." oninput="slotLiveQ=this.value"></div>
-          <div class="filter-col filter-col-md"><label>Slot Type</label><select class="fsel2" id="slot-type-f"><option value="">All types</option><option>Featured Cinema</option><option>Live</option><option>Replay</option><option>UGC</option><option>Hosts</option><option>Mixed</option><option>Movies</option></select></div>
-          <div class="filter-col filter-col-sm"><label>Status</label><select class="fsel2" id="slot-status-f"><option value="">All status</option><option value="1">Enabled</option><option value="0">Disabled</option></select></div>
-        </div>
-        <div class="filter-footer">
-          <button class="btn-reset" onclick="slotResetFilters()">↺ Reset</button>
+        <div class="filter-header"><div class="filter-title">Data filtering</div><div class="filter-footer"><button class="btn-reset" onclick="slotResetFilters()">↺ Reset</button>
           <button class="btn-search" onclick="slotApplyFilters()">
             <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
             Search
-          </button>
+          </button></div></div>
+        <div class="filter-grid">
+          <div class="filter-col filter-col-md"><input class="fi" id="slot-q" placeholder="Slot Name" oninput="slotLiveQ=this.value"></div>
+          <div class="filter-col filter-col-md"><select class="fsel2" id="slot-type-f"><option value="">Slot Type</option><option>Featured Cinema</option><option>Live</option><option>Replay</option><option>UGC</option><option>Hosts</option><option>Mixed</option><option>Movies</option></select></div>
+          <div class="filter-col filter-col-sm"><select class="fsel2" id="slot-status-f"><option value="">Status</option><option value="1">Enabled</option><option value="0">Disabled</option></select></div>
         </div>
       </div>
       <div class="action-bar">
@@ -385,27 +377,24 @@ tbody tr.sel td{background:#e6f4ff}
       <!-- table -->
       <div id="view-tbl" style="display:none;flex:1;flex-direction:column;overflow:hidden">
         <div class="filter-card" style="border-radius:0;border-left:none;border-right:none;border-top:none">
-          <div class="filter-title">Data filtering</div>
-          <div class="filter-grid" style="margin-bottom:10px">
-            <div class="filter-col filter-col-md"><label>PP ID</label><input class="fi" id="sch-q-ppid" placeholder="e.g. pp00000123" oninput="schLivePpid=this.value"></div>
-            <div class="filter-col filter-col-lg"><label>Original Title</label><input class="fi" id="sch-q-orig" placeholder="Search original title..." oninput="schLiveOrig=this.value"></div>
-            <div class="filter-col filter-col-lg"><label>Display Title</label><input class="fi" id="sch-q-disp" placeholder="Search display title..." oninput="schLiveDisp=this.value"></div>
-          </div>
-          <div class="filter-grid" style="margin-bottom:10px">
-            <div class="filter-col filter-col-sm"><label>Year</label><select class="fsel2" id="sch-year-filter"></select></div>
-            <div class="filter-col filter-col-md"><label>Month</label><select class="fsel2" id="sch-month-filter"></select></div>
-            <div class="filter-col filter-col-sm"><label>Status</label><select class="fsel2" id="sch-status-filter"><option value="">All status</option><option value="1">Available</option><option value="0">Unavailable</option></select></div>
-          </div>
-          <div class="filter-grid">
-            <div class="filter-col filter-col-date"><label>Release Date</label><div class="date-range"><input class="fi" type="date" id="sch-release-from"><span class="sep">–</span><input class="fi" type="date" id="sch-release-to"></div></div>
-            <div class="filter-col filter-col-date"><label>Expiry Date</label><div class="date-range"><input class="fi" type="date" id="sch-expiry-from"><span class="sep">–</span><input class="fi" type="date" id="sch-expiry-to"></div></div>
-          </div>
-          <div class="filter-footer">
-            <button class="btn-reset" onclick="schResetFilters()">↺ Reset</button>
+          <div class="filter-header"><div class="filter-title">Data filtering</div><div class="filter-footer"><button class="btn-reset" onclick="schResetFilters()">↺ Reset</button>
             <button class="btn-search" onclick="schApplyFilters()">
               <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
               Search
-            </button>
+            </button></div></div>
+        <div class="filter-grid" style="margin-bottom:10px">
+            <div class="filter-col filter-col-md"><input class="fi" id="sch-q-ppid" placeholder="PP ID" oninput="schLivePpid=this.value"></div>
+            <div class="filter-col filter-col-lg"><input class="fi" id="sch-q-orig" placeholder="Original Title" oninput="schLiveOrig=this.value"></div>
+            <div class="filter-col filter-col-lg"><input class="fi" id="sch-q-disp" placeholder="Display Title" oninput="schLiveDisp=this.value"></div>
+          </div>
+          <div class="filter-grid" style="margin-bottom:10px">
+            <div class="filter-col filter-col-sm"><select class="fsel2" id="sch-year-filter"></select></div>
+            <div class="filter-col filter-col-md"><select class="fsel2" id="sch-month-filter"></select></div>
+            <div class="filter-col filter-col-sm"><select class="fsel2" id="sch-status-filter"><option value="">Status</option><option value="1">Available</option><option value="0">Unavailable</option></select></div>
+          </div>
+          <div class="filter-grid">
+            <div class="filter-col filter-col-date"><div class="date-range"><input class="fi" type="date" id="sch-release-from"><span class="sep">–</span><input class="fi" type="date" id="sch-release-to"></div></div>
+            <div class="filter-col filter-col-date"><div class="date-range"><input class="fi" type="date" id="sch-expiry-from"><span class="sep">–</span><input class="fi" type="date" id="sch-expiry-to"></div></div>
           </div>
         </div>
         <div class="action-bar" id="sch-action-bar-tbl">
@@ -879,9 +868,9 @@ function buildSchDateFilters(){
   var ySel=document.getElementById('sch-year-filter');
   var mSel=document.getElementById('sch-month-filter');
   var curY=ySel.value,curM=mSel.value;
-  ySel.innerHTML='<option value="">All years</option>';
+  ySel.innerHTML='<option value="">Year</option>';
   Object.keys(years).sort().forEach(function(y){ySel.innerHTML+='<option value="'+y+'"'+(y===curY?' selected':'')+'>'+y+'</option>';});
-  mSel.innerHTML='<option value="">All months</option>';
+  mSel.innerHTML='<option value="">Month</option>';
   Object.keys(months).sort().forEach(function(k){var parts=k.split('-');mSel.innerHTML+='<option value="'+k+'"'+(k===curM?' selected':'')+'>'+MONTHS_SHORT[parseInt(parts[1])-1]+' '+parts[0]+'</option>';});
 }
 function getSch(){
