@@ -12,10 +12,13 @@ body{background:#f0f2f5;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
 .l1{padding:14px 20px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0}
 .l1-name{color:#fff;font-weight:700;font-size:14px}
 .l1-arrow{color:rgba(255,255,255,.35);font-size:11px}
-.l2{padding:14px 20px 4px;display:flex;align-items:center;justify-content:space-between;cursor:pointer}
-.l2-name{font-size:10px;font-weight:600;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.08em}
+.l2{padding:12px 20px 4px;display:flex;align-items:center;justify-content:space-between;cursor:pointer}
+.l2-name{font-size:13px;font-weight:600;color:#fff;letter-spacing:.01em}
 .l2-arrow{color:rgba(255,255,255,.25);font-size:10px}
-.ni{display:flex;align-items:center;padding:8px 20px 8px 32px;cursor:pointer;color:rgba(255,255,255,.5);font-size:13px;transition:all .12s;border-right:2px solid transparent}
+.l3{padding:6px 20px 4px 28px;display:flex;align-items:center;justify-content:space-between;cursor:pointer}
+.l3-name{font-size:10px;font-weight:600;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.08em}
+.l3-arrow{color:rgba(255,255,255,.25);font-size:10px}
+.ni{display:flex;align-items:center;padding:7px 20px 7px 40px;cursor:pointer;color:rgba(255,255,255,.5);font-size:12px;transition:all .12s;border-right:2px solid transparent}
 .ni:hover{color:#fff;background:rgba(255,255,255,.05)}
 .ni.on{color:#fff;background:rgba(64,150,255,.13);border-right-color:#4096ff}
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden}
@@ -205,23 +208,46 @@ tbody tr.sel td{background:#e6f4ff}
 .csv-table td{padding:7px 10px;border-bottom:1px solid #f7f7f7;vertical-align:top}
 .csv-ok{color:#52c41a}
 .csv-err{color:#ff4d4f}
+
+.filter-card{background:#fff;border:1px solid #f0f0f0;border-radius:6px;padding:14px 18px;margin-bottom:0;flex-shrink:0}
+.filter-title{font-size:12px;font-weight:600;color:#8c8c8c;margin-bottom:12px;text-transform:uppercase;letter-spacing:.05em}
+.filter-grid{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:10px;align-items:flex-end}
+.filter-col-sm{flex:0 0 160px}
+.filter-col-md{flex:0 0 200px}
+.filter-col-lg{flex:0 0 260px}
+.filter-col-date{flex:0 0 240px}
+.filter-col label{display:block;font-size:11px;color:#8c8c8c;margin-bottom:4px}
+.filter-col .fi,.filter-col .fsel2{width:100%;padding:5px 9px;border:1px solid #d9d9d9;border-radius:4px;font-size:12px;font-family:inherit;outline:none;color:#1f1f1f;background:#fff}
+.filter-col .fi:focus,.filter-col .fsel2:focus{border-color:#4096ff}
+.date-range{display:flex;align-items:center;gap:5px}
+.date-range .fi{flex:1;min-width:0;padding:5px 6px}
+.date-range .sep{font-size:11px;color:#8c8c8c;flex-shrink:0}
+.filter-footer{display:flex;justify-content:flex-end;gap:8px;padding-top:12px;border-top:1px solid #f0f0f0;margin-top:4px}
+.btn-search{display:inline-flex;align-items:center;gap:5px;padding:5px 16px;border-radius:4px;border:none;background:#4096ff;color:#fff;font-size:12px;cursor:pointer;font-weight:500;font-family:inherit}
+.btn-search:hover{background:#1677ff}
+.btn-reset{display:inline-flex;align-items:center;gap:4px;padding:5px 12px;border-radius:4px;border:1px solid #d9d9d9;background:#fff;color:#595959;font-size:12px;cursor:pointer;font-family:inherit}
+.btn-reset:hover{border-color:#4096ff;color:#4096ff}
+.action-bar{display:flex;align-items:center;justify-content:flex-end;gap:7px;padding:10px 18px;background:#fff;border-bottom:1px solid #f0f0f0;flex-shrink:0}
 </style>
 </head>
 <body>
 <div class="app">
 <div class="sidebar">
-  <div class="l1" onclick="toggleL1()"><span class="l1-name">PeliParty</span><span class="l1-arrow" id="l1-arrow">∧</span></div>
+  <div class="l1"><span class="l1-name">PMS</span></div>
   <div id="l1-body">
-    <div class="l2" onclick="toggleL2('master')"><span class="l2-name">Master Data</span><span class="l2-arrow" id="l2-arrow-master">∧</span></div>
-    <div id="l2-master"><div class="ni" onclick="navTo('categories',this,'Categories')">Categories</div></div>
-    <div class="l2" onclick="toggleL2('home')"><span class="l2-name">Home Screen</span><span class="l2-arrow" id="l2-arrow-home">∧</span></div>
-    <div id="l2-home">
-      <div class="ni" onclick="navTo('banners',this,'Banners')">Banners</div>
-      <div class="ni on" onclick="navTo('slots',this,'Slots')">Slots</div>
-      <div class="ni" onclick="navTo('schedule',this,'Schedule')">Schedule</div>
+    <div class="l2" onclick="toggleL2('pelip')"><span class="l2-name">PeliParty</span><span class="l2-arrow" id="l2-arrow-pelip">∧</span></div>
+    <div id="l2-pelip">
+      <div class="l3" onclick="toggleL3('master')"><span class="l3-name">Master Data</span><span class="l3-arrow" id="l3-arrow-master">∧</span></div>
+      <div id="l3-master"><div class="ni" onclick="navTo('categories',this,'Categories')">Categories</div></div>
+      <div class="l3" onclick="toggleL3('home')"><span class="l3-name">Home Screen</span><span class="l3-arrow" id="l3-arrow-home">∧</span></div>
+      <div id="l3-home">
+        <div class="ni" onclick="navTo('banners',this,'Banners')">Banners</div>
+        <div class="ni on" onclick="navTo('slots',this,'Slots')">Slots</div>
+        <div class="ni" onclick="navTo('schedule',this,'Schedule')">Schedule</div>
+      </div>
+      <div class="l3" onclick="toggleL3('settings')"><span class="l3-name">Settings</span><span class="l3-arrow" id="l3-arrow-settings">∧</span></div>
+      <div id="l3-settings"><div class="ni" onclick="navTo('display',this,'Display')">Display</div></div>
     </div>
-    <div class="l2" onclick="toggleL2('settings')"><span class="l2-name">Settings</span><span class="l2-arrow" id="l2-arrow-settings">∧</span></div>
-    <div id="l2-settings"></div>
   </div>
 </div>
 <div class="main">
@@ -230,16 +256,27 @@ tbody tr.sel td{background:#e6f4ff}
 
     <!-- CATEGORIES -->
     <div id="pg-categories" class="pg">
-      <div class="tb">
-        <input class="si" placeholder="Search categories..." oninput="filterCats(this.value)">
-        <select class="fi2" onchange="filterCatStatus(this.value)"><option value="">All status</option><option value="1">Enabled</option><option value="0">Disabled</option></select>
-        <div class="tb-r">
-          <button class="btn btn-add" onclick="openModal('cat-add')">+ Add</button>
-          <button class="btn btn-edit" id="cat-edit-btn" disabled onclick="catEditSelected()">✏ Edit</button>
-          <button class="btn btn-dis" id="cat-dis-btn" disabled onclick="catBulkDisable()">Disable</button>
-          <button class="btn btn-ena" id="cat-ena-btn" disabled onclick="catBulkEnable()">Enable</button>
-          <button class="btn btn-del" id="cat-del-btn" disabled onclick="catBulkDel()">🗑 Delete</button>
+      <div class="filter-card">
+        <div class="filter-title">Data filtering</div>
+        <div class="filter-grid">
+          <div class="filter-col filter-col-md"><label>Category Name</label><input class="fi" id="cat-q" placeholder="Search name..." oninput="catLiveQ=this.value"></div>
+          <div class="filter-col filter-col-sm"><label>Media Type</label><select class="fsel2" id="cat-media-f"><option value="">All media types</option><option value="Live">Live</option><option value="Replay">Replay</option><option value="UGC">UGC</option></select></div>
+          <div class="filter-col filter-col-sm"><label>Status</label><select class="fsel2" id="cat-status-f"><option value="">All status</option><option value="1">Enabled</option><option value="0">Disabled</option></select></div>
         </div>
+        <div class="filter-footer">
+          <button class="btn-reset" onclick="catResetFilters()">↺ Reset</button>
+          <button class="btn-search" onclick="catApplyFilters()">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            Search
+          </button>
+        </div>
+      </div>
+      <div class="action-bar">
+        <button class="btn btn-edit" id="cat-edit-btn" disabled onclick="catEditSelected()">✏ Edit</button>
+        <button class="btn btn-dis" id="cat-dis-btn" disabled onclick="catBulkDisable()">Disable</button>
+        <button class="btn btn-ena" id="cat-ena-btn" disabled onclick="catBulkEnable()">Enable</button>
+        <button class="btn btn-del" id="cat-del-btn" disabled onclick="catBulkDel()">🗑 Delete</button>
+        <button class="btn btn-add" onclick="openModal('cat-add')">+ Add</button>
       </div>
       <div class="tw"><table>
         <thead><tr><th style="width:32px"><input type="checkbox" class="cb" id="cat-cb-all" onclick="catToggleAll(this)"></th><th style="width:40px">NO.</th><th>Category ID</th><th>Category Name</th><th>Media Type(s)</th><th>Status</th><th>Creator</th><th>Create Date</th><th>Modify Date</th></tr></thead>
@@ -250,18 +287,29 @@ tbody tr.sel td{background:#e6f4ff}
 
     <!-- BANNERS -->
     <div id="pg-banners" class="pg">
-      <div class="tb">
-        <input class="si" placeholder="Search banners..." oninput="filterBanners(this.value)">
-        <select class="fi2" onchange="filterBannerType(this.value)"><option value="">All types</option><option value="live">Live stream</option><option value="upcoming">Upcoming live stream</option><option value="image">Image</option></select>
-        <select class="fi2" onchange="filterBannerStatus(this.value)"><option value="">All status</option><option value="1">Enabled</option><option value="0">Disabled</option></select>
-        <div class="tb-r">
-          <button class="btn btn-add" onclick="openModal('ban-add')">+ Add</button>
-          <button class="btn btn-edit" id="ban-edit-btn" disabled onclick="banEditSelected()">✏ Edit</button>
-          <button class="btn btn-org" onclick="openModal('ban-organize')">⇅ Organize</button>
-          <button class="btn btn-dis" id="ban-dis-btn" disabled onclick="banBulkDisable()">Disable</button>
-          <button class="btn btn-ena" id="ban-ena-btn" disabled onclick="banBulkEnable()">Enable</button>
-          <button class="btn btn-del" id="ban-del-btn" disabled onclick="banBulkDel()">🗑 Delete</button>
+      <div class="filter-card">
+        <div class="filter-title">Data filtering</div>
+        <div class="filter-grid">
+          <div class="filter-col filter-col-md"><label>Banner Name</label><input class="fi" id="ban-q" placeholder="Search name..." oninput="banLiveQ=this.value"></div>
+          <div class="filter-col filter-col-md"><label>Banner Type</label><select class="fsel2" id="ban-type-f"><option value="">All types</option><option value="live">Live stream</option><option value="upcoming">Upcoming live stream</option><option value="image">Image</option></select></div>
+          <div class="filter-col filter-col-sm"><label>Status</label><select class="fsel2" id="ban-status-f"><option value="">All status</option><option value="1">Enabled</option><option value="0">Disabled</option></select></div>
+          <div class="filter-col filter-col-date"><label>Display Window</label><div class="date-range"><input class="fi" type="date" id="ban-date-from"><span class="sep">–</span><input class="fi" type="date" id="ban-date-to"></div></div>
         </div>
+        <div class="filter-footer">
+          <button class="btn-reset" onclick="banResetFilters()">↺ Reset</button>
+          <button class="btn-search" onclick="banApplyFilters()">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            Search
+          </button>
+        </div>
+      </div>
+      <div class="action-bar">
+        <button class="btn btn-edit" id="ban-edit-btn" disabled onclick="banEditSelected()">✏ Edit</button>
+        <button class="btn btn-org" onclick="openModal('ban-organize')">⇅ Organize</button>
+        <button class="btn btn-dis" id="ban-dis-btn" disabled onclick="banBulkDisable()">Disable</button>
+        <button class="btn btn-ena" id="ban-ena-btn" disabled onclick="banBulkEnable()">Enable</button>
+        <button class="btn btn-del" id="ban-del-btn" disabled onclick="banBulkDel()">🗑 Delete</button>
+        <button class="btn btn-add" onclick="openModal('ban-add')">+ Add</button>
       </div>
       <div class="tw"><table>
         <thead><tr><th style="width:32px"><input type="checkbox" class="cb" id="ban-cb-all" onclick="banToggleAll(this)"></th><th style="width:40px">NO.</th><th>Banner ID</th><th>Banner Name</th><th>Banner Type</th><th>Timezone</th><th>Start Time</th><th>End Time</th><th>Status</th><th>Creator</th><th>Create Date</th><th>Modify Date</th></tr></thead>
@@ -272,18 +320,28 @@ tbody tr.sel td{background:#e6f4ff}
 
     <!-- SLOTS -->
     <div id="pg-slots" class="pg on">
-      <div class="tb">
-        <input class="si" placeholder="Search slot name..." oninput="filterSlots(this.value)">
-        <select class="fi2" onchange="filterSlotType(this.value)"><option value="">All types</option><option>Featured Cinema</option><option>Live</option><option>Replay</option><option>UGC</option><option>Hosts</option><option>Mixed</option><option>Movies</option></select>
-        <select class="fi2" onchange="filterSlotStatus(this.value)"><option value="">All status</option><option value="1">Enabled</option><option value="0">Disabled</option></select>
-        <div class="tb-r">
-          <button class="btn btn-add" onclick="openModal('slot-add')">+ Add</button>
-          <button class="btn btn-edit" id="slot-edit-btn" disabled onclick="slotEditSelected()">✏ Edit</button>
-          <button class="btn btn-org" onclick="openModal('slot-organize')">⇅ Organize</button>
-          <button class="btn btn-dis" id="slot-dis-btn" disabled onclick="slotBulkDisable()">Disable</button>
-          <button class="btn btn-ena" id="slot-ena-btn" disabled onclick="slotBulkEnable()">Enable</button>
-          <button class="btn btn-del" id="slot-del-btn" disabled onclick="slotBulkDel()">🗑 Delete</button>
+      <div class="filter-card">
+        <div class="filter-title">Data filtering</div>
+        <div class="filter-grid">
+          <div class="filter-col filter-col-md"><label>Slot Name</label><input class="fi" id="slot-q" placeholder="Search name..." oninput="slotLiveQ=this.value"></div>
+          <div class="filter-col filter-col-md"><label>Slot Type</label><select class="fsel2" id="slot-type-f"><option value="">All types</option><option>Featured Cinema</option><option>Live</option><option>Replay</option><option>UGC</option><option>Hosts</option><option>Mixed</option><option>Movies</option></select></div>
+          <div class="filter-col filter-col-sm"><label>Status</label><select class="fsel2" id="slot-status-f"><option value="">All status</option><option value="1">Enabled</option><option value="0">Disabled</option></select></div>
         </div>
+        <div class="filter-footer">
+          <button class="btn-reset" onclick="slotResetFilters()">↺ Reset</button>
+          <button class="btn-search" onclick="slotApplyFilters()">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            Search
+          </button>
+        </div>
+      </div>
+      <div class="action-bar">
+        <button class="btn btn-edit" id="slot-edit-btn" disabled onclick="slotEditSelected()">✏ Edit</button>
+        <button class="btn btn-org" onclick="openModal('slot-organize')">⇅ Organize</button>
+        <button class="btn btn-dis" id="slot-dis-btn" disabled onclick="slotBulkDisable()">Disable</button>
+        <button class="btn btn-ena" id="slot-ena-btn" disabled onclick="slotBulkEnable()">Enable</button>
+        <button class="btn btn-del" id="slot-del-btn" disabled onclick="slotBulkDel()">🗑 Delete</button>
+        <button class="btn btn-add" onclick="openModal('slot-add')">+ Add</button>
       </div>
       <div class="tw"><table>
         <thead><tr><th style="width:32px"><input type="checkbox" class="cb" id="slot-cb-all" onclick="slotToggleAll(this)"></th><th style="width:40px">NO.</th><th>Slot ID</th><th>Slot Name</th><th>Slot Type</th><th>Categories</th><th>Status</th><th>Creator</th><th>Create Date</th><th>Modify Date</th></tr></thead>
@@ -306,8 +364,6 @@ tbody tr.sel td{background:#e6f4ff}
         <div class="tb-r">
           <button class="btn btn-plain btn-sm" onclick="openCSV()">⬆ Import CSV</button>
           <button class="btn btn-add btn-sm" onclick="openSchAdd()">+ Add</button>
-          <button class="btn btn-edit btn-sm" id="sch-edit-btn" disabled onclick="openSchEdit()">✏ Edit</button>
-          <button class="btn btn-del btn-sm" id="sch-del-btn" disabled onclick="schDel()">🗑 Delete</button>
         </div>
       </div>
       <!-- calendar -->
@@ -328,11 +384,35 @@ tbody tr.sel td{background:#e6f4ff}
       </div>
       <!-- table -->
       <div id="view-tbl" style="display:none;flex:1;flex-direction:column;overflow:hidden">
-        <div style="padding:10px 18px;background:#fff;border-bottom:1px solid #f0f0f0;display:flex;gap:7px;flex-shrink:0;flex-wrap:wrap">
-          <input class="si" id="sch-search" placeholder="Search title or PP ID..." oninput="filterSch(this.value)">
-          <select class="fi2" id="sch-year-filter" onchange="filterSchYear(this.value)"></select>
-          <select class="fi2" id="sch-month-filter" onchange="filterSchMonth(this.value)"></select>
-          <select class="fi2" id="sch-status-filter" onchange="filterSchStatus(this.value)"><option value="">All status</option><option value="1">Available</option><option value="0">Unavailable</option></select>
+        <div class="filter-card" style="border-radius:0;border-left:none;border-right:none;border-top:none">
+          <div class="filter-title">Data filtering</div>
+          <div class="filter-grid" style="margin-bottom:10px">
+            <div class="filter-col filter-col-md"><label>PP ID</label><input class="fi" id="sch-q-ppid" placeholder="e.g. pp00000123" oninput="schLivePpid=this.value"></div>
+            <div class="filter-col filter-col-lg"><label>Original Title</label><input class="fi" id="sch-q-orig" placeholder="Search original title..." oninput="schLiveOrig=this.value"></div>
+            <div class="filter-col filter-col-lg"><label>Display Title</label><input class="fi" id="sch-q-disp" placeholder="Search display title..." oninput="schLiveDisp=this.value"></div>
+          </div>
+          <div class="filter-grid" style="margin-bottom:10px">
+            <div class="filter-col filter-col-sm"><label>Year</label><select class="fsel2" id="sch-year-filter"></select></div>
+            <div class="filter-col filter-col-md"><label>Month</label><select class="fsel2" id="sch-month-filter"></select></div>
+            <div class="filter-col filter-col-sm"><label>Status</label><select class="fsel2" id="sch-status-filter"><option value="">All status</option><option value="1">Available</option><option value="0">Unavailable</option></select></div>
+          </div>
+          <div class="filter-grid">
+            <div class="filter-col filter-col-date"><label>Release Date</label><div class="date-range"><input class="fi" type="date" id="sch-release-from"><span class="sep">–</span><input class="fi" type="date" id="sch-release-to"></div></div>
+            <div class="filter-col filter-col-date"><label>Expiry Date</label><div class="date-range"><input class="fi" type="date" id="sch-expiry-from"><span class="sep">–</span><input class="fi" type="date" id="sch-expiry-to"></div></div>
+          </div>
+          <div class="filter-footer">
+            <button class="btn-reset" onclick="schResetFilters()">↺ Reset</button>
+            <button class="btn-search" onclick="schApplyFilters()">
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              Search
+            </button>
+          </div>
+        </div>
+        <div class="action-bar" id="sch-action-bar-tbl">
+          <button class="btn btn-edit btn-sm" id="sch-edit-btn" disabled onclick="openSchEdit()">✏ Edit</button>
+          <button class="btn btn-del btn-sm" id="sch-del-btn" disabled onclick="schDel()">🗑 Delete</button>
+          <button class="btn btn-plain btn-sm" onclick="openCSV()">⬆ Import CSV</button>
+          <button class="btn btn-add btn-sm" onclick="openSchAdd()">+ Add</button>
         </div>
         <div class="tw"><table>
           <thead><tr>
@@ -481,9 +561,35 @@ var schIdSeq=13;
 var calM=new Date(2026,4,1);
 var schView='cal';
 var banSel=new Set(),slotSel=new Set(),schSel=new Set();
-var banQ='',banTypeF='',banStatusF='';
-var slotQ='',slotTypeF='',slotStatusF='';
 var schQ='',schYearF='',schMonthF='',schStatusF='';
+var schReleaseFrom='',schReleaseTo='',schExpiryFrom='',schExpiryTo='';
+var schLivePpid='',schLiveOrig='',schLiveDisp='';
+function schApplyFilters(){
+  schQ=schLivePpid;
+  schYearF=document.getElementById('sch-year-filter').value;
+  schMonthF=document.getElementById('sch-month-filter').value;
+  schStatusF=document.getElementById('sch-status-filter').value;
+  schReleaseFrom=document.getElementById('sch-release-from').value;
+  schReleaseTo=document.getElementById('sch-release-to').value;
+  schExpiryFrom=document.getElementById('sch-expiry-from').value;
+  schExpiryTo=document.getElementById('sch-expiry-to').value;
+  var orig=document.getElementById('sch-q-orig').value;
+  var disp=document.getElementById('sch-q-disp').value;
+  schLiveOrigApplied=orig;schLiveDispApplied=disp;
+  schSel.clear();renderSchTable();
+}
+function schResetFilters(){
+  schQ='';schYearF='';schMonthF='';schStatusF='';
+  schReleaseFrom='';schReleaseTo='';schExpiryFrom='';schExpiryTo='';
+  schLivePpid='';schLiveOrig='';schLiveDisp='';
+  schLiveOrigApplied='';schLiveDispApplied='';
+  ['sch-q-ppid','sch-q-orig','sch-q-disp','sch-release-from','sch-release-to','sch-expiry-from','sch-expiry-to'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('sch-year-filter').value='';
+  document.getElementById('sch-month-filter').value='';
+  document.getElementById('sch-status-filter').value='';
+  schSel.clear();renderSchTable();
+}
+var schLiveOrigApplied='',schLiveDispApplied='';
 var schSortKey='mod',schSortDir='desc';
 var editingId=null,schAddFilm=null;
 var banOrgOrder=[],banOrgDragSrc=null;
@@ -493,15 +599,16 @@ var mxRules=[{type:'live',qty:2,sort:'most_popular',trendingDays:7,upcomingFallb
 var fcDragSrc=null,mxDragSrc=null;
 var movieManualList=[];
 var csvRows=[];
-var l1Open=true,l2State={master:true,home:true,settings:true};
+var l2State={pelip:true};
+var l3State={master:true,home:true,settings:true};
 
 function pad(n){return n<10?'0'+n:''+n;}
 function byModDesc(a,b){return b.mod.localeCompare(a.mod);}
 function now(){return new Date().toISOString().replace('T',' ').substring(0,16);}
 
 // ── NAVIGATION ────────────────────────────────────────────────────────────────
-function toggleL1(){l1Open=!l1Open;document.getElementById('l1-body').style.display=l1Open?'':'none';document.getElementById('l1-arrow').textContent=l1Open?'∧':'∨';}
 function toggleL2(k){l2State[k]=!l2State[k];document.getElementById('l2-'+k).style.display=l2State[k]?'':'none';document.getElementById('l2-arrow-'+k).textContent=l2State[k]?'∧':'∨';}
+function toggleL3(k){l3State[k]=!l3State[k];document.getElementById('l3-'+k).style.display=l3State[k]?'':'none';document.getElementById('l3-arrow-'+k).textContent=l3State[k]?'∧':'∨';}
 function navTo(id,el,label){
   document.querySelectorAll('.ni').forEach(function(n){n.classList.remove('on');});el.classList.add('on');
   document.getElementById('bc').textContent=label;
@@ -516,10 +623,26 @@ function navTo(id,el,label){
 }
 
 // ── CATEGORIES ────────────────────────────────────────────────────────────────
-var catSel=new Set(),catQ='',catStatusF='',catIdSeq=8;
+var catSel=new Set(),catIdSeq=8;
+var catQ='',catStatusF='',catMediaF='';
+var catLiveQ='';
+function catApplyFilters(){
+  catQ=catLiveQ;
+  catMediaF=document.getElementById('cat-media-f').value;
+  catStatusF=document.getElementById('cat-status-f').value;
+  catSel.clear();renderCats();
+}
+function catResetFilters(){
+  catLiveQ='';catQ='';catMediaF='';catStatusF='';
+  document.getElementById('cat-q').value='';
+  document.getElementById('cat-media-f').value='';
+  document.getElementById('cat-status-f').value='';
+  catSel.clear();renderCats();
+}
 function getCats(){
   return CATS.filter(function(c){
     if(catQ&&c.name.toLowerCase().indexOf(catQ.toLowerCase())===-1)return false;
+    if(catMediaF&&c.media.indexOf(catMediaF)===-1)return false;
     if(catStatusF==='1'&&!c.enabled)return false;
     if(catStatusF==='0'&&c.enabled)return false;
     return true;
@@ -603,7 +726,34 @@ function saveCatModal(editingCatId){
 }
 
 // ── BANNERS ───────────────────────────────────────────────────────────────────
-function getBanners(){return BANNERS.filter(function(b){if(banQ&&b.name.toLowerCase().indexOf(banQ.toLowerCase())===-1)return false;if(banTypeF&&b.type!==banTypeF)return false;if(banStatusF==='1'&&!b.enabled)return false;if(banStatusF==='0'&&b.enabled)return false;return true;}).sort(byModDesc);}
+var banQ='',banTypeF='',banStatusF='',banDateFrom='',banDateTo='';
+var banLiveQ='';
+function banApplyFilters(){
+  banQ=banLiveQ;
+  banTypeF=document.getElementById('ban-type-f').value;
+  banStatusF=document.getElementById('ban-status-f').value;
+  banDateFrom=document.getElementById('ban-date-from').value;
+  banDateTo=document.getElementById('ban-date-to').value;
+  banSel.clear();renderBanners();
+}
+function banResetFilters(){
+  banLiveQ='';banQ='';banTypeF='';banStatusF='';banDateFrom='';banDateTo='';
+  document.getElementById('ban-q').value='';
+  document.getElementById('ban-type-f').value='';
+  document.getElementById('ban-status-f').value='';
+  document.getElementById('ban-date-from').value='';
+  document.getElementById('ban-date-to').value='';
+  banSel.clear();renderBanners();
+}
+function getBanners(){return BANNERS.filter(function(b){
+  if(banQ&&b.name.toLowerCase().indexOf(banQ.toLowerCase())===-1)return false;
+  if(banTypeF&&b.type!==banTypeF)return false;
+  if(banStatusF==='1'&&!b.enabled)return false;
+  if(banStatusF==='0'&&b.enabled)return false;
+  if(banDateFrom&&b.start&&b.start.substring(0,10)<banDateFrom)return false;
+  if(banDateTo&&b.end&&b.end.substring(0,10)>banDateTo)return false;
+  return true;
+}).sort(byModDesc);}
 function renderBanners(){
   var rows=getBanners();document.getElementById('ban-total').textContent=rows.length;var h='';
   rows.forEach(function(b,i){var sel=banSel.has(b.id);
@@ -624,9 +774,7 @@ function renderBanners(){
   document.getElementById('ban-del-btn').disabled=n===0;document.getElementById('ban-dis-btn').disabled=n===0;
   document.getElementById('ban-ena-btn').disabled=n===0;document.getElementById('ban-edit-btn').disabled=n!==1;
 }
-function filterBanners(q){banQ=q;renderBanners();}
-function filterBannerType(t){banTypeF=t;renderBanners();}
-function filterBannerStatus(s){banStatusF=s;renderBanners();}
+
 function banToggleAll(cb){getBanners().forEach(function(b){cb.checked?banSel.add(b.id):banSel.delete(b.id);});renderBanners();}
 function banToggleSel(id,cb){cb.checked?banSel.add(id):banSel.delete(id);renderBanners();}
 function banBulkDel(){for(var i=BANNERS.length-1;i>=0;i--){if(banSel.has(BANNERS[i].id))BANNERS.splice(i,1);}banSel.clear();renderBanners();}
@@ -635,6 +783,21 @@ function banBulkEnable(){BANNERS.forEach(function(b){if(banSel.has(b.id))b.enabl
 function banEditSelected(){var id=Array.from(banSel)[0];if(id!=null)openModal('ban-edit',id);}
 
 // ── SLOTS ─────────────────────────────────────────────────────────────────────
+var slotQ='',slotTypeF='',slotStatusF='';
+var slotLiveQ='';
+function slotApplyFilters(){
+  slotQ=slotLiveQ;
+  slotTypeF=document.getElementById('slot-type-f').value;
+  slotStatusF=document.getElementById('slot-status-f').value;
+  slotSel.clear();renderSlots();
+}
+function slotResetFilters(){
+  slotLiveQ='';slotQ='';slotTypeF='';slotStatusF='';
+  document.getElementById('slot-q').value='';
+  document.getElementById('slot-type-f').value='';
+  document.getElementById('slot-status-f').value='';
+  slotSel.clear();renderSlots();
+}
 function getSlots(){return SLOTS.filter(function(s){if(slotQ&&s.name.toLowerCase().indexOf(slotQ.toLowerCase())===-1)return false;if(slotTypeF&&s.type!==slotTypeF)return false;if(slotStatusF==='1'&&!s.enabled)return false;if(slotStatusF==='0'&&s.enabled)return false;return true;}).sort(byModDesc);}
 function renderSlots(){
   var rows=getSlots();document.getElementById('slot-total').textContent=rows.length;var h='';
@@ -654,9 +817,7 @@ function renderSlots(){
   document.getElementById('slot-del-btn').disabled=n===0;document.getElementById('slot-dis-btn').disabled=n===0;
   document.getElementById('slot-ena-btn').disabled=n===0;document.getElementById('slot-edit-btn').disabled=n!==1;
 }
-function filterSlots(q){slotQ=q;renderSlots();}
-function filterSlotType(t){slotTypeF=t;renderSlots();}
-function filterSlotStatus(v){slotStatusF=v;renderSlots();}
+
 function slotToggleAll(cb){getSlots().forEach(function(s){cb.checked?slotSel.add(s.id):slotSel.delete(s.id);});renderSlots();}
 function slotToggleSel(id,cb){cb.checked?slotSel.add(id):slotSel.delete(id);renderSlots();}
 function slotBulkDel(){for(var i=SLOTS.length-1;i>=0;i--){if(slotSel.has(SLOTS[i].id))SLOTS.splice(i,1);}slotSel.clear();renderSlots();}
@@ -725,11 +886,17 @@ function buildSchDateFilters(){
 }
 function getSch(){
   return SCH.filter(function(s){
-    if(schQ&&s.originalTitle.toLowerCase().indexOf(schQ.toLowerCase())===-1&&s.ppId.indexOf(schQ)===-1&&(s.displayTitle||'').toLowerCase().indexOf(schQ.toLowerCase())===-1)return false;
+    if(schQ&&s.ppId.toLowerCase().indexOf(schQ.toLowerCase())===-1)return false;
+    if(schLiveOrigApplied&&s.originalTitle.toLowerCase().indexOf(schLiveOrigApplied.toLowerCase())===-1)return false;
+    if(schLiveDispApplied&&(s.displayTitle||'').toLowerCase().indexOf(schLiveDispApplied.toLowerCase())===-1)return false;
     if(schYearF&&!s.release.startsWith(schYearF))return false;
     if(schMonthF&&!s.release.startsWith(schMonthF))return false;
     if(schStatusF==='1'&&!s.available)return false;
     if(schStatusF==='0'&&s.available)return false;
+    if(schReleaseFrom&&s.release&&s.release.substring(0,10)<schReleaseFrom)return false;
+    if(schReleaseTo&&s.release&&s.release.substring(0,10)>schReleaseTo)return false;
+    if(schExpiryFrom&&s.until&&s.until.substring(0,10)<schExpiryFrom)return false;
+    if(schExpiryTo&&s.until&&s.until.substring(0,10)>schExpiryTo)return false;
     return true;
   }).sort(function(a,b){
     var av=a[schSortKey]||'',bv=b[schSortKey]||'';
@@ -765,10 +932,7 @@ function renderSchTable(){
   });
 }
 function sortSch(k){if(schSortKey===k)schSortDir=schSortDir==='asc'?'desc':'asc';else{schSortKey=k;schSortDir=k==='release'||k==='until'?'asc':'desc';}renderSchTable();}
-function filterSch(q){schQ=q;renderSchTable();}
-function filterSchYear(v){schYearF=v;if(v)schMonthF='';document.getElementById('sch-month-filter').value='';renderSchTable();}
-function filterSchMonth(v){schMonthF=v;renderSchTable();}
-function filterSchStatus(v){schStatusF=v;renderSchTable();}
+
 function schToggleAll(cb){getSch().forEach(function(s){cb.checked?schSel.add(s.id):schSel.delete(s.id);});renderSchTable();}
 function schToggleSel(id,cb){cb.checked?schSel.add(id):schSel.delete(id);updateSchBtns();renderSchTable();}
 function updateSchBtns(){var n=schSel.size;document.getElementById('sch-del-btn').disabled=n===0;document.getElementById('sch-edit-btn').disabled=n!==1;}
