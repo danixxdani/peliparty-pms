@@ -229,6 +229,19 @@ tbody tr.sel td{background:#e6f4ff}
 .btn-reset{display:inline-flex;align-items:center;gap:4px;padding:5px 12px;border-radius:4px;border:1px solid #d9d9d9;background:#fff;color:#595959;font-size:12px;cursor:pointer;font-family:inherit}
 .btn-reset:hover{border-color:#4096ff;color:#4096ff}
 .action-bar{display:flex;align-items:center;justify-content:flex-end;gap:7px;padding:10px 18px;background:#fff;border-bottom:1px solid #f0f0f0;flex-shrink:0}
+
+.lang-toggle-row{display:flex;gap:8px;margin-bottom:4px}
+.lang-btn{display:flex;align-items:center;gap:7px;padding:6px 14px;border-radius:4px;border:1px solid #d9d9d9;background:#fff;cursor:pointer;font-size:12px;font-family:inherit;color:#595959;transition:all .12s}
+.lang-btn.pt-on{background:#E6F1FB;border-color:#85B7EB;color:#0C447C;font-weight:500}
+.lang-btn.es-on{background:#EAF3DE;border-color:#97C459;color:#27500A;font-weight:500}
+.lang-chk{width:13px;height:13px;border-radius:3px;border:1.5px solid currentColor;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;font-size:9px;line-height:1}
+.lang-chk.on{background:currentColor;color:#fff}
+.lang-chk.on::after{content:'✓';filter:invert(1)}
+.lang-section{border:1px solid #e8e8e8;border-radius:8px;overflow:hidden;margin-bottom:10px}
+.lang-section-hd{padding:9px 14px;display:flex;align-items:center;gap:8px;background:#fafafa;border-bottom:1px solid #e8e8e8}
+.lang-section-bd{padding:14px;display:flex;flex-direction:column;gap:12px}
+.lang-badge-pt{display:inline-flex;align-items:center;padding:2px 9px;border-radius:99px;font-size:11px;font-weight:500;background:#E6F1FB;color:#0C447C;border:0.5px solid #85B7EB}
+.lang-badge-es{display:inline-flex;align-items:center;padding:2px 9px;border-radius:99px;font-size:11px;font-weight:500;background:#EAF3DE;color:#27500A;border:0.5px solid #97C459}
 </style>
 </head>
 <body>
@@ -294,7 +307,7 @@ tbody tr.sel td{background:#e6f4ff}
         <div class="filter-grid">
           <div class="filter-col filter-col-md"><input class="fi" id="ban-q" placeholder="Banner Name" oninput="banLiveQ=this.value"></div>
           <div class="filter-col filter-col-md"><select class="fsel2" id="ban-type-f"><option value="">Banner Type</option><option value="live">Live stream</option><option value="upcoming">Upcoming live stream</option><option value="image">Image</option></select></div>
-          <div class="filter-col filter-col-sm"><select class="fsel2" id="ban-status-f"><option value="">Status</option><option value="1">Enabled</option><option value="0">Disabled</option></select></div>
+          <div class="filter-col filter-col-sm"><select class="fsel2" id="ban-lang-f"><option value="">Language</option><option value="PT">PT</option><option value="ES">ES</option></select></div><div class="filter-col filter-col-sm"><select class="fsel2" id="ban-status-f"><option value="">Status</option><option value="1">Enabled</option><option value="0">Disabled</option></select></div>
           <div class="filter-col filter-col-date"><div class="date-range"><input class="fi" type="date" id="ban-date-from"><span class="sep">–</span><input class="fi" type="date" id="ban-date-to"></div></div>
         </div>
       </div>
@@ -307,7 +320,7 @@ tbody tr.sel td{background:#e6f4ff}
         <button class="btn btn-del" id="ban-del-btn" disabled onclick="banBulkDel()">🗑 Delete</button>
       </div>
       <div class="tw"><table>
-        <thead><tr><th style="width:32px"><input type="checkbox" class="cb" id="ban-cb-all" onclick="banToggleAll(this)"></th><th style="width:40px">NO.</th><th>Banner ID</th><th>Banner Name</th><th>Banner Type</th><th>Timezone</th><th>Start Time</th><th>End Time</th><th>Status</th><th>Creator</th><th>Create Date</th><th>Modify Date</th></tr></thead>
+        <thead><tr><th style="width:32px"><input type="checkbox" class="cb" id="ban-cb-all" onclick="banToggleAll(this)"></th><th style="width:40px">NO.</th><th>Banner ID</th><th>Banner Name</th><th>Banner Type</th><th>Languages</th><th>Timezone</th><th>Start Time</th><th>End Time</th><th>Status</th><th>Creator</th><th>Create Date</th><th>Modify Date</th></tr></thead>
         <tbody id="ban-tbody"></tbody>
       </table></div>
       <div class="pag"><span>Total <b id="ban-total">0</b></span><div style="margin-left:auto;display:flex;gap:4px"><button class="pb2">‹</button><button class="pb2 on">1</button><button class="pb2">›</button></div></div>
@@ -324,7 +337,7 @@ tbody tr.sel td{background:#e6f4ff}
         <div class="filter-grid">
           <div class="filter-col filter-col-md"><input class="fi" id="slot-q" placeholder="Slot Name" oninput="slotLiveQ=this.value"></div>
           <div class="filter-col filter-col-md"><select class="fsel2" id="slot-type-f"><option value="">Slot Type</option><option>Featured Cinema</option><option>Live</option><option>Replay</option><option>UGC</option><option>Hosts</option><option>Mixed</option><option>Movies</option></select></div>
-          <div class="filter-col filter-col-sm"><select class="fsel2" id="slot-status-f"><option value="">Status</option><option value="1">Enabled</option><option value="0">Disabled</option></select></div>
+          <div class="filter-col filter-col-sm"><select class="fsel2" id="slot-lang-f"><option value="">Language</option><option value="PT">PT</option><option value="ES">ES</option></select></div><div class="filter-col filter-col-sm"><select class="fsel2" id="slot-status-f"><option value="">Status</option><option value="1">Enabled</option><option value="0">Disabled</option></select></div>
         </div>
       </div>
       <div class="action-bar">
@@ -336,7 +349,7 @@ tbody tr.sel td{background:#e6f4ff}
         <button class="btn btn-del" id="slot-del-btn" disabled onclick="slotBulkDel()">🗑 Delete</button>
       </div>
       <div class="tw"><table>
-        <thead><tr><th style="width:32px"><input type="checkbox" class="cb" id="slot-cb-all" onclick="slotToggleAll(this)"></th><th style="width:40px">NO.</th><th>Slot ID</th><th>Slot Name</th><th>Slot Type</th><th>Categories</th><th>Status</th><th>Creator</th><th>Create Date</th><th>Modify Date</th></tr></thead>
+        <thead><tr><th style="width:32px"><input type="checkbox" class="cb" id="slot-cb-all" onclick="slotToggleAll(this)"></th><th style="width:40px">NO.</th><th>Slot ID</th><th>Slot Name</th><th>Slot Type</th><th>Languages</th><th>Categories</th><th>Status</th><th>Creator</th><th>Create Date</th><th>Modify Date</th></tr></thead>
         <tbody id="slot-tbody"></tbody>
       </table></div>
       <div class="pag"><span>Total <b id="slot-total">0</b></span><div style="margin-left:auto;display:flex;gap:4px"><button class="pb2">‹</button><button class="pb2 on">1</button><button class="pb2">›</button></div></div>
@@ -507,27 +520,27 @@ var CATS=[
   {id:7,name:'Reactions',      media:['UGC'],                enabled:false,creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-19 12:00'}
 ];
 var BANNERS=[
-  {id:201,name:'Watch Party Spotlight',type:'live',   tz:'UTC+8',    start:'2026-04-22 08:00',end:'2026-06-01 07:59',enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-22 10:00'},
-  {id:202,name:'May Event Feature',    type:'upcoming',tz:'UTC+8',    start:'2026-05-01 00:00',end:'2026-05-31 23:59',enabled:true, creator:'Admin',created:'2026-04-20 14:00',mod:'2026-04-21 09:00'},
-  {id:203,name:'Summer Promo',         type:'image',  tz:'UTC-7/8',start:'2026-06-01 00:00',end:'2026-08-31 23:59',enabled:true, creator:'Admin',created:'2026-04-21 10:00',mod:'2026-04-21 11:00'},
-  {id:204,name:'Film Festival Banner', type:'image',  tz:'UTC-3',start:'2026-05-10 00:00',end:'2026-05-20 23:59',enabled:false,creator:'Admin',created:'2026-04-23 15:00',mod:'2026-04-24 09:00'}
+  {id:201,name:'Watch Party Spotlight',type:'live',   tz:'UTC+8',    start:'2026-04-22 08:00',end:'2026-06-01 07:59',enabled:true, langs:['PT','ES'],creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-22 10:00'},
+  {id:202,name:'May Event Feature',    type:'upcoming',tz:'UTC+8',    start:'2026-05-01 00:00',end:'2026-05-31 23:59',enabled:true, langs:['PT'],   creator:'Admin',created:'2026-04-20 14:00',mod:'2026-04-21 09:00'},
+  {id:203,name:'Summer Promo',         type:'image',  tz:'UTC-7/8',start:'2026-06-01 00:00',end:'2026-08-31 23:59',enabled:true, langs:['ES'],   creator:'Admin',created:'2026-04-21 10:00',mod:'2026-04-21 11:00'},
+  {id:204,name:'Film Festival Banner', type:'image',  tz:'UTC-3',start:'2026-05-10 00:00',end:'2026-05-20 23:59',enabled:false,langs:['PT','ES'],creator:'Admin',created:'2026-04-23 15:00',mod:'2026-04-24 09:00'}
 ];
 var SLOTS=[
-  {id:102,name:"Today's Cinema",  type:'Featured Cinema',cats_str:'',enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-22 10:00'},
-  {id:103,name:'LIVE',            type:'Live',  cats_str:'Watch Party, Just Chatting, Reviews, Breakdowns',enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-21 09:12'},
-  {id:104,name:'Crowd Favorites', type:'Replay',cats_str:'Watch Party, Just Chatting, Reviews, Breakdowns',enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-20 14:30'},
-  {id:105,name:'Hosted By',       type:'Hosts', cats_str:'',enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-18 11:22'},
-  {id:106,name:'Watch Party',     type:'Live',  cats_str:'Watch Party',enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-21 16:00'},
-  {id:107,name:'Just Chatting',   type:'Live',  cats_str:'Just Chatting',enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-21 16:00'},
-  {id:108,name:'In Theater',      type:'Movies',cats_str:'',enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-10 00:38'},
-  {id:109,name:'Trending Clips',  type:'UGC',   cats_str:'Watch Party',enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-15 08:00'},
-  {id:110,name:'Coming Soon',     type:'Movies',cats_str:'',enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-10 00:38'},
-  {id:111,name:'Trending Videos', type:'UGC',   cats_str:'Reviews, Recaps, Reactions, Recommendations, Breakdowns',enabled:true,creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-15 08:00'},
-  {id:112,name:'Reviews',         type:'Mixed', cats_str:'Reviews',enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-19 12:00'},
-  {id:113,name:'Recommendations', type:'UGC',   cats_str:'Recommendations',enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-19 12:00'},
-  {id:114,name:'Recaps',          type:'UGC',   cats_str:'Recaps',enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-19 12:00'},
-  {id:115,name:'Reactions',       type:'UGC',   cats_str:'Reactions',enabled:false,creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-19 12:00'},
-  {id:116,name:'Breakdowns',      type:'Mixed', cats_str:'Breakdowns',enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-19 12:00'}
+  {id:102,langs:['PT','ES'],name:"Today's Cinema",  type:'Featured Cinema',cats_str:'',enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-22 10:00'},
+  {id:103,langs:['PT','ES'],name:'LIVE',            type:'Live',  cats_str:'Watch Party, Just Chatting, Reviews, Breakdowns',enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-21 09:12'},
+  {id:104,langs:['PT','ES'],name:'Crowd Favorites', type:'Replay',cats_str:'Watch Party, Just Chatting, Reviews, Breakdowns',enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-20 14:30'},
+  {id:105,langs:['PT','ES'],name:'Hosted By',       type:'Hosts', cats_str:'',enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-18 11:22'},
+  {id:106,langs:['PT'],name:'Watch Party',     type:'Live',  cats_str:'Watch Party',enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-21 16:00'},
+  {id:107,langs:['ES'],name:'Just Chatting',   type:'Live',  cats_str:'Just Chatting',enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-21 16:00'},
+  {id:108,langs:['PT','ES'],name:'In Theater',      type:'Movies',cats_str:'',enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-10 00:38'},
+  {id:109,langs:['PT'],name:'Trending Clips',  type:'UGC',   cats_str:'Watch Party',enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-15 08:00'},
+  {id:110,langs:['ES'],name:'Coming Soon',     type:'Movies',cats_str:'',enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-10 00:38'},
+  {id:111,langs:['PT','ES'],name:'Trending Videos', type:'UGC',   cats_str:'Reviews, Recaps, Reactions, Recommendations, Breakdowns',enabled:true,creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-15 08:00'},
+  {id:112,langs:['PT','ES'],name:'Reviews',         type:'Mixed', cats_str:'Reviews',enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-19 12:00'},
+  {id:113,langs:['PT'],name:'Recommendations', type:'UGC',   cats_str:'Recommendations',enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-19 12:00'},
+  {id:114,langs:['ES'],name:'Recaps',          type:'UGC',   cats_str:'Recaps',enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-19 12:00'},
+  {id:115,langs:['PT','ES'],name:'Reactions',       type:'UGC',   cats_str:'Reactions',enabled:false,creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-19 12:00'},
+  {id:116,langs:['PT','ES'],name:'Breakdowns',      type:'Mixed', cats_str:'Breakdowns',enabled:true, creator:'Admin',created:'2026-04-10 09:00',mod:'2026-04-19 12:00'}
 ];
 var SLOT_ORDER=SLOTS.map(function(s){return s.id;});
 var SCH=[
@@ -715,20 +728,22 @@ function saveCatModal(editingCatId){
 }
 
 // ── BANNERS ───────────────────────────────────────────────────────────────────
-var banQ='',banTypeF='',banStatusF='',banDateFrom='',banDateTo='';
+var banQ='',banTypeF='',banStatusF='',banLangF='',banDateFrom='',banDateTo='';
 var banLiveQ='';
 function banApplyFilters(){
   banQ=banLiveQ;
   banTypeF=document.getElementById('ban-type-f').value;
+  banLangF=document.getElementById('ban-lang-f').value;
   banStatusF=document.getElementById('ban-status-f').value;
   banDateFrom=document.getElementById('ban-date-from').value;
   banDateTo=document.getElementById('ban-date-to').value;
   banSel.clear();renderBanners();
 }
 function banResetFilters(){
-  banLiveQ='';banQ='';banTypeF='';banStatusF='';banDateFrom='';banDateTo='';
+  banLiveQ='';banQ='';banTypeF='';banLangF='';banStatusF='';banDateFrom='';banDateTo='';
   document.getElementById('ban-q').value='';
   document.getElementById('ban-type-f').value='';
+  document.getElementById('ban-lang-f').value='';
   document.getElementById('ban-status-f').value='';
   document.getElementById('ban-date-from').value='';
   document.getElementById('ban-date-to').value='';
@@ -737,6 +752,7 @@ function banResetFilters(){
 function getBanners(){return BANNERS.filter(function(b){
   if(banQ&&b.name.toLowerCase().indexOf(banQ.toLowerCase())===-1)return false;
   if(banTypeF&&b.type!==banTypeF)return false;
+  if(banLangF&&(!b.langs||b.langs.indexOf(banLangF)===-1))return false;
   if(banStatusF==='1'&&!b.enabled)return false;
   if(banStatusF==='0'&&b.enabled)return false;
   if(banDateFrom&&b.start&&b.start.substring(0,10)<banDateFrom)return false;
@@ -750,6 +766,7 @@ function renderBanners(){
     h+='<td style="color:#8c8c8c">'+(i+1)+'</td><td style="color:#595959">'+b.id+'</td>';
     h+='<td><strong style="font-weight:500">'+b.name+'</strong></td>';
     h+='<td style="font-size:12px;color:#595959">'+BTL[b.type]+'</td>';
+    h+='<td style="font-size:12px;color:#595959">'+(b.langs?b.langs.join(', '):'')+'</td>';
     h+='<td style="font-size:11px;color:#595959;white-space:nowrap">'+b.tz+'</td>';
     h+='<td style="font-size:11px;color:#595959;white-space:nowrap">'+b.start+'</td>';
     h+='<td style="font-size:11px;color:#595959;white-space:nowrap">'+(b.end||'')+'</td>';
@@ -772,22 +789,31 @@ function banBulkEnable(){BANNERS.forEach(function(b){if(banSel.has(b.id))b.enabl
 function banEditSelected(){var id=Array.from(banSel)[0];if(id!=null)openModal('ban-edit',id);}
 
 // ── SLOTS ─────────────────────────────────────────────────────────────────────
-var slotQ='',slotTypeF='',slotStatusF='';
+var slotQ='',slotTypeF='',slotStatusF='',slotLangF='';
 var slotLiveQ='';
 function slotApplyFilters(){
   slotQ=slotLiveQ;
   slotTypeF=document.getElementById('slot-type-f').value;
+  slotLangF=document.getElementById('slot-lang-f').value;
   slotStatusF=document.getElementById('slot-status-f').value;
   slotSel.clear();renderSlots();
 }
 function slotResetFilters(){
-  slotLiveQ='';slotQ='';slotTypeF='';slotStatusF='';
+  slotLiveQ='';slotQ='';slotTypeF='';slotLangF='';slotStatusF='';
   document.getElementById('slot-q').value='';
   document.getElementById('slot-type-f').value='';
+  document.getElementById('slot-lang-f').value='';
   document.getElementById('slot-status-f').value='';
   slotSel.clear();renderSlots();
 }
-function getSlots(){return SLOTS.filter(function(s){if(slotQ&&s.name.toLowerCase().indexOf(slotQ.toLowerCase())===-1)return false;if(slotTypeF&&s.type!==slotTypeF)return false;if(slotStatusF==='1'&&!s.enabled)return false;if(slotStatusF==='0'&&s.enabled)return false;return true;}).sort(byModDesc);}
+function getSlots(){return SLOTS.filter(function(s){
+  if(slotQ&&s.name.toLowerCase().indexOf(slotQ.toLowerCase())===-1)return false;
+  if(slotTypeF&&s.type!==slotTypeF)return false;
+  if(slotLangF&&(!s.langs||s.langs.indexOf(slotLangF)===-1))return false;
+  if(slotStatusF==='1'&&!s.enabled)return false;
+  if(slotStatusF==='0'&&s.enabled)return false;
+  return true;
+}).sort(byModDesc);}
 function renderSlots(){
   var rows=getSlots();document.getElementById('slot-total').textContent=rows.length;var h='';
   rows.forEach(function(s,i){var sel=slotSel.has(s.id);
@@ -795,7 +821,8 @@ function renderSlots(){
     h+='<td style="color:#8c8c8c">'+(i+1)+'</td><td style="color:#595959">'+s.id+'</td>';
     h+='<td><strong style="font-weight:500">'+s.name+'</strong></td>';
     h+='<td style="font-size:12px;color:#595959">'+s.type+'</td>';
-    h+='<td style="font-size:11px;color:#595959;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(s.cats_str||'')+'</td>';
+    h+='<td style="font-size:12px;color:#595959">'+(s.langs?s.langs.join(', '):'')+'</td>';
+    h+='<td style="font-size:11px;color:#595959;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(s.cats_str||'')+'</td>';
     h+='<td><span class="'+(s.enabled?'status-en':'status-dis')+'">'+(s.enabled?'Enabled':'Disabled')+'</span></td>';
     h+='<td style="color:#595959">'+s.creator+'</td>';
     h+='<td style="font-size:11px;color:#8c8c8c;white-space:nowrap">'+s.created+'</td>';
@@ -1121,12 +1148,83 @@ function closeModal(){document.getElementById('mov').classList.remove('open');}
 // ── BANNER FORM ───────────────────────────────────────────────────────────────
 function buildBannerForm(b){
   var type=b?b.type:'live';
-  var typeOpts=['live','upcoming','image'].map(function(t){var lbl=t==='live'?'Live stream':t==='upcoming'?'Upcoming live stream':'Image';return '<option value="'+t+'"'+(t===type?' selected':'')+'>'+lbl+'</option>';}).join('');
+  var langs=b&&b.langs?b.langs:[];
+  var ptOn=langs.indexOf('PT')!==-1;
+  var esOn=langs.indexOf('ES')!==-1;
+  var typeOpts=['live','upcoming','image'].map(function(t){
+    var lbl=t==='live'?'Live stream':t==='upcoming'?'Upcoming live stream':'Image';
+    return '<option value="'+t+'"'+(t===type?' selected':'')+'>'+lbl+'</option>';
+  }).join('');
   return '<div class="fs"><div class="fs-t">Basic Info</div>'
-    +'<div class="frow"><div class="fcol"><div class="fl">Banner Name <span style="color:#ff4d4f">*</span></div><input class="fi" value="'+(b?b.name:'')+'" placeholder="e.g. Watch Party Spotlight"></div></div>'
-    +'<div class="frow" style="margin-bottom:0"><div class="fcol"><div class="fl">Banner Type <span style="color:#ff4d4f">*</span></div><select class="fsel" onchange="onBanTypeChange(this.value)">'+typeOpts+'</select></div></div></div>'
-    +'<div class="fs"><div class="fs-t">Content</div><div id="type-body">'+buildBanTypeBody(type)+'</div></div>'
+    +'<div class="frow"><div class="fcol"><div class="fl">Banner Name <span style="color:#ff4d4f">*</span></div><input class="fi" value="'+(b?b.name:'')+'" placeholder="Internal name for admin use"></div></div>'
+    +'<div class="frow"><div class="fcol"><div class="fl">Banner Type <span style="color:#ff4d4f">*</span></div><select class="fsel" onchange="onBanTypeChange(this.value)">'+typeOpts+'</select></div></div>'
+    +'<div class="frow" style="margin-bottom:0"><div class="fcol">'
+    +'<div class="fl">Languages <span style="color:#ff4d4f">*</span></div>'
+    +'<div class="lang-toggle-row">'
+    +'<button type="button" class="lang-btn'+(ptOn?' pt-on':'')+'" id="ban-lang-pt" onclick="banToggleLang(\'PT\',this)">'
+    +'<span class="lang-chk'+(ptOn?' on':'')+'"></span>PT &middot; Portuguese</button>'
+    +'<button type="button" class="lang-btn'+(esOn?' es-on':'')+'" id="ban-lang-es" onclick="banToggleLang(\'ES\',this)">'
+    +'<span class="lang-chk'+(esOn?' on':'')+'"></span>ES &middot; Spanish</button>'
+    +'</div>'
+    +'<div class="fhint">Select the markets where this banner will be displayed.</div>'
+    +'</div></div></div>'
+    +'<div class="fs"><div class="fs-t">Content</div>'
+    +'<div id="ban-sec-pt" class="lang-section" style="display:'+(ptOn?'block':'none')+';margin-bottom:10px">'
+    +'<div class="lang-section-hd"><span class="lang-badge-pt">PT</span><span style="font-size:12px;font-weight:500;margin-left:4px">Portuguese</span></div>'
+    +'<div class="lang-section-bd">'
+    +'<div><div class="fl">Display Name <span style="color:#ff4d4f">*</span></div><input class="fi" placeholder="Banner name shown to users (PT)"></div>'
+    +'<div id="ban-pt-body">'+buildBanLangBody(type)+'</div>'
+    +'</div></div>'
+    +'<div id="ban-sec-es" class="lang-section" style="display:'+(esOn?'block':'none')+'">'
+    +'<div class="lang-section-hd"><span class="lang-badge-es">ES</span><span style="font-size:12px;font-weight:500;margin-left:4px">Spanish</span></div>'
+    +'<div class="lang-section-bd">'
+    +'<div><div class="fl">Display Name <span style="color:#ff4d4f">*</span></div><input class="fi" placeholder="Banner name shown to users (ES)"></div>'
+    +'<div id="ban-es-body">'+buildBanLangBody(type)+'</div>'
+    +'</div></div>'
+    +'<div id="ban-shared-body">'+buildBanSharedContent(type)+'</div>'
+    +'</div>'
     +buildBanSettingsSection();
+}
+function banToggleLang(lang,btn){
+  var isOn=btn.classList.contains(lang==='PT'?'pt-on':'es-on');
+  var cls=lang==='PT'?'pt-on':'es-on';
+  if(isOn){btn.classList.remove(cls);btn.querySelector('.lang-chk').classList.remove('on');}
+  else{btn.classList.add(cls);btn.querySelector('.lang-chk').classList.add('on');}
+  var sec=document.getElementById('ban-sec-'+lang.toLowerCase());
+  if(sec)sec.style.display=isOn?'none':'block';
+}
+function buildBanLangBody(type){
+  if(type==='image'){
+    return '<div><div class="fl">Image <span style="color:#ff4d4f">*</span></div>'
+      +'<div class="img-upload"><span style="font-size:20px">\uD83D\uDDBC</span><span>Click to upload image</span></div></div>'
+      +'<div style="margin-top:10px"><div class="fl">On tap</div>'
+      +'<input class="fi" placeholder="e.g. https://... or peliparty://...">'
+      +'<div class="fhint">Accepts a URL or a deep link. Leave empty if not tappable.</div></div>';
+  }
+  if(type==='upcoming'){
+    return '<div><div class="fl">Thumbnail</div>'
+      +'<div class="img-upload"><span style="font-size:20px">\uD83D\uDDBC</span><span>Click to upload thumbnail</span></div>'
+      +'<div class="fhint">If uploaded, this image will be displayed instead of the thumbnail set by the host.</div></div>';
+  }
+  return '';
+}
+function buildBanSharedContent(type){
+  if(type==='live'||type==='upcoming'){
+    var pickType=type==='upcoming'?'upcoming':'live';
+    var opts=PICK_OPTS[pickType]||PICK_OPTS['live'];
+    var def=opts[0];
+    return '<div><div class="fl">Pick by <span style="color:#ff4d4f">*</span></div>'
+      +'<select class="fsel" id="pick-sel" onchange="onBanPickChange(this.value,\''+pickType+'\')">'
+      +opts.map(function(o){return '<option value="'+o.val+'">'+o.lbl+'</option>';}).join('')+'</select>'
+      +'<div class="fhint" id="pick-hint">'+def.hint+'</div>'
+      +'<div id="pinned-extra" style="display:none"><div class="divider"></div>'
+      +'<div class="fl">Host ID <span style="color:#ff4d4f">*</span></div><input class="fi" placeholder="e.g. host_7829"></div></div>'
+      +'<div class="divider"></div>'
+      +'<div class="fl">Category filter</div>'
+      +'<div class="cbg">'+LIVE_CATS.map(function(c){return '<label class="ci" onclick="this.classList.toggle(\'on\')">'+c+'</label>';}).join('')+'</div>'
+      +'<div class="fhint">Leave empty to include all categories.</div>';
+  }
+  return '';
 }
 function buildBanTypeBody(type){
   if(type==='live'){
@@ -1151,7 +1249,14 @@ function buildPickByHtml(type){
     +'<div id="pinned-extra" style="display:none"><div class="divider"></div><div class="fl">Host ID <span style="color:#ff4d4f">*</span></div><input class="fi" placeholder="e.g. host_7829"></div>';
 }
 function onBanPickChange(val,type){var opts=PICK_OPTS[type]||PICK_OPTS['live'];var o=opts.find(function(x){return x.val===val;});document.getElementById('pick-hint').textContent=o?o.hint:'';var ex=document.getElementById('pinned-extra');if(ex)ex.style.display=val==='pinned'?'block':'none';}
-function onBanTypeChange(val){document.getElementById('type-body').innerHTML=buildBanTypeBody(val);}
+function onBanTypeChange(val){
+  var ptSec=document.getElementById('ban-pt-type-body');
+  var esSec=document.getElementById('ban-es-type-body');
+  var shared=document.getElementById('ban-shared-content');
+  if(ptSec)ptSec.innerHTML=buildBanLangBody(val,'pt');
+  if(esSec)esSec.innerHTML=buildBanLangBody(val,'es');
+  if(shared)shared.innerHTML=buildBanSharedContent(val);
+}
 function buildBanSettingsSection(){
   return '<div class="fs" style="margin-bottom:0"><div class="fs-t">Settings</div>'
     +'<div class="fl">Display Window</div>'
@@ -1169,11 +1274,22 @@ function buildSlotForm(s){
   var typeOpts='<option value="" disabled'+(type===''?' selected':'')+'>Select type</option>'
     +['Featured Cinema','Live','Replay','UGC','Hosts','Mixed','Movies'].map(function(t){return '<option'+(t===type?' selected':'')+'>'+t+'</option>';}).join('');
   var contentBody=buildSlotContentForType(type,s);
+  var slangs=s&&s.langs?s.langs:[];
+  var sptOn=slangs.indexOf('PT')!==-1;var sesOn=slangs.indexOf('ES')!==-1;
   return '<div class="fs"><div class="fs-t">Basic Info</div>'
-    +'<div style="display:flex;gap:10px;margin-bottom:0">'
+    +'<div style="display:flex;gap:10px;margin-bottom:10px">'
     +'<div style="flex:0 0 80px"><div class="fl">Slot ID</div><input class="fi ro" value="'+(s?s.id:'auto')+'" readonly></div>'
     +'<div style="flex:1"><div class="fl">Slot Name <span style="color:#ff4d4f">*</span></div><input class="fi" value="'+(s?s.name:'')+'"></div>'
     +'<div style="flex:0 0 160px"><div class="fl">Slot Type <span style="color:#ff4d4f">*</span></div><select class="fsel" onchange="onSlotTypeChange(this.value)">'+typeOpts+'</select></div>'
+    +'</div>'
+    +'<div><div class="fl">Languages <span style="color:#ff4d4f">*</span></div>'
+    +'<div class="lang-toggle-row">'
+    +'<button type="button" class="lang-btn'+(sptOn?' pt-on':'')+'" onclick="slotToggleLang(\"PT\",this)">'
+    +'<span class="lang-chk'+(sptOn?' on':'')+'"></span>PT · Portuguese</button>'
+    +'<button type="button" class="lang-btn'+(sesOn?' es-on':'')+'" onclick="slotToggleLang(\"ES\",this)">'
+    +'<span class="lang-chk'+(sesOn?' on':'')+'"></span>ES · Spanish</button>'
+    +'</div>'
+    +'<div class="fhint">Select the markets where this slot will be displayed.</div>'
     +'</div></div>'
     +'<div id="slot-content-section">'+(contentBody?'<div class="fs"><div class="fs-t">Content</div>'+contentBody+'</div>':'')+'</div>'
     +'<div id="slot-settings-section">'+(type?buildSlotSettingsSection(type):'')+'</div>';
@@ -1209,6 +1325,11 @@ function buildSlotSettingsSection(type){
     +'<span style="font-size:12px;color:#8c8c8c;flex-shrink:0">to</span>'
     +'<input class="fi" type="datetime-local" style="flex:1">'
     +'</div><div class="fhint">Leave empty for immediate start / permanent.</div>'+chips+'</div>';
+}
+function slotToggleLang(lang,btn){
+  var isOn=btn.classList.contains(lang==='PT'?'pt-on':'es-on');
+  if(isOn){btn.classList.remove(lang==='PT'?'pt-on':'es-on');btn.querySelector('.lang-chk').classList.remove('on');}
+  else{btn.classList.add(lang==='PT'?'pt-on':'es-on');btn.querySelector('.lang-chk').classList.add('on');}
 }
 function onSlotTypeChange(type){
   movieManualList=[];
