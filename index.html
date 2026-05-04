@@ -1138,7 +1138,7 @@ function buildBanTypeBody(type){
   }
   if(type==='image'){
     return '<div class="fl">Image <span style="color:#ff4d4f">*</span></div><div class="img-upload" style="margin-bottom:10px"><span style="font-size:20px">🖼</span><span>Click to upload image</span></div>'
-      +'<div class="divider"></div><div class="fl">On tap (deep link)</div><input class="fi" placeholder="e.g. peliparty://film/12345"><div class="fhint">Leave empty if not tappable.</div>';
+      +'<div class="divider"></div><div class="fl">On tap</div><input class="fi" placeholder="e.g. https://peliparty.com/promo  or  peliparty://film/12345"><div class="fhint">Accepts a URL or a deep link. Leave empty if not tappable.</div>';
   }
   return '';
 }
