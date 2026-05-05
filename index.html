@@ -261,8 +261,7 @@ tbody tr.sel td{background:#e6f4ff}
         <div class="ni on" onclick="navTo('slots',this,'Slots')">Slots</div>
         <div class="ni" onclick="navTo('schedule',this,'Schedule')">Schedule</div>
       </div>
-      <div class="l3" onclick="toggleL3('settings')"><span class="l3-name">Settings</span><span class="l3-arrow" id="l3-arrow-settings">∧</span></div>
-      <div id="l3-settings"><div class="ni" onclick="navTo('display',this,'Display')">Display</div></div>
+
     </div>
   </div>
 </div>
@@ -426,7 +425,8 @@ tbody tr.sel td{background:#e6f4ff}
             <th style="width:40px">NO.</th><th>PP ID</th>
             <th>Languages</th>
             <th class="sortable" onclick="sortSch('originalTitle')" id="th-originalTitle">Original Title<span class="sort-icon">↕</span></th>
-            <th class="sortable" onclick="sortSch('displayTitle')" id="th-displayTitle">Display Title<span class="sort-icon">↕</span></th>
+            <th class="sortable" onclick="sortSch('displayTitlePT')" id="th-displayTitlePT">Display Title (PT)<span class="sort-icon">↕</span></th>
+            <th class="sortable" onclick="sortSch('displayTitleES')" id="th-displayTitleES">Display Title (ES)<span class="sort-icon">↕</span></th>
             <th>Timezone</th>
             <th class="sortable" onclick="sortSch('release')" id="th-release">Release Date<span class="sort-icon">↕</span></th>
             <th class="sortable" onclick="sortSch('until')" id="th-until">Expiry Date<span class="sort-icon">↕</span></th>
@@ -497,7 +497,15 @@ var TZ_OPTS=['UTC+8','UTC-7/8','UTC-3'];
 var LIVE_CATS=['Watch Party','Just Chatting','Reviews','Breakdowns'];
 var MONTHS_LONG=['January','February','March','April','May','June','July','August','September','October','November','December'];
 var MONTHS_SHORT=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-var MOCK_FILMS=[{id:'pp00000123',title:'Parasite'},{id:'pp00000456',title:'Past Lives'},{id:'pp00000789',title:'Poor Things'},{id:'pp00001234',title:'Oppenheimer'},{id:'pp00005678',title:'The Zone of Interest'},{id:'pp00006789',title:'Dune: Part Two'},{id:'pp00007890',title:'A Quiet Place: Day One'}];
+var MOCK_FILMS=[
+  {id:'pp00000123',title:'Parasite',        titlePT:'Parasita',                       titleES:'Parásito'},
+  {id:'pp00000456',title:'Past Lives',      titlePT:'Vidas Passadas',                 titleES:'Vidas Pasadas'},
+  {id:'pp00000789',title:'Poor Things',     titlePT:'Pobres Coisas',                  titleES:'Pobres Criaturas'},
+  {id:'pp00001234',title:'Oppenheimer',     titlePT:'Oppenheimer',                    titleES:'Oppenheimer'},
+  {id:'pp00005678',title:'The Zone of Interest',titlePT:'A Zona de Interesse',        titleES:'La Zona de Interés'},
+  {id:'pp00006789',title:'Dune: Part Two',  titlePT:'Duna: Parte Dois',               titleES:'Dune: Parte Dos'},
+  {id:'pp00007890',title:'A Quiet Place: Day One',titlePT:'Um Lugar Silencioso: Dia Um',titleES:'Un Lugar en Silencio: Día Uno'}
+];
 var SORT_OPTS={
   live:[{val:'most_popular',lbl:'Most popular'},{val:'most_recent',lbl:'Most recent'},{val:'followed_first',lbl:'Followed hosts first, then most popular'},{val:'random',lbl:'Random'}],
   replay:[{val:'most_popular',lbl:'Most popular'},{val:'trending',lbl:'Trending'},{val:'most_recent',lbl:'Most recent'},{val:'random',lbl:'Random'}],
@@ -549,18 +557,18 @@ var SLOTS=[
 ];
 var SLOT_ORDER=SLOTS.map(function(s){return s.id;});
 var SCH=[
-  {id:1,ppId:'pp00000123',originalTitle:'Parasite',          displayTitle:'Parasite',          tz:'UTC+8',    release:'2026-05-01 00:00',until:'2026-05-31 23:59',available:true, langs:['PT','ES'],creator:'Admin',created:'2026-04-20 09:00',mod:'2026-04-22 10:00'},
-  {id:2,ppId:'pp00000456',originalTitle:'Past Lives',         displayTitle:'Past Lives',         tz:'UTC+8',    release:'2026-05-01 00:00',until:'2026-06-30 23:59',available:true, langs:['PT'],   creator:'Admin',created:'2026-04-20 09:00',mod:'2026-04-21 15:00'},
-  {id:3,ppId:'pp00000789',originalTitle:'Poor Things',        displayTitle:'Poor Things',        tz:'UTC+8',    release:'2026-05-08 00:00',until:'2026-06-07 23:59',available:true, langs:['ES'],   creator:'Admin',created:'2026-04-21 11:00',mod:'2026-04-21 11:00'},
-  {id:4,ppId:'pp00001234',originalTitle:'Oppenheimer',        displayTitle:'Oppenheimer',        tz:'UTC-7/8',release:'2026-05-15 00:00',until:'2026-06-14 23:59',available:true, langs:['PT','ES'],creator:'Admin',created:'2026-04-22 09:00',mod:'2026-04-22 09:00'},
-  {id:5,ppId:'pp00005678',originalTitle:'The Zone of Interest',displayTitle:'The Zone of Interest',tz:'UTC+8', release:'2026-05-20 00:00',until:'2026-06-19 23:59',available:false,langs:['PT'],   creator:'Admin',created:'2026-04-22 10:00',mod:'2026-04-22 10:30'},
-  {id:6,ppId:'pp00006789',originalTitle:'Dune: Part Two',     displayTitle:'Dune: Part Two',     tz:'UTC+8',    release:'2026-05-28 00:00',until:'2026-06-27 23:59',available:true, langs:['ES'],   creator:'Admin',created:'2026-04-23 08:00',mod:'2026-04-23 08:00'},
-  {id:7,ppId:'pp00007890',originalTitle:'A Quiet Place: Day One',displayTitle:'A Quiet Place: Day One',tz:'UTC-3',release:'2026-05-31 00:00',until:'2026-06-30 23:59',available:true,langs:['PT','ES'],creator:'Admin',created:'2026-04-24 09:00',mod:'2026-04-24 09:00'},
-  {id:8,ppId:'pp00000789',originalTitle:'Poor Things',displayTitle:'Poor Things',tz:'UTC+8',release:'2026-04-10 00:00',until:'2026-05-08 23:59',available:true,langs:['PT'],creator:'Admin',created:'2026-04-01 09:00',mod:'2026-04-01 09:00'},
-  {id:9,ppId:'pp00000456',originalTitle:'Past Lives',displayTitle:'Past Lives',tz:'UTC+8',release:'2026-04-15 00:00',until:'2026-05-15 23:59',available:true,langs:['ES'],creator:'Admin',created:'2026-04-01 10:00',mod:'2026-04-01 10:00'},
-  {id:10,ppId:'pp00000123',originalTitle:'Parasite',displayTitle:'Parasite',tz:'UTC+8',release:'2026-04-20 00:00',until:'2026-05-20 23:59',available:true,langs:['PT','ES'],creator:'Admin',created:'2026-04-02 09:00',mod:'2026-04-02 09:00'},
-  {id:11,ppId:'pp00001234',originalTitle:'Oppenheimer',displayTitle:'Oppenheimer',tz:'UTC-7/8',release:'2026-04-25 00:00',until:'2026-05-25 23:59',available:true,langs:['PT'],creator:'Admin',created:'2026-04-02 10:00',mod:'2026-04-02 10:00'},
-  {id:12,ppId:'pp00005678',originalTitle:'The Zone of Interest',displayTitle:'The Zone of Interest',tz:'UTC+8',release:'2026-04-28 00:00',until:'2026-05-28 23:59',available:true,langs:['ES'],creator:'Admin',created:'2026-04-03 09:00',mod:'2026-04-03 09:00'}
+  {id:1,ppId:'pp00000123',originalTitle:'Parasite',          displayTitlePT:'Parasite',          displayTitleES:'Parásito',         tz:'UTC+8',    release:'2026-05-01 00:00',until:'2026-05-31 23:59',available:true, langs:['PT','ES'],creator:'Admin',created:'2026-04-20 09:00',mod:'2026-04-22 10:00'},
+  {id:2,ppId:'pp00000456',originalTitle:'Past Lives',         displayTitlePT:'Vidas Passadas',    displayTitleES:'',                 tz:'UTC+8',    release:'2026-05-01 00:00',until:'2026-06-30 23:59',available:true, langs:['PT'],   creator:'Admin',created:'2026-04-20 09:00',mod:'2026-04-21 15:00'},
+  {id:3,ppId:'pp00000789',originalTitle:'Poor Things',        displayTitlePT:'',                  displayTitleES:'Pobres Criaturas', tz:'UTC+8',    release:'2026-05-08 00:00',until:'2026-06-07 23:59',available:true, langs:['ES'],   creator:'Admin',created:'2026-04-21 11:00',mod:'2026-04-21 11:00'},
+  {id:4,ppId:'pp00001234',originalTitle:'Oppenheimer',        displayTitlePT:'Oppenheimer',       displayTitleES:'Oppenheimer',      tz:'UTC-7/8',  release:'2026-05-15 00:00',until:'2026-06-14 23:59',available:true, langs:['PT','ES'],creator:'Admin',created:'2026-04-22 09:00',mod:'2026-04-22 09:00'},
+  {id:5,ppId:'pp00005678',originalTitle:'The Zone of Interest',displayTitlePT:'A Zona de Interesse',displayTitleES:'',              tz:'UTC+8',    release:'2026-05-20 00:00',until:'2026-06-19 23:59',available:false,langs:['PT'],   creator:'Admin',created:'2026-04-22 10:00',mod:'2026-04-22 10:30'},
+  {id:6,ppId:'pp00006789',originalTitle:'Dune: Part Two',     displayTitlePT:'',                  displayTitleES:'Dune: Parte Dos', tz:'UTC+8',    release:'2026-05-28 00:00',until:'2026-06-27 23:59',available:true, langs:['ES'],   creator:'Admin',created:'2026-04-23 08:00',mod:'2026-04-23 08:00'},
+  {id:7,ppId:'pp00007890',originalTitle:'A Quiet Place: Day One',displayTitlePT:'Um Lugar Silencioso: Dia Um',displayTitleES:'Un Lugar en Silencio: Día Uno',tz:'UTC-3',release:'2026-05-31 00:00',until:'2026-06-30 23:59',available:true,langs:['PT','ES'],creator:'Admin',created:'2026-04-24 09:00',mod:'2026-04-24 09:00'},
+  {id:8,ppId:'pp00000789',originalTitle:'Poor Things',displayTitlePT:'Pobres Coisas',displayTitleES:'',tz:'UTC+8',release:'2026-04-10 00:00',until:'2026-05-08 23:59',available:true,langs:['PT'],creator:'Admin',created:'2026-04-01 09:00',mod:'2026-04-01 09:00'},
+  {id:9,ppId:'pp00000456',originalTitle:'Past Lives',displayTitlePT:'',displayTitleES:'Vidas Pasadas',tz:'UTC+8',release:'2026-04-15 00:00',until:'2026-05-15 23:59',available:true,langs:['ES'],creator:'Admin',created:'2026-04-01 10:00',mod:'2026-04-01 10:00'},
+  {id:10,ppId:'pp00000123',originalTitle:'Parasite',displayTitlePT:'Parasita',displayTitleES:'Parásito',tz:'UTC+8',release:'2026-04-20 00:00',until:'2026-05-20 23:59',available:true,langs:['PT','ES'],creator:'Admin',created:'2026-04-02 09:00',mod:'2026-04-02 09:00'},
+  {id:11,ppId:'pp00001234',originalTitle:'Oppenheimer',displayTitlePT:'Oppenheimer',displayTitleES:'',tz:'UTC-7/8',release:'2026-04-25 00:00',until:'2026-05-25 23:59',available:true,langs:['PT'],creator:'Admin',created:'2026-04-02 10:00',mod:'2026-04-02 10:00'},
+  {id:12,ppId:'pp00005678',originalTitle:'The Zone of Interest',displayTitlePT:'',displayTitleES:'La Zona de Interés',tz:'UTC+8',release:'2026-04-28 00:00',until:'2026-05-28 23:59',available:true,langs:['ES'],creator:'Admin',created:'2026-04-03 09:00',mod:'2026-04-03 09:00'}
 ];
 var schIdSeq=13;
 
@@ -610,7 +618,7 @@ var fcDragSrc=null,mxDragSrc=null;
 var movieManualList=[];
 var csvRows=[];
 var l2State={pelip:true};
-var l3State={master:true,home:true,settings:true};
+var l3State={master:true,home:true};
 
 function pad(n){return n<10?'0'+n:''+n;}
 function byModDesc(a,b){return b.mod.localeCompare(a.mod);}
@@ -623,7 +631,6 @@ function navTo(id,el,label){
   document.querySelectorAll('.ni').forEach(function(n){n.classList.remove('on');});el.classList.add('on');
   document.getElementById('bc').textContent=label;
   ['categories','banners','slots','schedule'].forEach(function(p){var pg=document.getElementById('pg-'+p);if(pg)pg.classList.remove('on');});
-  var d=document.getElementById('pg-display');if(d)d.classList.remove('on');
   var tgt=document.getElementById('pg-'+id);if(tgt)tgt.classList.add('on');
   
   if(id==='categories')renderCats();
@@ -944,9 +951,9 @@ function renderCal(){
     var items=[];
     SCH.forEach(function(s){
       var langs=s.langs||['PT','ES'];
-      var label=s.displayTitle||s.originalTitle;
       ['PT','ES'].forEach(function(lang){
         if(langs.indexOf(lang)===-1)return;
+        var label=lang==='PT'?(s.displayTitlePT||s.originalTitle):(s.displayTitleES||s.originalTitle);
         var active=lang==='PT'?showPT:showES;
         if(!active)return;
         if(showR&&s.release.startsWith(ds))items.push({type:'release',lang:lang,label:label});
@@ -992,7 +999,7 @@ function getSch(){
   return SCH.filter(function(s){
     if(schQ&&s.ppId.toLowerCase().indexOf(schQ.toLowerCase())===-1)return false;
     if(schLiveOrigApplied&&s.originalTitle.toLowerCase().indexOf(schLiveOrigApplied.toLowerCase())===-1)return false;
-    if(schLiveDispApplied&&(s.displayTitle||'').toLowerCase().indexOf(schLiveDispApplied.toLowerCase())===-1)return false;
+    if(schLiveDispApplied){var q=schLiveDispApplied.toLowerCase();if((s.displayTitlePT||'').toLowerCase().indexOf(q)===-1&&(s.displayTitleES||'').toLowerCase().indexOf(q)===-1)return false;}
     if(schYearF&&!s.release.startsWith(schYearF))return false;
     if(schMonthF&&!s.release.startsWith(schMonthF))return false;
     if(schLangF&&(!s.langs||s.langs.indexOf(schLangF)===-1))return false;
@@ -1018,7 +1025,8 @@ function renderSchTable(){
     h+='<td style="font-size:11px;color:#595959">'+s.ppId+'</td>';
     h+='<td style="font-size:12px;color:#595959">'+(s.langs?s.langs.join(', '):'')+'</td>';
     h+='<td><strong style="font-weight:500">'+s.originalTitle+'</strong></td>';
-    h+='<td style="color:#595959">'+(s.displayTitle||'')+'</td>';
+    h+='<td style="color:#595959;font-size:12px">'+(s.displayTitlePT||'<span style="color:#bfbfbf">—</span>')+'</td>';
+    h+='<td style="color:#595959;font-size:12px">'+(s.displayTitleES||'<span style="color:#bfbfbf">—</span>')+'</td>';
     h+='<td style="font-size:11px;color:#595959;white-space:nowrap">'+s.tz+'</td>';
     h+='<td style="font-size:12px;color:#595959;white-space:nowrap">'+s.release+'</td>';
     h+='<td style="font-size:12px;color:#595959;white-space:nowrap">'+(s.until||'')+'</td>';
@@ -1029,7 +1037,7 @@ function renderSchTable(){
   });
   document.getElementById('sch-tbody').innerHTML=h;
   updateSchBtns();
-  ['originalTitle','displayTitle','release','until','created','mod'].forEach(function(k){
+  ['originalTitle','displayTitlePT','displayTitleES','release','until','created','mod'].forEach(function(k){
     var th=document.getElementById('th-'+k);if(!th)return;
     th.classList.remove('sort-asc','sort-desc');
     var icon=th.querySelector('.sort-icon');if(!icon)return;
@@ -1062,7 +1070,10 @@ function closeSchModal(){document.getElementById('sch-mov').classList.remove('op
 function buildSchForm(s,prefillDate){
   var releaseVal=s?s.release.replace(' ','T'):(prefillDate?prefillDate+'T00:00':'');
   var untilVal=s&&s.until?s.until.replace(' ','T'):'';
-  var tzOpts=TZ_OPTS.map(function(t){return '<option'+(s?s.tz===t?' selected':'':t==='Beijing (UTC+8)'?' selected':'')+'>'+t+'</option>';}).join('');
+  var tzOpts=TZ_OPTS.map(function(t){return '<option'+(s?s.tz===t?' selected':'':t==='UTC+8'?' selected':'')+'>'+t+'</option>';}).join('');
+  var langs=s&&s.langs?s.langs:['PT','ES'];
+  var ptOn=langs.indexOf('PT')!==-1;
+  var esOn=langs.indexOf('ES')!==-1;
   var movieSection='';
   if(s){
     movieSection='<div class="film-chip" style="display:inline-flex"><span class="film-chip-id">'+s.ppId+'</span><span class="film-chip-title">'+s.originalTitle+'</span></div><input type="hidden" id="sch-ppid" value="'+s.ppId+'">';
@@ -1071,20 +1082,83 @@ function buildSchForm(s,prefillDate){
       +'<div id="sch-film-chip" style="display:none;margin-top:6px" class="film-chip"><span class="film-chip-id" id="sch-chip-id"></span><span class="film-chip-title" id="sch-chip-title"></span><button class="film-chip-x" onclick="schFilmClear()">×</button></div>'
       +'<input type="hidden" id="sch-ppid" value="">';
   }
+  var langSettingsHtml=buildSchLangSettingsHtml(ptOn,esOn,s);
   return '<div class="fs"><div class="fs-t">Movie</div>'
     +'<div class="fl">Title <span style="color:#ff4d4f">*</span></div>'+movieSection
     +'<div class="title-row">'
     +'<div class="fcol"><div class="fl">Original Title</div><input class="fi ro" id="sch-orig-title" value="'+(s?s.originalTitle:'')+'" readonly placeholder="Auto-filled on selection"></div>'
-    +'<div class="fcol"><div class="fl">Display Title</div><input class="fi" id="sch-disp-title" value="'+(s?s.displayTitle:'')+'" placeholder="Defaults to original title"></div>'
     +'</div></div>'
-    +'<div class="fs" style="margin-bottom:0"><div class="fs-t">Schedule</div>'
-    +'<div style="display:flex;gap:10px;margin-bottom:12px">'
-    +'<div style="flex:1"><div class="fl">Release Date <span style="color:#ff4d4f">*</span></div><input class="fi" type="datetime-local" id="sch-release" value="'+releaseVal+'"></div>'
-    +'<div style="flex:1"><div class="fl">Expiry Date</div><input class="fi" type="datetime-local" id="sch-until" value="'+untilVal+'"><div class="fhint">Leave empty for no expiry.</div></div>'
+    +'<div class="fs"><div class="fs-t">Language Settings</div>'
+    +'<div class="lang-toggle-row" style="margin-bottom:8px">'
+    +'<button type="button" class="lang-btn'+(ptOn?' pt-on':'')+'" onclick="schToggleLang(\'PT\',this)"><span class="lang-chk'+(ptOn?' on':'')+'"></span>PT &middot; Portuguese</button>'
+    +'<button type="button" class="lang-btn'+(esOn?' es-on':'')+'" onclick="schToggleLang(\'ES\',this)"><span class="lang-chk'+(esOn?' on':'')+'"></span>ES &middot; Spanish</button>'
     +'</div>'
-    +'<div class="fl">Timezone <span style="color:#ff4d4f">*</span></div>'
-    +'<select class="fsel" id="sch-tz">'+tzOpts+'</select>'
+    +'<div class="fhint" style="margin-bottom:12px">Select the markets where this schedule will be available.</div>'
+    +'<div id="sch-lang-settings">'+langSettingsHtml+'</div>'
+    +'</div>'
+    +'<div class="fs" style="margin-bottom:0"><div class="fs-t">Schedule</div>'
+    +'<div style="display:flex;align-items:flex-end;gap:8px;margin-bottom:4px">'
+    +'<div style="flex:0 0 130px"><div class="fl">Timezone <span style="color:#ff4d4f">*</span></div><select class="fsel" id="sch-tz">'+tzOpts+'</select></div>'
+    +'<div style="flex:1"><div class="fl">Release Date <span style="color:#ff4d4f">*</span></div><input class="fi" type="datetime-local" id="sch-release" value="'+releaseVal+'"></div>'
+    +'<span style="font-size:12px;color:#8c8c8c;flex-shrink:0;padding-bottom:7px">to</span>'
+    +'<div style="flex:1"><div class="fl">Expiry Date</div><input class="fi" type="datetime-local" id="sch-until" value="'+untilVal+'"></div>'
+    +'</div>'
+    +'<div class="fhint">Leave empty for no expiry.</div>'
     +'</div>';
+}
+function buildSchLangSettingsHtml(ptOn,esOn,s){
+  var h='';
+  if(ptOn){
+    var valPT=s?(s.displayTitlePT||s.originalTitle||''):'';
+    h+='<div class="lang-section" style="margin-bottom:10px">'
+      +'<div class="lang-section-hd"><span class="lang-badge-pt">PT</span><span style="font-size:12px;font-weight:500;margin-left:4px">Portuguese</span></div>'
+      +'<div class="lang-section-bd">'
+      +'<div><div class="fl">Display Title</div><input class="fi ro" id="sch-disp-pt" value="'+valPT+'" readonly placeholder="Pulled from database"></div>'
+      +'</div></div>';
+  }
+  if(esOn){
+    var valES=s?(s.displayTitleES||s.originalTitle||''):'';
+    h+='<div class="lang-section" style="margin-bottom:10px">'
+      +'<div class="lang-section-hd"><span class="lang-badge-es">ES</span><span style="font-size:12px;font-weight:500;margin-left:4px">Spanish</span></div>'
+      +'<div class="lang-section-bd">'
+      +'<div><div class="fl">Display Title</div><input class="fi ro" id="sch-disp-es" value="'+valES+'" readonly placeholder="Pulled from database"></div>'
+      +'</div></div>';
+  }
+  return h;
+}
+function schToggleLang(lang,btn){
+  var isOn=btn.classList.contains(lang==='PT'?'pt-on':'es-on');
+  var cls=lang==='PT'?'pt-on':'es-on';
+  if(isOn){btn.classList.remove(cls);btn.querySelector('.lang-chk').classList.remove('on');}
+  else{btn.classList.add(cls);btn.querySelector('.lang-chk').classList.add('on');}
+  updateSchLangSettings();
+}
+function updateSchLangSettings(){
+  var el=document.getElementById('sch-lang-settings');
+  if(!el)return;
+  var body=document.getElementById('sch-md-body');
+  var ptOn=!!(body&&body.querySelector('.lang-btn.pt-on'));
+  var esOn=!!(body&&body.querySelector('.lang-btn.es-on'));
+  var prevPT=document.getElementById('sch-disp-pt');
+  var prevES=document.getElementById('sch-disp-es');
+  var valPT=prevPT?prevPT.value:'';
+  var valES=prevES?prevES.value:'';
+  var h='';
+  if(ptOn){
+    h+='<div class="lang-section" style="margin-bottom:10px">'
+      +'<div class="lang-section-hd"><span class="lang-badge-pt">PT</span><span style="font-size:12px;font-weight:500;margin-left:4px">Portuguese</span></div>'
+      +'<div class="lang-section-bd">'
+      +'<div><div class="fl">Display Title</div><input class="fi ro" id="sch-disp-pt" value="'+valPT+'" readonly placeholder="Pulled from database"></div>'
+      +'</div></div>';
+  }
+  if(esOn){
+    h+='<div class="lang-section" style="margin-bottom:10px">'
+      +'<div class="lang-section-hd"><span class="lang-badge-es">ES</span><span style="font-size:12px;font-weight:500;margin-left:4px">Spanish</span></div>'
+      +'<div class="lang-section-bd">'
+      +'<div><div class="fl">Display Title</div><input class="fi ro" id="sch-disp-es" value="'+valES+'" readonly placeholder="Pulled from database"></div>'
+      +'</div></div>';
+  }
+  el.innerHTML=h;
 }
 function schFilmSearch(q){
   var dd=document.getElementById('sch-film-dd');
@@ -1095,6 +1169,7 @@ function schFilmSearch(q){
   dd.classList.add('open');
 }
 function schFilmSelect(id,title){
+  var film=MOCK_FILMS.find(function(f){return f.id===id;})||{};
   schAddFilm={id:id,originalTitle:title};
   document.getElementById('sch-film-dd').classList.remove('open');
   document.getElementById('sch-film-search').style.display='none';
@@ -1103,30 +1178,40 @@ function schFilmSelect(id,title){
   document.getElementById('sch-film-chip').style.display='inline-flex';
   document.getElementById('sch-ppid').value=id;
   var ot=document.getElementById('sch-orig-title');if(ot)ot.value=title;
-  var dt=document.getElementById('sch-disp-title');if(dt&&!dt.value)dt.value=title;
+  var dpt=document.getElementById('sch-disp-pt');if(dpt)dpt.value=film.titlePT||title;
+  var des=document.getElementById('sch-disp-es');if(des)des.value=film.titleES||title;
 }
 function schFilmClear(){
   schAddFilm=null;document.getElementById('sch-ppid').value='';
   document.getElementById('sch-film-chip').style.display='none';
   var search=document.getElementById('sch-film-search');search.style.display='';search.value='';
   var ot=document.getElementById('sch-orig-title');if(ot)ot.value='';
+  var dpt=document.getElementById('sch-disp-pt');if(dpt)dpt.value='';
+  var des=document.getElementById('sch-disp-es');if(des)des.value='';
 }
 function saveSchModal(){
   var ppIdEl=document.getElementById('sch-ppid');
   var releaseEl=document.getElementById('sch-release');
   var untilEl=document.getElementById('sch-until');
-  var dispEl=document.getElementById('sch-disp-title');
   var origEl=document.getElementById('sch-orig-title');
   var tzEl=document.getElementById('sch-tz');
   if(!ppIdEl||!ppIdEl.value||!releaseEl||!releaseEl.value)return;
+  var body=document.getElementById('sch-md-body');
+  var ptOn=!!(body&&body.querySelector('.lang-btn.pt-on'));
+  var esOn=!!(body&&body.querySelector('.lang-btn.es-on'));
+  if(!ptOn&&!esOn){alert('Please select at least one language.');return;}
+  var langs=[];if(ptOn)langs.push('PT');if(esOn)langs.push('ES');
   var origTitle=origEl?origEl.value:(schAddFilm?schAddFilm.originalTitle:'');
-  var dispTitle=dispEl&&dispEl.value?dispEl.value:origTitle;
-  var tz=tzEl?tzEl.value:'Beijing (UTC+8)';
+  var dptEl=document.getElementById('sch-disp-pt');
+  var desEl=document.getElementById('sch-disp-es');
+  var dispTitlePT=dptEl?dptEl.value:origTitle;
+  var dispTitleES=desEl?desEl.value:origTitle;
+  var tz=tzEl?tzEl.value:'UTC+8';
   if(editingId!=null){
     var s=SCH.find(function(x){return x.id===editingId;});
-    if(s){s.release=releaseEl.value.replace('T',' ');s.until=untilEl.value?untilEl.value.replace('T',' '):'';s.displayTitle=dispTitle;s.tz=tz;s.mod=now();}
+    if(s){s.release=releaseEl.value.replace('T',' ');s.until=untilEl.value?untilEl.value.replace('T',' '):'';s.langs=langs;s.displayTitlePT=dispTitlePT;s.displayTitleES=dispTitleES;s.tz=tz;s.mod=now();}
   } else {
-    SCH.push({id:schIdSeq++,ppId:ppIdEl.value,originalTitle:origTitle,displayTitle:dispTitle,tz:tz,release:releaseEl.value.replace('T',' '),until:untilEl.value?untilEl.value.replace('T',' '):'',available:true,creator:'Admin',created:now(),mod:now()});
+    SCH.push({id:schIdSeq++,ppId:ppIdEl.value,originalTitle:origTitle,displayTitlePT:dispTitlePT,displayTitleES:dispTitleES,tz:tz,release:releaseEl.value.replace('T',' '),until:untilEl.value?untilEl.value.replace('T',' '):'',langs:langs,available:true,creator:'Admin',created:now(),mod:now()});
   }
   closeSchModal();
   if(schView==='cal')renderCal();else{buildSchDateFilters();renderSchTable();}
@@ -1186,7 +1271,7 @@ function parseCSV(file){
 }
 function importCSV(){
   var n=now();
-  csvRows.filter(function(r){return r.ok;}).forEach(function(r){SCH.push({id:schIdSeq++,ppId:r.ppId,originalTitle:'',displayTitle:'',tz:r.tz,release:r.release,until:r.expiry||'',langs:r.langs,available:true,creator:'Admin',created:n,mod:n});});
+  csvRows.filter(function(r){return r.ok;}).forEach(function(r){SCH.push({id:schIdSeq++,ppId:r.ppId,originalTitle:'',displayTitlePT:'',displayTitleES:'',tz:r.tz,release:r.release,until:r.expiry||'',langs:r.langs,available:true,creator:'Admin',created:n,mod:n});});
   closeCSV();
   if(schView==='cal')renderCal();else{buildSchDateFilters();renderSchTable();}
 }
@@ -1260,7 +1345,7 @@ function buildBannerForm(b){
   var langSettingsHtml=buildBanLangSettingsHtml(type,ptOn,esOn);
   return '<div class="fs"><div class="fs-t">Basic Info</div>'
     +'<div class="frow"><div class="fcol"><div class="fl">Banner Name <span style="color:#ff4d4f">*</span></div><input class="fi" value="'+(b?b.name:'')+'" placeholder="Internal name for admin use"></div></div>'
-    +'<div class="frow" style="margin-bottom:0"><div class="fcol"><div class="fl">Banner Type <span style="color:#ff4d4f">*</span></div><select class="fsel" onchange="onBanTypeChange(this.value)">'+typeOpts+'</select></div></div>'
+    +'<div class="frow" style="margin-bottom:0"><div class="fcol"><div class="fl">Banner Type <span style="color:#ff4d4f">*</span></div><select class="fsel" id="ban-type-sel" onchange="onBanTypeChange(this.value)">'+typeOpts+'</select></div></div>'
     +'</div>'
     +'<div class="fs"><div class="fs-t">Language Settings</div>'
     +'<div class="lang-toggle-row" style="margin-bottom:8px">'
@@ -1323,9 +1408,8 @@ function updateBanLangSettings(){
   var mdBody=document.getElementById('md-body');
   var ptOn=!!(mdBody&&mdBody.querySelector('.lang-btn.pt-on'));
   var esOn=!!(mdBody&&mdBody.querySelector('.lang-btn.es-on'));
-  var typeEl=document.querySelector('#md-body .fsel');
-  var typeMap={'Live stream':'live','Upcoming live stream':'upcoming','Image':'image'};
-  var type=typeEl?typeMap[typeEl.options[typeEl.selectedIndex].text]||'live':'live';
+  var typeEl=document.getElementById('ban-type-sel');
+  var type=typeEl?typeEl.value:'live';
   el.innerHTML=buildBanLangSettingsHtml(type,ptOn,esOn);
 }
 function banHasLangContent(type){return type==='image'||type==='upcoming';}
@@ -1386,21 +1470,29 @@ function buildPickByHtml(type){
 }
 function onBanPickChange(val,type){var opts=PICK_OPTS[type]||PICK_OPTS['live'];var o=opts.find(function(x){return x.val===val;});document.getElementById('pick-hint').textContent=o?o.hint:'';var ex=document.getElementById('pinned-extra');if(ex)ex.style.display=val==='pinned'?'block':'none';}
 function onBanTypeChange(val){
-  var ptSec=document.getElementById('ban-pt-type-body');
-  var esSec=document.getElementById('ban-es-type-body');
-  var shared=document.getElementById('ban-shared-content');
-  if(ptSec)ptSec.innerHTML=buildBanLangBody(val,'pt');
-  if(esSec)esSec.innerHTML=buildBanLangBody(val,'es');
-  if(shared)shared.innerHTML=buildBanSharedContent(val);
+  // Re-render Language Settings (image/upcoming show per-lang fields; live shows nothing)
+  updateBanLangSettings();
+  // Re-render the shared Content section
+  var sharedWrap=document.getElementById('ban-shared-body');
+  if(sharedWrap){
+    var sharedHtml=buildBanSharedContent(val);
+    if(sharedHtml){
+      sharedWrap.style.display='';
+      sharedWrap.innerHTML=sharedHtml;
+    } else {
+      sharedWrap.style.display='none';
+      sharedWrap.innerHTML='';
+    }
+  }
 }
 function buildBanSettingsSection(){
   return '<div class="fs" style="margin-bottom:0"><div class="fs-t">Settings</div>'
     +'<div class="fl">Display Window</div>'
-    +'<div style="display:flex;align-items:center;gap:8px">'
-    +'<select class="fsel" style="flex:0 0 auto;width:150px">'+TZ_HTML+'</select>'
-    +'<input class="fi" type="datetime-local" style="flex:1">'
-    +'<span style="font-size:12px;color:#8c8c8c;flex-shrink:0">to</span>'
-    +'<input class="fi" type="datetime-local" style="flex:1">'
+    +'<div style="display:flex;align-items:flex-end;gap:8px">'
+    +'<div style="flex:0 0 130px"><div class="fl" style="font-size:11px;color:#8c8c8c">Timezone</div><select class="fsel" style="width:100%">'+TZ_HTML+'</select></div>'
+    +'<div style="flex:1"><div class="fl" style="font-size:11px;color:#8c8c8c">From</div><input class="fi" type="datetime-local"></div>'
+    +'<span style="font-size:12px;color:#8c8c8c;flex-shrink:0;padding-bottom:7px">to</span>'
+    +'<div style="flex:1"><div class="fl" style="font-size:11px;color:#8c8c8c">To</div><input class="fi" type="datetime-local"></div>'
     +'</div><div class="fhint">Leave empty for immediate start / permanent.</div></div>';
 }
 
@@ -1410,21 +1502,14 @@ function buildSlotForm(s){
   var slangs=s&&s.langs?s.langs:[];
   var sptOn=slangs.indexOf('PT')!==-1;
   var sesOn=slangs.indexOf('ES')!==-1;
-  var isTc=type==="Today's Cinema";
   var typeOpts='<option value="" disabled'+(type===''?' selected':'')+'>Select type</option>'
     +["Today's Cinema",'Live','Replay','UGC','Hosts','Mixed','Movies'].map(function(t){return '<option'+(t===type?' selected':'')+'>'+t+'</option>';}).join('');
   var contentBody=buildSlotContentForType(type,s);
-  var contentBody=buildSlotContentForType(type,s);
   var langHint='Select the markets where this slot will be displayed.';
-
-
   var langBtns='<button type="button" class="lang-btn'+(sptOn?' pt-on':'')+'" onclick="slotToggleLang(\'PT\',this)"><span class="lang-chk'+(sptOn?' on':'')+'"></span>PT &middot; Portuguese</button>'
      +'<button type="button" class="lang-btn'+(sesOn?' es-on':'')+'" onclick="slotToggleLang(\'ES\',this)"><span class="lang-chk'+(sesOn?' on':'')+'"></span>ES &middot; Spanish</button>';
-
-
-
-  if(sptOn){
   var langSettingsHtml='';
+  if(sptOn){
     langSettingsHtml+='<div class="lang-section" style="margin-bottom:10px">'
       +'<div class="lang-section-hd"><span class="lang-badge-pt">PT</span><span style="font-size:12px;font-weight:500;margin-left:4px">Portuguese</span></div>'
       +'<div class="lang-section-bd">'
@@ -1485,87 +1570,32 @@ function buildSlotSettingsSection(type){
   var chips=CHIPS_TYPES.indexOf(type)!==-1
     ?'<div class="fl" style="margin-top:12px">Display chips</div><div class="chips-check-row"><label><input type="checkbox" checked> Display category chip(s)</label><label><input type="checkbox" checked> Display tag chip(s)</label></div>'
     :'';
+  var movieOpts=type==='Movies'
+    ?'<div class="fl" style="margin-top:12px">Display options</div><div class="chips-check-row"><label><input type="checkbox" checked> Display release date</label></div>'
+    :'';
   return '<div class="fs" style="margin-bottom:0"><div class="fs-t">Settings</div>'
     +'<div class="fl">Display Window</div>'
-    +'<div style="display:flex;align-items:center;gap:8px">'
-    +'<select class="fsel" style="flex:0 0 auto;width:150px">'+TZ_HTML+'</select>'
-    +'<input class="fi" type="datetime-local" style="flex:1">'
-    +'<span style="font-size:12px;color:#8c8c8c;flex-shrink:0">to</span>'
-    +'<input class="fi" type="datetime-local" style="flex:1">'
-    +'</div><div class="fhint">Leave empty for immediate start / permanent.</div>'+chips+'</div>';
-}
-function buildSlotLangSettings(ptOn,esOn){
-  var el=document.getElementById('slot-lang-settings');
-  if(!el)return;
-  var h='';
-  if(ptOn){
-    h+='<div class="lang-section" style="margin-bottom:10px">'
-      +'<div class="lang-section-hd"><span class="lang-badge-pt">PT</span><span style="font-size:12px;font-weight:500;margin-left:4px">Portuguese</span></div>'
-      +'<div class="lang-section-bd">'
-      +'<div><div class="fl">Display Name <span style="color:#ff4d4f">*</span></div><input class="fi" placeholder="Slot section title shown to users (PT)"></div>'
-      +'<div style="margin-top:10px"><div class="fl">See More</div><input class="fi" placeholder="e.g. https://... or peliparty://..."><div class="fhint">Accepts a URL or a deep link.</div></div>'
-      +'</div></div>';
-  }
-  if(esOn){
-    h+='<div class="lang-section" style="margin-bottom:10px">'
-      +'<div class="lang-section-hd"><span class="lang-badge-es">ES</span><span style="font-size:12px;font-weight:500;margin-left:4px">Spanish</span></div>'
-      +'<div class="lang-section-bd">'
-      +'<div><div class="fl">Display Name <span style="color:#ff4d4f">*</span></div><input class="fi" placeholder="Slot section title shown to users (ES)"></div>'
-      +'<div style="margin-top:10px"><div class="fl">See More</div><input class="fi" placeholder="e.g. https://... or peliparty://..."><div class="fhint">Accepts a URL or a deep link.</div></div>'
-      +'</div></div>';
-  }
-  el.innerHTML=h;
-}
-function slotToggleLang(lang,btn){
-  var isOn=btn.classList.contains(lang==='PT'?'pt-on':'es-on');
-  if(isOn){btn.classList.remove(lang==='PT'?'pt-on':'es-on');btn.querySelector('.lang-chk').classList.remove('on');}
-  else{btn.classList.add(lang==='PT'?'pt-on':'es-on');btn.querySelector('.lang-chk').classList.add('on');}
-  updateSlotLangSettings();
-}
-function onSlotTypeChange(type){
-  movieManualList=[];
-  var body=buildSlotContentForType(type,null);
-  document.getElementById('slot-content-section').innerHTML=body?'<div class="fs"><div class="fs-t">Content</div>'+body+'</div>':'';
-  document.getElementById('slot-settings-section').innerHTML=type?buildSlotSettingsSection(type):'';
-  if(type==="Today's Cinema")fcRenderRules();
-  if(type==='Mixed')mxRenderRules();
-  updateSlotLangSettings();
-}
-function refreshSlotLangSettings(){
-  updateSlotLangSettings();
-}
-function updateSlotLangSettings(){
-  var el=document.getElementById('slot-lang-settings');
-  if(!el)return;
-  var mdBody=document.getElementById('md-body');
-  var ptOn=!!(mdBody&&mdBody.querySelector('.lang-btn.pt-on'));
-  var esOn=!!(mdBody&&mdBody.querySelector('.lang-btn.es-on'));
-  var h='';
-  if(ptOn){
-    h+='<div class="lang-section" style="margin-bottom:10px">'
-      +'<div class="lang-section-hd"><span class="lang-badge-pt">PT</span><span style="font-size:12px;font-weight:500;margin-left:4px">Portuguese</span></div>'
-      +'<div class="lang-section-bd">'
-      +'<div><div class="fl">Display Name <span style="color:#ff4d4f">*</span></div><input class="fi" placeholder="Slot section title shown to users (PT)"></div>'
-      +'<div style="margin-top:10px"><div class="fl">See More</div><input class="fi" placeholder="e.g. https://... or peliparty://..."><div class="fhint">Accepts a URL or a deep link.</div></div>'
-      +'</div></div>';
-  }
-  if(esOn){
-    h+='<div class="lang-section" style="margin-bottom:10px">'
-      +'<div class="lang-section-hd"><span class="lang-badge-es">ES</span><span style="font-size:12px;font-weight:500;margin-left:4px">Spanish</span></div>'
-      +'<div class="lang-section-bd">'
-      +'<div><div class="fl">Display Name <span style="color:#ff4d4f">*</span></div><input class="fi" placeholder="Slot section title shown to users (ES)"></div>'
-      +'<div style="margin-top:10px"><div class="fl">See More</div><input class="fi" placeholder="e.g. https://... or peliparty://..."><div class="fhint">Accepts a URL or a deep link.</div></div>'
-      +'</div></div>';
-  }
-  el.innerHTML=h;
+    +'<div style="display:flex;align-items:flex-end;gap:8px">'
+    +'<div style="flex:0 0 130px"><div class="fl" style="font-size:11px;color:#8c8c8c">Timezone</div><select class="fsel" style="width:100%">'+TZ_HTML+'</select></div>'
+    +'<div style="flex:1"><div class="fl" style="font-size:11px;color:#8c8c8c">From</div><input class="fi" type="datetime-local"></div>'
+    +'<span style="font-size:12px;color:#8c8c8c;flex-shrink:0;padding-bottom:7px">to</span>'
+    +'<div style="flex:1"><div class="fl" style="font-size:11px;color:#8c8c8c">To</div><input class="fi" type="datetime-local"></div>'
+    +'</div><div class="fhint">Leave empty for immediate start / permanent.</div>'+chips+movieOpts+'</div>';
 }
 
 // ── SHARED FORM HELPERS ───────────────────────────────────────────────────────
 function buildCatsRow(availCats,selectedStr){
-  var chips=availCats.map(function(c){var on=selectedStr&&selectedStr.indexOf(c.name)!==-1;return '<label class="ci'+(on?' on':'')+'" onclick="this.classList.toggle(\'on\')">'+c.name+'</label>';}).join('');
+  var chips=availCats.map(function(c){
+    var on=selectedStr&&selectedStr.indexOf(c.name)!==-1;
+    return '<label class="ci'+(on?' on':'')+'" onclick="this.classList.toggle(\'on\')">'+c.name+'</label>';
+  }).join('');
   return '<div class="cats-row"><span class="cats-row-label">Categories</span><div class="cbg">'+chips+'</div></div>';
 }
-function sortOptsHtml(type,sel){return(SORT_OPTS[type]||[]).map(function(o){return '<option value="'+o.val+'"'+(o.val===sel?' selected':'')+'>'+o.lbl+'</option>';}).join('');}
+function sortOptsHtml(type,sel){
+  return(SORT_OPTS[type]||[]).map(function(o){
+    return '<option value="'+o.val+'"'+(o.val===sel?' selected':'')+'>'+o.lbl+'</option>';
+  }).join('');
+}
 function onSortChange(tdId,val){var el=document.getElementById(tdId);if(el)el.classList.toggle('show',val==='trending');}
 function buildSortQtyInline(mediaType,sortId,tdId,maxVal){
   maxVal=maxVal||4;
@@ -1581,11 +1611,22 @@ function buildMoviesContent(){
     +'<div id="movies-manual-section" style="display:none;margin-top:14px"><div class="fl">Movies <span style="color:#ff4d4f">*</span></div><div class="movie-list" id="movie-manual-list"></div><div class="add-movie-area"><div class="film-combo"><input class="fi" id="movie-search" placeholder="Search by pp_id or title" autocomplete="off" oninput="movieSearch(this.value)" onfocus="movieSearch(this.value)"><div class="film-dropdown" id="movie-dropdown"></div></div></div></div>';
 }
 function onMoviesSortChange(val){var m=document.getElementById('movies-manual-section');if(m)m.style.display=val==='manual'?'block':'none';}
-function movieSearch(q){var dd=document.getElementById('movie-dropdown');if(!q||q.length<1){dd.classList.remove('open');return;}var ex=movieManualList.map(function(m){return m.id;});var filtered=MOCK_FILMS.filter(function(f){return ex.indexOf(f.id)===-1&&(f.id.indexOf(q)!==-1||f.title.toLowerCase().indexOf(q.toLowerCase())!==-1);});if(!filtered.length){dd.classList.remove('open');return;}dd.innerHTML=filtered.map(function(f){return '<div class="film-opt" onclick="movieAdd(\''+f.id+'\',\''+f.title+'\')">'+'<span class="film-id">'+f.id+'</span><span style="flex:1;font-weight:500">'+f.title+'</span></div>';}).join('');dd.classList.add('open');}
+function movieSearch(q){
+  var dd=document.getElementById('movie-dropdown');
+  if(!q||q.length<1){dd.classList.remove('open');return;}
+  var ex=movieManualList.map(function(m){return m.id;});
+  var filtered=MOCK_FILMS.filter(function(f){return ex.indexOf(f.id)===-1&&(f.id.indexOf(q)!==-1||f.title.toLowerCase().indexOf(q.toLowerCase())!==-1);});
+  if(!filtered.length){dd.classList.remove('open');return;}
+  dd.innerHTML=filtered.map(function(f){return '<div class="film-opt" onclick="movieAdd(\''+f.id+'\',\''+f.title+'\')"><span class="film-id">'+f.id+'</span><span style="flex:1;font-weight:500">'+f.title+'</span></div>';}).join('');
+  dd.classList.add('open');
+}
 function movieAdd(id,title){movieManualList.push({id:id,title:title});var dd=document.getElementById('movie-dropdown');if(dd)dd.classList.remove('open');var si=document.getElementById('movie-search');if(si)si.value='';renderMovieList();}
 function movieDel(id){movieManualList=movieManualList.filter(function(m){return m.id!==id;});renderMovieList();}
-function renderMovieList(){var el=document.getElementById('movie-manual-list');if(!el)return;if(!movieManualList.length){el.innerHTML='';return;}el.innerHTML=movieManualList.map(function(m){return '<div class="movie-item"><span class="movie-item-drag">⠿</span><span class="movie-item-id">'+m.id+'</span><span class="movie-item-title">'+m.title+'</span><button class="movie-item-del" onclick="movieDel(\''+m.id+'\')">−</button></div>';}).join('');}
-
+function renderMovieList(){
+  var el=document.getElementById('movie-manual-list');if(!el)return;
+  if(!movieManualList.length){el.innerHTML='';return;}
+  el.innerHTML=movieManualList.map(function(m){return '<div class="movie-item"><span class="movie-item-drag">⠿</span><span class="movie-item-id">'+m.id+'</span><span class="movie-item-title">'+m.title+'</span><button class="movie-item-del" onclick="movieDel(\''+m.id+'\')">−</button></div>';}).join('');
+}
 // ── RULE BUILDERS ─────────────────────────────────────────────────────────────
 function buildRuleSection(prefix,totalMaxId,totalMaxVal){
   return '<div class="setting-row" style="margin-bottom:8px"><span style="font-size:12px;color:#595959;flex-shrink:0;min-width:120px">Total max items</span><input class="fi" id="'+totalMaxId+'" type="number" value="'+(totalMaxVal||5)+'" min="1" max="30" style="width:64px" oninput="'+prefix+'RenderPreview()"><span style="font-size:11px;color:#8c8c8c">items in this slot</span></div>'
@@ -1645,7 +1686,6 @@ function renderPreviewGeneric(rules,prefix,totalMaxId){
   h+='<div style="margin-top:8px;padding-top:8px;border-top:1px solid #d6e4ff;font-size:11px;color:#8c8c8c">Mock: Live '+AVAILABLE_MOCK.live+', Replay '+AVAILABLE_MOCK.replay+', UGC '+AVAILABLE_MOCK.ugc+'</div>';
   el.innerHTML=h;
 }
-// FC
 function fcRenderRules(){renderGenericRules(fcRules,'fc');fcRenderPreview();}
 function fcRenderPreview(){renderPreviewGeneric(fcRules,'fc','fc-total-max');}
 function fcDragStart(i,el){fcDragSrc=i;setTimeout(function(){el.classList.add('dragging');},0);}
@@ -1660,10 +1700,9 @@ function fcUpcomingChange(i,c){fcRules[i].upcomingFallback=c;fcRenderPreview();}
 function fcAddRule(){fcRules.push({type:'ugc',qty:2,sort:'most_popular',trendingDays:7,upcomingFallback:false});fcRenderRules();}
 function fcDelRule(i){fcRules.splice(i,1);fcRenderRules();}
 function fcUpdateFbTrending(){var s=document.getElementById('fc-fb-sort');var d=document.getElementById('fc-fb-td');if(s&&d)d.classList.toggle('show',s.value==='trending');}
-function fcSearchFilms(q){var dd=document.getElementById('film-dropdown');if(!q||q.length<1){dd.classList.remove('open');return;}var filtered=MOCK_FILMS.filter(function(f){return f.id.indexOf(q)!==-1||f.title.toLowerCase().indexOf(q.toLowerCase())!==-1;});if(!filtered.length){dd.classList.remove('open');return;}dd.innerHTML=filtered.map(function(f){return '<div class="film-opt" onclick="fcSelectFilm(\''+f.id+'\',\''+f.title+'\')">'+'<span class="film-id">'+f.id+'</span><span style="font-weight:500;flex:1">'+f.title+'</span></div>';}).join('');dd.classList.add('open');}
-function fcSelectFilm(id,title){document.getElementById('film-dropdown').classList.remove('open');document.getElementById('film-search').value='';document.getElementById('film-chip-text').textContent=id+' / '+title;document.getElementById('film-chip').style.display='inline-flex';}
-function fcClearFilm(){document.getElementById('film-chip').style.display='none';document.getElementById('film-search').value='';}
-// MX
+function fcSearchFilms(q){var dd=document.getElementById('film-dropdown');if(!dd)return;if(!q||q.length<1){dd.classList.remove('open');return;}var filtered=MOCK_FILMS.filter(function(f){return f.id.indexOf(q)!==-1||f.title.toLowerCase().indexOf(q.toLowerCase())!==-1;});if(!filtered.length){dd.classList.remove('open');return;}dd.innerHTML=filtered.map(function(f){return '<div class="film-opt" onclick="fcSelectFilm(\''+f.id+'\',\''+f.title+'\')"><span class="film-id">'+f.id+'</span><span style="font-weight:500;flex:1">'+f.title+'</span></div>';}).join('');dd.classList.add('open');}
+function fcSelectFilm(id,title){var dd=document.getElementById('film-dropdown');if(dd)dd.classList.remove('open');var si=document.getElementById('film-search');if(si)si.value='';var ct=document.getElementById('film-chip-text');if(ct)ct.textContent=id+' / '+title;var ch=document.getElementById('film-chip');if(ch)ch.style.display='inline-flex';}
+function fcClearFilm(){var ch=document.getElementById('film-chip');if(ch)ch.style.display='none';var si=document.getElementById('film-search');if(si)si.value='';}
 function mxRenderRules(){renderGenericRules(mxRules,'mx');mxRenderPreview();}
 function mxRenderPreview(){renderPreviewGeneric(mxRules,'mx','mx-total-max');}
 function mxDragStart(i,el){mxDragSrc=i;setTimeout(function(){el.classList.add('dragging');},0);}
@@ -1679,7 +1718,188 @@ function mxAddRule(){mxRules.push({type:'ugc',qty:2,sort:'most_popular',trending
 function mxDelRule(i){mxRules.splice(i,1);mxRenderRules();}
 function mxUpdateFbTrending(){var s=document.getElementById('mx-fb-sort');var d=document.getElementById('mx-fb-td');if(s&&d)d.classList.toggle('show',s.value==='trending');}
 
-window.addEventListener('load',function(){renderSlots();buildJumpSelectors();renderCal();});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function slotToggleLang(lang,btn){
+  var isOn=btn.classList.contains(lang==='PT'?'pt-on':'es-on');
+  var cls=lang==='PT'?'pt-on':'es-on';
+  if(isOn){btn.classList.remove(cls);btn.querySelector('.lang-chk').classList.remove('on');}
+  else{btn.classList.add(cls);btn.querySelector('.lang-chk').classList.add('on');}
+  updateSlotLangSettings();
+}
+function onSlotTypeChange(val){
+  var contentSec=document.getElementById('slot-content-section');
+  var settingsSec=document.getElementById('slot-settings-section');
+  if(contentSec){
+    var body=buildSlotContentForType(val,null);
+    contentSec.innerHTML=body?'<div class="fs"><div class="fs-t">Content</div>'+body+'</div>':'';
+    if(val==="Today's Cinema")fcRenderRules();
+    if(val==='Mixed')mxRenderRules();
+  }
+  if(settingsSec){
+    settingsSec.innerHTML=val?buildSlotSettingsSection(val):'';
+  }
+  updateSlotLangSettings();
+}
+function updateSlotLangSettings(){
+  var el=document.getElementById('slot-lang-settings');
+  if(!el)return;
+  var mdBody=document.getElementById('md-body');
+  var ptOn=!!(mdBody&&mdBody.querySelector('.lang-btn.pt-on'));
+  var esOn=!!(mdBody&&mdBody.querySelector('.lang-btn.es-on'));
+  var h='';
+  if(ptOn){
+    h+='<div class="lang-section" style="margin-bottom:10px">'
+      +'<div class="lang-section-hd"><span class="lang-badge-pt">PT</span><span style="font-size:12px;font-weight:500;margin-left:4px">Portuguese</span></div>'
+      +'<div class="lang-section-bd">'
+      +'<div><div class="fl">Display Name <span style="color:#ff4d4f">*</span></div><input class="fi" placeholder="Slot section title shown to users (PT)"></div>'
+      +'<div style="margin-top:10px"><div class="fl">See More</div><input class="fi" placeholder="e.g. https://... or peliparty://..."><div class="fhint">Accepts a URL or a deep link.</div></div>'
+      +'</div></div>';
+  }
+  if(esOn){
+    h+='<div class="lang-section" style="margin-bottom:10px">'
+      +'<div class="lang-section-hd"><span class="lang-badge-es">ES</span><span style="font-size:12px;font-weight:500;margin-left:4px">Spanish</span></div>'
+      +'<div class="lang-section-bd">'
+      +'<div><div class="fl">Display Name <span style="color:#ff4d4f">*</span></div><input class="fi" placeholder="Slot section title shown to users (ES)"></div>'
+      +'<div style="margin-top:10px"><div class="fl">See More</div><input class="fi" placeholder="e.g. https://... or peliparty://..."><div class="fhint">Accepts a URL or a deep link.</div></div>'
+      +'</div></div>';
+  }
+  el.innerHTML=h;
+}
+function refreshSlotLangSettings(){updateSlotLangSettings();}
+window.addEventListener('load',function(){renderCats();renderBanners();renderSlots();buildJumpSelectors();renderCal();});
 </script>
 </body>
 </html>
