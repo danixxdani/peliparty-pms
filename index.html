@@ -1145,8 +1145,8 @@ function buildCSVBody(){
     +'<input type="file" id="csv-file" accept=".csv" style="display:none" onchange="csvFileSelect(this)">'
     +'<div class="csv-fmt">'
     +'<div class="csv-fmt-title">Expected format</div>'
-    +'<code class="csv-fmt-code">pp_id,timezone,release_date,expiry_date\npp00000123,UTC+8,2026-06-01 00:00,2026-06-30 23:59\npp00000456,UTC-7/8,2026-06-05 00:00,</code>'
-    +'<div class="csv-fmt-hint" style="margin-top:6px">expiry_date is optional. Timezone options: UTC+8, UTC-7/8, UTC-3</div>'
+    +'<code class="csv-fmt-code">pp_id,timezone,release_date,expiry_date,languages\npp00000123,UTC+8,2026-06-01 00:00,2026-06-30 23:59,PT|ES\npp00000456,UTC-7/8,2026-06-05 00:00,,PT\npp00000789,UTC-3,2026-06-10 00:00,2026-07-10 23:59,ES</code>'
+    +'<div class="csv-fmt-hint" style="margin-top:6px">expiry_date is optional (leave empty). languages: PT, ES, or PT|ES. Timezone: UTC+8, UTC-7/8, UTC-3</div>'
     +'</div></div><div id="csv-preview"></div>';
 }
 function csvDrop(e){e.preventDefault();document.getElementById('csv-drop').classList.remove('drag-over');var file=e.dataTransfer.files[0];if(file)parseCSV(file);}
@@ -1159,13 +1159,16 @@ function parseCSV(file){
     var start=lines[0]&&lines[0].toLowerCase().startsWith('pp_id')?1:0;
     lines.slice(start).forEach(function(line,idx){
       var parts=line.split(',');
-      var row={lineNum:start+idx+1,ppId:parts[0]?parts[0].trim():'',tz:parts[1]?parts[1].trim():'',release:parts[2]?parts[2].trim():'',expiry:parts[3]?parts[3].trim():'',ok:true,errors:[]};
+      var rawLangs=parts[4]?parts[4].trim():'';
+      var parsedLangs=rawLangs?rawLangs.split('|').map(function(l){return l.trim().toUpperCase();}).filter(function(l){return l==='PT'||l==='ES';}):[]; 
+      var row={lineNum:start+idx+1,ppId:parts[0]?parts[0].trim():'',tz:parts[1]?parts[1].trim():'',release:parts[2]?parts[2].trim():'',expiry:parts[3]?parts[3].trim():'',langs:parsedLangs,ok:true,errors:[]};
       if(!row.ppId)row.errors.push('Missing pp_id');
       if(!row.tz)row.errors.push('Missing timezone');
       if(!row.release)row.errors.push('Missing release_date');
       if(row.release&&!/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/.test(row.release))row.errors.push('Invalid release_date format');
       if(row.expiry&&!/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/.test(row.expiry))row.errors.push('Invalid expiry_date format');
       if(row.tz&&TZ_OPTS.indexOf(row.tz)===-1)row.errors.push('Unknown timezone (use UTC+8, UTC-7/8, or UTC-3)');
+      if(!row.langs.length)row.errors.push('Missing or invalid languages (use PT, ES, or PT|ES)');
       if(row.errors.length)row.ok=false;
       csvRows.push(row);
     });
@@ -1173,15 +1176,17 @@ function parseCSV(file){
     var invalid=csvRows.length-valid;
     var col=valid===csvRows.length?'#52c41a':invalid===csvRows.length?'#ff4d4f':'#faad14';
     var msg=valid===csvRows.length?'All '+valid+' rows valid and ready to import.':invalid===csvRows.length?'All rows have errors. Please fix and re-upload.':valid+' rows valid, '+invalid+' with errors. Error rows will be skipped.';
-    var tableRows=csvRows.map(function(r){return '<tr><td style="text-align:center">'+(r.ok?'<span class="csv-ok">✓</span>':'<span class="csv-err">✗</span>')+'</td><td style="color:#8c8c8c;font-size:11px">'+r.lineNum+'</td><td style="font-size:11px">'+r.ppId+'</td><td style="font-size:11px;color:#595959">'+r.tz+'</td><td style="font-size:11px;white-space:nowrap">'+r.release+'</td><td style="font-size:11px;white-space:nowrap;color:#595959">'+(r.expiry||'')+'</td><td>'+(r.errors.length?'<span style="font-size:10px;color:#ff4d4f">'+r.errors.join(', ')+'</span>':'')+'</td></tr>';}).join('');
-    document.getElementById('csv-preview').innerHTML='<div style="font-size:12px;color:'+col+';margin:12px 0 8px">'+msg+'</div><table class="csv-table"><thead><tr><th></th><th>Line</th><th>PP ID</th><th>Release Date</th><th>Expiry Date</th><th>Timezone</th><th>Errors</th></tr></thead><tbody>'+tableRows+'</tbody></table>';
+    var tableRows=csvRows.map(function(r){
+      var langHtml=r.langs&&r.langs.length?r.langs.map(function(l){return '<span class="lang-pill '+(l==='PT'?'lang-pt':'lang-es')+'">'+l+'</span>';}).join(''):'<span style="color:#ff4d4f;font-size:10px">—</span>';
+      return '<tr><td style="text-align:center">'+(r.ok?'<span class="csv-ok">✓</span>':'<span class="csv-err">✗</span>')+'</td><td style="color:#8c8c8c;font-size:11px">'+r.lineNum+'</td><td style="font-size:11px">'+r.ppId+'</td><td style="font-size:11px;color:#595959">'+r.tz+'</td><td style="font-size:11px;white-space:nowrap">'+r.release+'</td><td style="font-size:11px;white-space:nowrap;color:#595959">'+(r.expiry||'—')+'</td><td>'+langHtml+'</td><td>'+(r.errors.length?'<span style="font-size:10px;color:#ff4d4f">'+r.errors.join(', ')+'</span>':'')+'</td></tr>';}).join('');
+    document.getElementById('csv-preview').innerHTML='<div style="font-size:12px;color:'+col+';margin:12px 0 8px">'+msg+'</div><table class="csv-table"><thead><tr><th></th><th>Line</th><th>PP ID</th><th>Timezone</th><th>Release Date</th><th>Expiry Date</th><th>Languages</th><th>Errors</th></tr></thead><tbody>'+tableRows+'</tbody></table>';
     document.getElementById('csv-import-btn').disabled=valid===0;
   };
   reader.readAsText(file);
 }
 function importCSV(){
   var n=now();
-  csvRows.filter(function(r){return r.ok;}).forEach(function(r){SCH.push({id:schIdSeq++,ppId:r.ppId,originalTitle:'',displayTitle:'',tz:r.tz,release:r.release,until:r.expiry||'',available:true,creator:'Admin',created:n,mod:n});});
+  csvRows.filter(function(r){return r.ok;}).forEach(function(r){SCH.push({id:schIdSeq++,ppId:r.ppId,originalTitle:'',displayTitle:'',tz:r.tz,release:r.release,until:r.expiry||'',langs:r.langs,available:true,creator:'Admin',created:n,mod:n});});
   closeCSV();
   if(schView==='cal')renderCal();else{buildSchDateFilters();renderSchTable();}
 }
