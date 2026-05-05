@@ -1343,15 +1343,15 @@ function buildSlotForm(s){
   var typeOpts='<option value="" disabled'+(type===''?' selected':'')+'>Select type</option>'
     +["Today's Cinema",'Live','Replay','UGC','Hosts','Mixed','Movies'].map(function(t){return '<option'+(t===type?' selected':'')+'>'+t+'</option>';}).join('');
   var contentBody=buildSlotContentForType(type,s);
-  var langHint=isTc
-    ?'Select one market. Each Today\'s Cinema slot serves a single language.'
-    :'Select the markets where this slot will be displayed.';
-  var langBtns=isTc
-    ?'<button type="button" class="lang-btn'+(sptOn?' pt-on':'')+'" onclick="tcLangPick(\'PT\',this)"><span class="lang-chk'+(sptOn?' on':'')+'"></span>PT &middot; Portuguese</button>'
-     +'<button type="button" class="lang-btn'+(sesOn?' es-on':'')+'" onclick="tcLangPick(\'ES\',this)"><span class="lang-chk'+(sesOn?' on':'')+'"></span>ES &middot; Spanish</button>'
-    :'<button type="button" class="lang-btn'+(sptOn?' pt-on':'')+'" onclick="slotToggleLang(\'PT\',this)"><span class="lang-chk'+(sptOn?' on':'')+'"></span>PT &middot; Portuguese</button>'
+  var contentBody=buildSlotContentForType(type,s);
+  var langHint='Select the markets where this slot will be displayed.';
+
+
+  var langBtns='<button type="button" class="lang-btn'+(sptOn?' pt-on':'')+'" onclick="slotToggleLang(\'PT\',this)"><span class="lang-chk'+(sptOn?' on':'')+'"></span>PT &middot; Portuguese</button>'
      +'<button type="button" class="lang-btn'+(sesOn?' es-on':'')+'" onclick="slotToggleLang(\'ES\',this)"><span class="lang-chk'+(sesOn?' on':'')+'"></span>ES &middot; Spanish</button>';
-  var langSettingsHtml='';
+
+
+
   if(sptOn){
     langSettingsHtml+='<div class="lang-section" style="margin-bottom:10px">'
       +'<div class="lang-section-hd"><span class="lang-badge-pt">PT</span><span style="font-size:12px;font-weight:500;margin-left:4px">Portuguese</span></div>'
