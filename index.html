@@ -244,6 +244,9 @@ tbody tr.sel td{background:#e6f4ff}
 .lang-section-bd{padding:14px;display:flex;flex-direction:column;gap:12px}
 .lang-badge-pt{display:inline-flex;align-items:center;padding:2px 9px;border-radius:99px;font-size:11px;font-weight:500;background:#E6F1FB;color:#0C447C;border:0.5px solid #85B7EB}
 .lang-badge-es{display:inline-flex;align-items:center;padding:2px 9px;border-radius:99px;font-size:11px;font-weight:500;background:#EAF3DE;color:#27500A;border:0.5px solid #97C459}
+.lang-pill{display:inline-block;padding:1px 7px;border-radius:99px;font-size:10px;font-weight:500;margin-right:3px}
+.lang-pt{background:#E6F1FB;color:#0C447C;border:0.5px solid #85B7EB}
+.lang-es{background:#EAF3DE;color:#27500A;border:0.5px solid #97C459}
 </style>
 </head>
 <body>
@@ -730,20 +733,13 @@ function buildCatForm(c){
     +'<div class="cbg" id="cat-media-chips">'+mediaOpts+'</div>'
     +'<div class="fhint" style="margin-top:6px">Select at least one media type.</div>'
 
-
-
-
-
-
-
-
     +'</div>'
-    +'<div class="fs" style="margin-bottom:0"><div class="fs-t">Language Settings</div>'
+    +'<div class="fs" style="margin-bottom:0"><div class="fs-t">Language Settings <span style="color:#ff4d4f">*</span></div>'
     +'<div class="lang-toggle-row" style="margin-bottom:8px">'
     +'<button type="button" class="lang-btn'+(ptOn?' pt-on':'')+'" onclick="catToggleLang(\'PT\',this)"><span class="lang-chk'+(ptOn?' on':'')+'"></span>PT &middot; Portuguese</button>'
     +'<button type="button" class="lang-btn'+(esOn?' es-on':'')+'" onclick="catToggleLang(\'ES\',this)"><span class="lang-chk'+(esOn?' on':'')+'"></span>ES &middot; Spanish</button>'
     +'</div>'
-    +'<div class="fhint" style="margin-bottom:12px">Select the markets where this category will be available.</div>'
+    +'<div class="fhint" style="margin-bottom:12px">Select at least one market. Required.</div>'
     +'<div id="cat-sec-pt" style="display:'+(ptOn?'block':'none')+';margin-bottom:10px" class="lang-section">'
     +'<div class="lang-section-hd"><span class="lang-badge-pt">PT</span>'
     +'<span style="font-size:12px;font-weight:500;margin-left:4px">Portuguese</span></div>'
@@ -773,12 +769,17 @@ function saveCatModal(editingCatId){
   var duplicate=CATS.find(function(c){return c.name.toLowerCase()===name.toLowerCase()&&c.id!==editingCatId;});
   if(duplicate){alert('A category with this name already exists.');return;}
   var media=Array.from(chips).map(function(el){return el.textContent;});
+  var langs=[];
+  var mdBody=document.getElementById('md-body');
+  if(mdBody&&mdBody.querySelector('.lang-btn.pt-on'))langs.push('PT');
+  if(mdBody&&mdBody.querySelector('.lang-btn.es-on'))langs.push('ES');
+  if(!langs.length){alert('Please select at least one language.');return;}
   var n=now();
   if(editingCatId!=null){
     var c=CATS.find(function(x){return x.id===editingCatId;});
-    if(c){c.name=name;c.media=media;c.mod=n;}
+    if(c){c.name=name;c.media=media;c.langs=langs;c.mod=n;}
   } else {
-    CATS.push({id:catIdSeq++,name:name,media:media,enabled:true,creator:'Admin',created:n,mod:n});
+    CATS.push({id:catIdSeq++,name:name,media:media,langs:langs,enabled:true,creator:'Admin',created:n,mod:n});
   }
   closeModal();renderCats();
 }
@@ -1071,7 +1072,7 @@ function buildSchForm(s,prefillDate){
   var releaseVal=s?s.release.replace(' ','T'):(prefillDate?prefillDate+'T00:00':'');
   var untilVal=s&&s.until?s.until.replace(' ','T'):'';
   var tzOpts=TZ_OPTS.map(function(t){return '<option'+(s?s.tz===t?' selected':'':t==='UTC+8'?' selected':'')+'>'+t+'</option>';}).join('');
-  var langs=s&&s.langs?s.langs:['PT','ES'];
+  var langs=s&&s.langs?s.langs:[];
   var ptOn=langs.indexOf('PT')!==-1;
   var esOn=langs.indexOf('ES')!==-1;
   var movieSection='';
@@ -1088,12 +1089,12 @@ function buildSchForm(s,prefillDate){
     +'<div class="title-row">'
     +'<div class="fcol"><div class="fl">Original Title</div><input class="fi ro" id="sch-orig-title" value="'+(s?s.originalTitle:'')+'" readonly placeholder="Auto-filled on selection"></div>'
     +'</div></div>'
-    +'<div class="fs"><div class="fs-t">Language Settings</div>'
+    +'<div class="fs"><div class="fs-t">Language Settings <span style="color:#ff4d4f">*</span></div>'
     +'<div class="lang-toggle-row" style="margin-bottom:8px">'
     +'<button type="button" class="lang-btn'+(ptOn?' pt-on':'')+'" onclick="schToggleLang(\'PT\',this)"><span class="lang-chk'+(ptOn?' on':'')+'"></span>PT &middot; Portuguese</button>'
     +'<button type="button" class="lang-btn'+(esOn?' es-on':'')+'" onclick="schToggleLang(\'ES\',this)"><span class="lang-chk'+(esOn?' on':'')+'"></span>ES &middot; Spanish</button>'
     +'</div>'
-    +'<div class="fhint" style="margin-bottom:12px">Select the markets where this schedule will be available.</div>'
+    +'<div class="fhint" style="margin-bottom:12px">Select at least one market. Required.</div>'
     +'<div id="sch-lang-settings">'+langSettingsHtml+'</div>'
     +'</div>'
     +'<div class="fs" style="margin-bottom:0"><div class="fs-t">Schedule</div>'
@@ -1311,14 +1312,14 @@ function openModal(kind,id){
     var ce=CATS.find(function(x){return x.id===id;});
     title='Edit Category — '+ce.name;body=buildCatForm(ce);
     saveBtn=function(){saveCatModal(id);};
-  } else if(kind==='ban-add'){title='Add Banner Item';body=buildBannerForm(null);}
-  else if(kind==='ban-edit'){var b=BANNERS.find(function(x){return x.id===id;});title='Edit Banner';body=buildBannerForm(b);}
+  } else if(kind==='ban-add'){title='Add Banner Item';body=buildBannerForm(null);saveBtn=function(){saveBanModal(null);};}
+  else if(kind==='ban-edit'){var b=BANNERS.find(function(x){return x.id===id;});title='Edit Banner';body=buildBannerForm(b);saveBtn=function(){saveBanModal(id);};}
   else if(kind==='slot-add'){
-    try{movieManualList=[];title='Add Slot';body=buildSlotForm(null);}
+    try{movieManualList=[];title='Add Slot';body=buildSlotForm(null);saveBtn=function(){saveSlotModal(null);};}
     catch(e){console.error('slot-add error:',e);alert('slot-add error: '+e.message);return;}
   }
   else if(kind==='slot-edit'){
-    try{var s=SLOTS.find(function(x){return x.id===id;});movieManualList=[];title='Edit Slot — '+s.name;body=buildSlotForm(s);}
+    try{var s=SLOTS.find(function(x){return x.id===id;});movieManualList=[];title='Edit Slot — '+s.name;body=buildSlotForm(s);saveBtn=function(){saveSlotModal(id);};}
     catch(e){console.error('slot-edit error:',e);alert('slot-edit error: '+e.message);return;}
   }
   // attach save handler if provided
@@ -1331,6 +1332,59 @@ function openModal(kind,id){
   
 }
 function closeModal(){document.getElementById('mov').classList.remove('open');}
+function saveBanModal(editingBanId){
+  var mdBody=document.getElementById('md-body');
+  var nameEl=mdBody.querySelector('.fi[placeholder="Internal name for admin use"]');
+  var typeEl=document.getElementById('ban-type-sel');
+  if(!nameEl||!nameEl.value.trim()){alert('Banner name is required.');return;}
+  if(!typeEl||!typeEl.value){alert('Banner type is required.');return;}
+  var langs=[];
+  if(mdBody.querySelector('.lang-btn.pt-on'))langs.push('PT');
+  if(mdBody.querySelector('.lang-btn.es-on'))langs.push('ES');
+  if(!langs.length){alert('Please select at least one language.');return;}
+  var name=nameEl.value.trim();
+  var type=typeEl.value;
+  var n=now();
+  if(editingBanId!=null){
+    var ban=BANNERS.find(function(x){return x.id===editingBanId;});
+    if(ban){ban.name=name;ban.type=type;ban.langs=langs;ban.mod=n;}
+  } else {
+    var newId=Math.max.apply(null,BANNERS.map(function(b){return b.id;}))+1;
+    BANNERS.push({id:newId,name:name,type:type,langs:langs,tz:'UTC+8',start:n,end:'',enabled:true,creator:'Admin',created:n,mod:n});
+  }
+  closeModal();renderBanners();
+}
+function saveSlotModal(editingSlotId){
+  var mdBody=document.getElementById('md-body');
+  var nameEl=mdBody.querySelector('.fi:not(.ro):not([type="number"]):not([type="datetime-local"])');
+  var typeEl=mdBody.querySelector('.fsel');
+  var langs=[];
+  if(mdBody.querySelector('.lang-btn.pt-on'))langs.push('PT');
+  if(mdBody.querySelector('.lang-btn.es-on'))langs.push('ES');
+  // find name input specifically
+  var allFi=mdBody.querySelectorAll('.fi:not(.ro)');
+  var slotNameEl=null;
+  allFi.forEach(function(el){if(el.placeholder===''&&el.type!=='number'&&el.type!=='datetime-local')slotNameEl=slotNameEl||el;});
+  // fallback: just grab second fi (slot name is second field)
+  var fis=mdBody.querySelectorAll('input.fi:not(.ro):not([type])');
+  if(fis.length>=2)slotNameEl=fis[1];
+  var name=slotNameEl?slotNameEl.value.trim():'';
+  var type=typeEl?typeEl.value:'';
+  if(!name){alert('Slot name is required.');return;}
+  if(!type||type===''){alert('Slot type is required.');return;}
+  if(!langs.length){alert('Please select at least one language.');return;}
+  var cats=Array.from(mdBody.querySelectorAll('.ci.on')).map(function(el){return el.textContent;});
+  var n=now();
+  if(editingSlotId!=null){
+    var sl=SLOTS.find(function(x){return x.id===editingSlotId;});
+    if(sl){sl.name=name;sl.type=type;sl.langs=langs;sl.cats_str=cats.join(', ');sl.mod=n;}
+  } else {
+    var newSid=Math.max.apply(null,SLOTS.map(function(s){return s.id;}))+1;
+    SLOTS.push({id:newSid,name:name,type:type,langs:langs,cats_str:cats.join(', '),enabled:true,creator:'Admin',created:n,mod:n});
+    SLOT_ORDER.push(newSid);
+  }
+  closeModal();renderSlots();
+}
 
 // ── BANNER FORM ───────────────────────────────────────────────────────────────
 function buildBannerForm(b){
@@ -1347,12 +1401,12 @@ function buildBannerForm(b){
     +'<div class="frow"><div class="fcol"><div class="fl">Banner Name <span style="color:#ff4d4f">*</span></div><input class="fi" value="'+(b?b.name:'')+'" placeholder="Internal name for admin use"></div></div>'
     +'<div class="frow" style="margin-bottom:0"><div class="fcol"><div class="fl">Banner Type <span style="color:#ff4d4f">*</span></div><select class="fsel" id="ban-type-sel" onchange="onBanTypeChange(this.value)">'+typeOpts+'</select></div></div>'
     +'</div>'
-    +'<div class="fs"><div class="fs-t">Language Settings</div>'
+    +'<div class="fs"><div class="fs-t">Language Settings <span style="color:#ff4d4f">*</span></div>'
     +'<div class="lang-toggle-row" style="margin-bottom:8px">'
     +'<button type="button" class="lang-btn'+(ptOn?' pt-on':'')+'" id="ban-lang-pt" onclick="banToggleLang(\'PT\',this)"><span class="lang-chk'+(ptOn?' on':'')+'"></span>PT &middot; Portuguese</button>'
     +'<button type="button" class="lang-btn'+(esOn?' es-on':'')+'" id="ban-lang-es" onclick="banToggleLang(\'ES\',this)"><span class="lang-chk'+(esOn?' on':'')+'"></span>ES &middot; Spanish</button>'
     +'</div>'
-    +'<div class="fhint" style="margin-bottom:12px">Select the markets where this banner will be displayed.</div>'
+    +'<div class="fhint" style="margin-bottom:12px">Select at least one market. Required.</div>'
     +'<div id="ban-lang-settings">'+langSettingsHtml+'</div>'
     +'</div>'
     +(buildBanSharedContent(type)?'<div class="fs"><div class="fs-t">Content</div><div id="ban-shared-body">'+buildBanSharedContent(type)+'</div></div>':'<div id="ban-shared-body" style="display:none"></div>')
@@ -1377,23 +1431,6 @@ function buildBanLangSettingsHtml(type,ptOn,esOn){
   }
   return h;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 function banToggleLang(lang,btn){
   var isOn=btn.classList.contains(lang==='PT'?'pt-on':'es-on');
@@ -1505,7 +1542,7 @@ function buildSlotForm(s){
   var typeOpts='<option value="" disabled'+(type===''?' selected':'')+'>Select type</option>'
     +["Today's Cinema",'Live','Replay','UGC','Hosts','Mixed','Movies'].map(function(t){return '<option'+(t===type?' selected':'')+'>'+t+'</option>';}).join('');
   var contentBody=buildSlotContentForType(type,s);
-  var langHint='Select the markets where this slot will be displayed.';
+  var langHint='Select at least one market. Required.';
   var langBtns='<button type="button" class="lang-btn'+(sptOn?' pt-on':'')+'" onclick="slotToggleLang(\'PT\',this)"><span class="lang-chk'+(sptOn?' on':'')+'"></span>PT &middot; Portuguese</button>'
      +'<button type="button" class="lang-btn'+(sesOn?' es-on':'')+'" onclick="slotToggleLang(\'ES\',this)"><span class="lang-chk'+(sesOn?' on':'')+'"></span>ES &middot; Spanish</button>';
   var langSettingsHtml='';
@@ -1531,7 +1568,7 @@ function buildSlotForm(s){
     +'<div style="flex:1"><div class="fl">Slot Name <span style="color:#ff4d4f">*</span></div><input class="fi" value="'+(s?s.name:'')+'"></div>'
     +'<div style="flex:0 0 160px"><div class="fl">Slot Type <span style="color:#ff4d4f">*</span></div><select class="fsel" onchange="onSlotTypeChange(this.value)">'+typeOpts+'</select></div>'
     +'</div></div>'
-    +'<div class="fs"><div class="fs-t">Language Settings</div>'
+    +'<div class="fs"><div class="fs-t">Language Settings <span style="color:#ff4d4f">*</span></div>'
     +'<div class="lang-toggle-row" style="margin-bottom:8px">'+langBtns+'</div>'
     +'<div class="fhint" style="margin-bottom:12px">'+langHint+'</div>'
     +'<div id="slot-lang-settings">'+langSettingsHtml+'</div>'
@@ -1718,140 +1755,6 @@ function mxAddRule(){mxRules.push({type:'ugc',qty:2,sort:'most_popular',trending
 function mxDelRule(i){mxRules.splice(i,1);mxRenderRules();}
 function mxUpdateFbTrending(){var s=document.getElementById('mx-fb-sort');var d=document.getElementById('mx-fb-td');if(s&&d)d.classList.toggle('show',s.value==='trending');}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 function slotToggleLang(lang,btn){
   var isOn=btn.classList.contains(lang==='PT'?'pt-on':'es-on');
   var cls=lang==='PT'?'pt-on':'es-on';
@@ -1879,21 +1782,30 @@ function updateSlotLangSettings(){
   var mdBody=document.getElementById('md-body');
   var ptOn=!!(mdBody&&mdBody.querySelector('.lang-btn.pt-on'));
   var esOn=!!(mdBody&&mdBody.querySelector('.lang-btn.es-on'));
+  // preserve existing values before re-render
+  var prevPTName=el.querySelector('#slot-disp-name-pt');
+  var prevPTMore=el.querySelector('#slot-see-more-pt');
+  var prevESName=el.querySelector('#slot-disp-name-es');
+  var prevESMore=el.querySelector('#slot-see-more-es');
+  var valPTName=prevPTName?prevPTName.value:'';
+  var valPTMore=prevPTMore?prevPTMore.value:'';
+  var valESName=prevESName?prevESName.value:'';
+  var valESMore=prevESMore?prevESMore.value:'';
   var h='';
   if(ptOn){
     h+='<div class="lang-section" style="margin-bottom:10px">'
       +'<div class="lang-section-hd"><span class="lang-badge-pt">PT</span><span style="font-size:12px;font-weight:500;margin-left:4px">Portuguese</span></div>'
       +'<div class="lang-section-bd">'
-      +'<div><div class="fl">Display Name <span style="color:#ff4d4f">*</span></div><input class="fi" placeholder="Slot section title shown to users (PT)"></div>'
-      +'<div style="margin-top:10px"><div class="fl">See More</div><input class="fi" placeholder="e.g. https://... or peliparty://..."><div class="fhint">Accepts a URL or a deep link.</div></div>'
+      +'<div><div class="fl">Display Name <span style="color:#ff4d4f">*</span></div><input class="fi" id="slot-disp-name-pt" value="'+valPTName+'" placeholder="Slot section title shown to users (PT)"></div>'
+      +'<div style="margin-top:10px"><div class="fl">See More</div><input class="fi" id="slot-see-more-pt" value="'+valPTMore+'" placeholder="e.g. https://... or peliparty://..."><div class="fhint">Accepts a URL or a deep link.</div></div>'
       +'</div></div>';
   }
   if(esOn){
     h+='<div class="lang-section" style="margin-bottom:10px">'
       +'<div class="lang-section-hd"><span class="lang-badge-es">ES</span><span style="font-size:12px;font-weight:500;margin-left:4px">Spanish</span></div>'
       +'<div class="lang-section-bd">'
-      +'<div><div class="fl">Display Name <span style="color:#ff4d4f">*</span></div><input class="fi" placeholder="Slot section title shown to users (ES)"></div>'
-      +'<div style="margin-top:10px"><div class="fl">See More</div><input class="fi" placeholder="e.g. https://... or peliparty://..."><div class="fhint">Accepts a URL or a deep link.</div></div>'
+      +'<div><div class="fl">Display Name <span style="color:#ff4d4f">*</span></div><input class="fi" id="slot-disp-name-es" value="'+valESName+'" placeholder="Slot section title shown to users (ES)"></div>'
+      +'<div style="margin-top:10px"><div class="fl">See More</div><input class="fi" id="slot-see-more-es" value="'+valESMore+'" placeholder="e.g. https://... or peliparty://..."><div class="fhint">Accepts a URL or a deep link.</div></div>'
       +'</div></div>';
   }
   el.innerHTML=h;
