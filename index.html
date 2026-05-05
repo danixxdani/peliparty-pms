@@ -1228,8 +1228,14 @@ function openModal(kind,id){
     saveBtn=function(){saveCatModal(id);};
   } else if(kind==='ban-add'){title='Add Banner Item';body=buildBannerForm(null);}
   else if(kind==='ban-edit'){var b=BANNERS.find(function(x){return x.id===id;});title='Edit Banner';body=buildBannerForm(b);}
-  else if(kind==='slot-add'){movieManualList=[];title='Add Slot';body=buildSlotForm(null);}
-  else if(kind==='slot-edit'){var s=SLOTS.find(function(x){return x.id===id;});movieManualList=[];title='Edit Slot — '+s.name;body=buildSlotForm(s);}
+  else if(kind==='slot-add'){
+    try{movieManualList=[];title='Add Slot';body=buildSlotForm(null);}
+    catch(e){console.error('slot-add error:',e);alert('slot-add error: '+e.message);return;}
+  }
+  else if(kind==='slot-edit'){
+    try{var s=SLOTS.find(function(x){return x.id===id;});movieManualList=[];title='Edit Slot — '+s.name;body=buildSlotForm(s);}
+    catch(e){console.error('slot-edit error:',e);alert('slot-edit error: '+e.message);return;}
+  }
   // attach save handler if provided
   var footerSave=document.querySelector('#mov .md-f .btn-add');
   if(footerSave){footerSave.onclick=saveBtn||null;}
@@ -1268,25 +1274,41 @@ function buildBannerForm(b){
     +buildBanSettingsSection();
 }
 function buildBanLangSettingsHtml(type,ptOn,esOn){
+  if(!banHasLangContent(type))return '';
   var h='';
   if(ptOn){
     h+='<div class="lang-section" style="margin-bottom:10px">'
       +'<div class="lang-section-hd"><span class="lang-badge-pt">PT</span><span style="font-size:12px;font-weight:500;margin-left:4px">Portuguese</span></div>'
       +'<div class="lang-section-bd">'
-      +'<div><div class="fl">Display Name <span style="color:#ff4d4f">*</span></div><input class="fi" placeholder="Banner name shown to users (PT)"></div>'
-      +'<div id="ban-pt-body" style="margin-top:10px">'+buildBanLangBody(type)+'</div>'
+      +'<div id="ban-pt-body">'+buildBanLangBody(type)+'</div>'
       +'</div></div>';
   }
   if(esOn){
     h+='<div class="lang-section" style="margin-bottom:10px">'
       +'<div class="lang-section-hd"><span class="lang-badge-es">ES</span><span style="font-size:12px;font-weight:500;margin-left:4px">Spanish</span></div>'
       +'<div class="lang-section-bd">'
-      +'<div><div class="fl">Display Name <span style="color:#ff4d4f">*</span></div><input class="fi" placeholder="Banner name shown to users (ES)"></div>'
-      +'<div id="ban-es-body" style="margin-top:10px">'+buildBanLangBody(type)+'</div>'
+      +'<div id="ban-es-body">'+buildBanLangBody(type)+'</div>'
       +'</div></div>';
   }
   return h;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function banToggleLang(lang,btn){
   var isOn=btn.classList.contains(lang==='PT'?'pt-on':'es-on');
@@ -1306,6 +1328,7 @@ function updateBanLangSettings(){
   var type=typeEl?typeMap[typeEl.options[typeEl.selectedIndex].text]||'live':'live';
   el.innerHTML=buildBanLangSettingsHtml(type,ptOn,esOn);
 }
+function banHasLangContent(type){return type==='image'||type==='upcoming';}
 function buildBanLangBody(type){
   if(type==='image'){
     return '<div><div class="fl">Image <span style="color:#ff4d4f">*</span></div>'
@@ -1401,6 +1424,7 @@ function buildSlotForm(s){
 
 
   if(sptOn){
+  var langSettingsHtml='';
     langSettingsHtml+='<div class="lang-section" style="margin-bottom:10px">'
       +'<div class="lang-section-hd"><span class="lang-badge-pt">PT</span><span style="font-size:12px;font-weight:500;margin-left:4px">Portuguese</span></div>'
       +'<div class="lang-section-bd">'
